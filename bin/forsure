@@ -7,19 +7,34 @@ const path = require('path')
 // Set up CLI program
 program
   .name('forsure')
-  .description('ForSure CLI - Generate file structures from ForSure files')
-  .version('0.1.0')
+  .description('ForSure CLI - Interactive Development Tools')
+  .version('2.0.0')
 
-// Generate command
+// Default action - launch interactive CLI
+program.action(() => {
+  console.log('🚀 Launching ForSure Interactive CLI...')
+
+  // Check if interactive CLI exists
+  const interactivePath = path.join(__dirname, 'forsure-interactive')
+  if (fs.existsSync(interactivePath)) {
+    // Launch the interactive CLI
+    const ForSureInteractiveCLI = require('./forsure-interactive')
+    const cli = new ForSureInteractiveCLI()
+    cli.start()
+  } else {
+    console.error(
+      '❌ Interactive CLI not found. Please ensure forsure-interactive exists in the same directory.'
+    )
+    process.exit(1)
+  }
+})
+
+// Legacy commands for compatibility
 program
   .command('generate')
-  .description('Generates a file structure from a ForSure file')
+  .description('Generates a file structure from a ForSure file (legacy)')
   .argument('<file>', 'ForSure file to process')
-  .option(
-    '-o, --output <directory>',
-    'Specify the output directory',
-    './output'
-  )
+  .option('-o, --output <directory>', 'Specify output directory', './output')
   .option('-f, --force', 'Overwrite existing files')
   .option(
     '-d, --dry-run',
@@ -27,6 +42,9 @@ program
   )
   .option('-v, --verbose', 'Show detailed output')
   .action((file, options) => {
+    console.log(
+      '📁 Using legacy generate command. Consider using interactive mode instead.'
+    )
     try {
       if (!fs.existsSync(file)) {
         console.error(`Error: File '${file}' not found`)
@@ -69,9 +87,12 @@ program
 // Validate command
 program
   .command('validate')
-  .description('Validates a ForSure file without generating the structure')
+  .description('Validates a ForSure file without generating structure (legacy)')
   .argument('<file>', 'ForSure file to validate')
   .action(file => {
+    console.log(
+      '🔍 Using legacy validate command. Consider using interactive mode instead.'
+    )
     try {
       if (!fs.existsSync(file)) {
         console.error(`Error: File '${file}' not found`)
@@ -94,13 +115,12 @@ program
 // Init command
 program
   .command('init')
-  .description('Creates a new ForSure file with a basic structure')
-  .argument(
-    '[filename]',
-    'Name of the ForSure file to create',
-    'project.forsure'
-  )
+  .description('Creates a new ForSure file with a basic structure (legacy)')
+  .argument('[filename]', 'Name of ForSure file to create', 'project.forsure')
   .action(filename => {
+    console.log(
+      '📝 Using legacy init command. Consider using interactive mode instead.'
+    )
     try {
       if (fs.existsSync(filename)) {
         console.error(`Error: File '${filename}' already exists`)
@@ -128,6 +148,25 @@ package.json
       console.log('✓ Basic structure template added')
     } catch (error) {
       console.error(`Error: ${error.message}`)
+      process.exit(1)
+    }
+  })
+
+// Interactive command (explicit)
+program
+  .command('interactive')
+  .alias('ui')
+  .description('Launch the interactive CLI interface')
+  .action(() => {
+    console.log('🚀 Launching ForSure Interactive CLI...')
+
+    const interactivePath = path.join(__dirname, 'forsure-interactive')
+    if (fs.existsSync(interactivePath)) {
+      const ForSureInteractiveCLI = require('./forsure-interactive')
+      const cli = new ForSureInteractiveCLI()
+      cli.start()
+    } else {
+      console.error('❌ Interactive CLI not found.')
       process.exit(1)
     }
   })

@@ -1,0 +1,1081 @@
+#!/usr/bin/env node
+
+const chalk = require('chalk').default
+const blessed = require('blessed')
+const inquirer = require('inquirer')
+const fs = require('fs')
+const path = require('path')
+
+// ASCII Art Banner - Very simple FORSURE text
+const banner = `
+${chalk.cyan('╔══════════════════════════════════════════════════════════════════════════════╗')}
+${chalk.cyan('║')} ${chalk.bold.yellow('    ____  ____  ____  ____  ____  ____  ____  ____    ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.bold.yellow('   / __ | / __ | / __ | / __ | / __ | / __ | / __   ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.bold.yellow('  | |  | | |  | | |  | | |  | |  | |  | |  | ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.bold.yellow('  | |__| | |__| | |__| | |__| | |__| | |__| | |__| ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.bold.yellow('  |  __ | |  __ | |  __ | |  __ | |  __ | |  __ | |  __ ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.bold.yellow('  | |__) | |__) | |__) | |__) | |__) | |__) | |__) ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.bold.magenta('                    FORSURE INTERACTIVE CLI v2.0                ')} ${chalk.cyan('║')}
+${chalk.cyan('║')} ${chalk.green('           🚀 Generate file structures with style and precision 🚀          ')} ${chalk.cyan('║')}
+${chalk.cyan('╚════════════════════════════════════════════════════════════════════════════════╝')}
+`
+
+class ForSureInteractiveCLI {
+  constructor() {
+    this.startTime = Date.now()
+    this.screen = blessed.screen({
+      smartCSR: true,
+      title: 'ForSure CLI Interactive v2.0',
+      cursor: {
+        artificial: true,
+        shape: 'line',
+        blink: true,
+      },
+      // Disable auto-docking and panel movement
+      autoPadding: false,
+      dockBorders: false,
+      fullUnicode: true,
+    })
+
+    this.setupLayout()
+    this.setupEventHandlers()
+    this.chatHistory = []
+    this.terminalHistory = []
+  }
+
+  setupLayout() {
+    // Main container with gradient background effect
+    this.layout = blessed.box({
+      parent: this.screen,
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      style: {
+        bg: '#0a0a0a',
+      },
+    })
+
+    // Header with banner - thinner and responsive
+    this.header = blessed.box({
+      parent: this.layout,
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: 8, // Reduced from 12 to 8 for thinner appearance
+      content: banner,
+      style: {
+        bg: '#000000',
+        fg: 'white',
+      },
+      tags: true,
+    })
+
+    // Left Panel - Chat Dialogue (adjusted for thinner header)
+    this.leftPanel = blessed.box({
+      parent: this.layout,
+      top: 8, // Adjusted from 12 to 8
+      left: 0,
+      width: '50%',
+      height: '67%', // Increased from 65% to 67% to use saved space
+      label: ` ${chalk.bold.blue('💬 Chat Dialogue (Long-term Tasks')} `,
+      border: {
+        type: 'thick',
+        fg: '#00bfff',
+      },
+      style: {
+        bg: '#0d1117',
+        fg: '#c9d1d9',
+        border: {
+          fg: '#00bfff',
+        },
+        scrollbar: {
+          bg: '#21262d',
+          fg: '#00bfff',
+        },
+      },
+      tags: true,
+      // Fixed positioning
+      draggable: false,
+      resizable: false,
+      shadow: false,
+    })
+
+    // Chat box with enhanced styling
+    this.chatBox = blessed.scrollablebox({
+      parent: this.leftPanel,
+      top: 1,
+      left: 1,
+      width: '100%-2',
+      height: '100%-6', // Adjusted from 5 to 6
+      scrollable: true,
+      alwaysScroll: true,
+      scrollbar: {
+        ch: '│',
+        bg: '#21262d',
+        fg: '#00bfff',
+      },
+      style: {
+        bg: '#0d1117',
+        fg: '#c9d1d9',
+        scrollbar: {
+          bg: '#21262d',
+          fg: '#00bfff',
+        },
+      },
+      tags: true,
+      // Fixed positioning
+      draggable: false,
+      resizable: false,
+    })
+
+    // Chat input with enhanced styling and UI
+    this.chatInput = blessed.textbox({
+      parent: this.leftPanel,
+      bottom: 1,
+      left: 1,
+      width: '100%-2',
+      height: 3,
+      inputOnFocus: true,
+      style: {
+        bg: '#161b22',
+        fg: '#c9d1d9',
+        focus: {
+          bg: '#21262d',
+          fg: '#00bfff',
+        },
+        border: {
+          fg: '#00bfff',
+        },
+      },
+      tags: true,
+      // Fixed positioning
+      draggable: false,
+      resizable: false,
+      // Enhanced UI features
+      cursor: 'block',
+      cursorBlink: true,
+      inputOnFocus: true,
+      keys: true,
+      vi: false,
+    })
+
+    // Add input label for chat
+    this.chatInputLabel = blessed.box({
+      parent: this.leftPanel,
+      bottom: 4,
+      left: 1,
+      width: '100%-2',
+      height: 1,
+      content: `${chalk.gray('💬')} ${chalk.cyan('Chat Input')} ${chalk.gray('• Type commands and press Enter')}`,
+      style: {
+        bg: '#0d1117',
+        fg: '#8b949e',
+      },
+      tags: true,
+    })
+
+    // Right Panel - Terminal/Chat (adjusted for thinner header)
+    this.rightPanel = blessed.box({
+      parent: this.layout,
+      top: 8, // Adjusted from 12 to 8
+      right: 0,
+      width: '50%',
+      height: '67%', // Increased from 65% to 67% to use saved space
+      label: ` ${chalk.bold.green('🖥️  Terminal / Continued Chat')} `,
+      border: {
+        type: 'thick',
+        fg: '#00ff7f',
+      },
+      style: {
+        bg: '#0d1117',
+        fg: '#c9d1d9',
+        border: {
+          fg: '#00ff7f',
+        },
+        scrollbar: {
+          bg: '#21262d',
+          fg: '#00ff7f',
+        },
+      },
+      tags: true,
+      // Fixed positioning
+      draggable: false,
+      resizable: false,
+      shadow: false,
+    })
+
+    // Terminal box with enhanced styling
+    this.terminalBox = blessed.scrollablebox({
+      parent: this.rightPanel,
+      top: 1,
+      left: 1,
+      width: '100%-2',
+      height: '100%-6', // Adjusted from 5 to 6
+      scrollable: true,
+      alwaysScroll: true,
+      scrollbar: {
+        ch: '│',
+        bg: '#21262d',
+        fg: '#00ff7f',
+      },
+      style: {
+        bg: '#0d1117',
+        fg: '#c9d1d9',
+        scrollbar: {
+          bg: '#21262d',
+          fg: '#00ff7f',
+        },
+      },
+      tags: true,
+      // Fixed positioning
+      draggable: false,
+      resizable: false,
+    })
+
+    // Terminal input with enhanced styling and UI
+    this.terminalInput = blessed.textbox({
+      parent: this.rightPanel,
+      bottom: 1,
+      left: 1,
+      width: '100%-2',
+      height: 3,
+      inputOnFocus: true,
+      style: {
+        bg: '#161b22',
+        fg: '#c9d1d9',
+        focus: {
+          bg: '#21262d',
+          fg: '#00ff7f',
+        },
+        border: {
+          fg: '#00ff7f',
+        },
+      },
+      tags: true,
+      // Fixed positioning
+      draggable: false,
+      resizable: false,
+      // Enhanced UI features
+      cursor: 'block',
+      cursorBlink: true,
+      inputOnFocus: true,
+      keys: true,
+      vi: false,
+    })
+
+    // Add input label for terminal
+    this.terminalInputLabel = blessed.box({
+      parent: this.rightPanel,
+      bottom: 4,
+      left: 1,
+      width: '100%-2',
+      height: 1,
+      content: `${chalk.gray('🖥️')} ${chalk.green('Terminal Input')} ${chalk.gray('• Type commands and press Enter')}`,
+      style: {
+        bg: '#0d1117',
+        fg: '#8b949e',
+      },
+      tags: true,
+    })
+
+    // Enhanced status bar with live updates and visual indicators
+    this.statusBar = blessed.box({
+      parent: this.layout,
+      bottom: 0,
+      left: 0,
+      width: '100%',
+      height: 4,
+      content: `${chalk.gray('📋')} ${chalk.cyan('[Tab] Switch')} | ${chalk.yellow('[F1] Help')} | ${chalk.red('[Ctrl+C] Exit')} | ${chalk.magenta('[F2] Clear')} | ${chalk.green('[F3] Save')} | ${chalk.blue('[F4] Export')} | ${chalk.white('● Chat Active')}`,
+      style: {
+        bg: '#010409',
+        fg: '#8b949e',
+      },
+      tags: true,
+    })
+
+    // Update status bar periodically with visual indicators
+    setInterval(() => {
+      const activePanel = this.chatInput.focused ? 'Chat' : 'Terminal'
+      const uptime = Math.floor((Date.now() - this.startTime) / 1000)
+      const minutes = Math.floor(uptime / 60)
+      const seconds = uptime % 60
+
+      // Visual indicators
+      const chatIndicator = this.chatInput.focused
+        ? `${chalk.white('●')} ${chalk.cyan('Chat')}`
+        : `${chalk.gray('○')} ${chalk.cyan('Chat')}`
+      const terminalIndicator = this.terminalInput.focused
+        ? `${chalk.white('●')} ${chalk.green('Terminal')}`
+        : `${chalk.gray('○')} ${chalk.green('Terminal')}`
+
+      this.statusBar.setContent(
+        `${chalk.gray('📋')} ${chalk.cyan('[Tab] Switch')} | ${chalk.yellow('[F1] Help')} | ${chalk.red('[Ctrl+C] Exit')} | ${chalk.magenta('[F2] Clear')} | ${chalk.green('[F3] Save')} | ${chalk.blue('[F4] Export')} | ${chatIndicator} | ${terminalIndicator} | ${chalk.yellow(`⏱ ${minutes}:${seconds.toString().padStart(2, '0')}`)}`
+      )
+      this.screen.render()
+    }, 1000)
+  }
+
+  setupEventHandlers() {
+    // Tab to switch between panels
+    this.screen.key(['tab'], () => {
+      if (this.chatInput.focused) {
+        this.chatInput.blur()
+        this.terminalInput.focus()
+        this.addTerminalMessage(
+          `${chalk.blue('🔄')} Switched to Terminal panel`
+        )
+      } else {
+        this.terminalInput.blur()
+        this.chatInput.focus()
+        this.addChatMessage(
+          'system',
+          `${chalk.blue('🔄')} Switched to Chat panel`
+        )
+      }
+    })
+
+    // Chat input handler with enhanced feedback
+    this.chatInput.on('submit', text => {
+      if (text.trim()) {
+        this.addChatMessage('user', text)
+        this.processChatCommand(text.trim())
+        this.chatInput.clearValue()
+        this.chatInput.focus()
+      }
+    })
+
+    // Terminal input handler with enhanced feedback
+    this.terminalInput.on('submit', text => {
+      if (text.trim()) {
+        this.addTerminalMessage(`$ ${chalk.cyan(text)}`)
+        this.processTerminalCommand(text.trim())
+        this.terminalInput.clearValue()
+        this.terminalInput.focus()
+      }
+    })
+
+    // Enhanced help
+    this.screen.key(['f1'], () => {
+      this.showHelp()
+    })
+
+    // New: Clear all panels
+    this.screen.key(['f2'], () => {
+      this.clearAll()
+    })
+
+    // New: Save session
+    this.screen.key(['f3'], () => {
+      this.saveSession()
+    })
+
+    // New: Export history
+    this.screen.key(['f4'], () => {
+      this.exportHistory()
+    })
+
+    // Enhanced exit with confirmation
+    this.screen.key(['C-c'], () => {
+      this.showExitConfirmation()
+    })
+
+    // Initial focus
+    this.chatInput.focus()
+  }
+
+  addChatMessage(sender, message) {
+    const timestamp = new Date().toLocaleTimeString()
+    let formattedMessage
+
+    switch (sender) {
+      case 'user':
+        formattedMessage = `[${chalk.gray(timestamp)}] ${chalk.bold.cyan('👤 USER')}: ${message}`
+        break
+      case 'bot':
+        formattedMessage = `[${chalk.gray(timestamp)}] ${chalk.bold.green('🤖 BOT')}: ${message}`
+        break
+      case 'system':
+        formattedMessage = `[${chalk.gray(timestamp)}] ${chalk.bold.magenta('🔧 SYSTEM')}: ${message}`
+        break
+      case 'error':
+        formattedMessage = `[${chalk.gray(timestamp)}] ${chalk.bold.red('❌ ERROR')}: ${message}`
+        break
+      case 'success':
+        formattedMessage = `[${chalk.gray(timestamp)}] ${chalk.bold.green('✅ SUCCESS')}: ${message}`
+        break
+      default:
+        formattedMessage = `[${chalk.gray(timestamp)}] ${chalk.bold.yellow(sender.toUpperCase())}]: ${message}`
+    }
+
+    this.chatHistory.push({ sender, message, timestamp })
+    this.chatBox.pushLine(formattedMessage)
+    this.chatBox.setScrollPerc(100)
+    this.screen.render()
+  }
+
+  addTerminalMessage(message) {
+    const timestamp = new Date().toLocaleTimeString()
+    const formattedMessage = `[${chalk.gray(timestamp)}] ${message}`
+
+    this.terminalHistory.push({ message, timestamp })
+    this.terminalBox.pushLine(formattedMessage)
+    this.terminalBox.setScrollPerc(100)
+    this.screen.render()
+  }
+
+  processChatCommand(command) {
+    const parts = command.split(' ')
+    const cmd = parts[0].toLowerCase()
+    const args = parts.slice(1)
+
+    switch (cmd) {
+      case 'help':
+        this.addChatMessage(
+          'bot',
+          `${chalk.green('🚀 ForSure CLI Commands:')}
+${chalk.cyan('📁 File Operations:')}
+  • ${chalk.bold('generate <file>')} - Generate file structure from ForSure file
+  • ${chalk.bold('validate <file>')} - Validate ForSure file syntax
+  • ${chalk.bold('init [filename]')} - Create new ForSure file with template
+  • ${chalk.bold('list')} - List all ForSure files in current directory
+
+${chalk.cyan('🔧 Interface Commands:')}
+  • ${chalk.bold('clear')} - Clear chat history
+  • ${chalk.bold('status')} - Show current session status
+  • ${chalk.bold('about')} - Show ForSure CLI information
+  • ${chalk.bold('theme <name>')} - Change color theme (dark/light/blue)
+
+${chalk.cyan('💬 Chat Features:')}
+  • ${chalk.bold('save <name>')} - Save current conversation
+  • ${chalk.bold('load <name>')} - Load saved conversation
+  • ${chalk.bold('export')} - Export chat history to file
+
+${chalk.gray('💡 Tip: Press F1 for keyboard shortcuts')}`
+        )
+        break
+
+      case 'generate':
+        if (args.length === 0) {
+          this.addChatMessage('error', 'Please specify a file to generate')
+          return
+        }
+        this.handleGenerate(args[0])
+        break
+
+      case 'validate':
+        if (args.length === 0) {
+          this.addChatMessage('error', 'Please specify a file to validate')
+          return
+        }
+        this.handleValidate(args[0])
+        break
+
+      case 'init':
+        const filename = args[0] || 'project.forsure'
+        this.handleInit(filename)
+        break
+
+      case 'list':
+        this.handleList()
+        break
+
+      case 'clear':
+        this.chatBox.setContent('')
+        this.chatHistory = []
+        this.addChatMessage('success', 'Chat history cleared')
+        break
+
+      case 'status':
+        this.addChatMessage(
+          'bot',
+          `${chalk.green('📊 Session Status:')}
+${chalk.cyan('⏱️  Uptime:')} ${Math.floor((Date.now() - this.startTime) / 1000)}s
+${chalk.cyan('💬 Chat Messages:')} ${this.chatHistory.length}
+${chalk.cyan('🖥️  Terminal Commands:')} ${this.terminalHistory.length}
+${chalk.cyan('📁 Current Directory:')} ${process.cwd()}
+${chalk.cyan('🔧 Focus:')} ${this.chatInput.focused ? 'Chat Panel' : 'Terminal Panel'}`
+        )
+        break
+
+      case 'about':
+        this.addChatMessage(
+          'bot',
+          `${chalk.bold.magenta('🚀 ForSure CLI v2.0')}
+${chalk.green('📝 Description:')} Generate file structures with style
+${chalk.cyan('👨‍💻 Author:')} ForSure Development Team
+${chalk.yellow('📦 Version:')} 2.0.0 Interactive
+${chalk.blue('🌐 Repository:')} github.com/forsure/cli`
+        )
+        break
+
+      case 'theme':
+        const theme = args[0] || 'dark'
+        this.changeTheme(theme)
+        break
+
+      case 'save':
+        const saveName = args[0] || 'conversation'
+        this.saveConversation(saveName)
+        break
+
+      case 'load':
+        const loadName = args[0] || 'conversation'
+        this.loadConversation(loadName)
+        break
+
+      case 'export':
+        this.exportHistory()
+        break
+
+      default:
+        this.addChatMessage(
+          'error',
+          `Unknown command: ${cmd}. Type 'help' for available commands.`
+        )
+    }
+  }
+
+  processTerminalCommand(command) {
+    try {
+      if (command.startsWith('cd ')) {
+        const dir = command.substring(3)
+        this.addTerminalMessage(
+          `${chalk.yellow('📁')} Simulated: Changed directory to ${dir}`
+        )
+      } else if (command === 'ls' || command === 'dir') {
+        this.addTerminalMessage(`${chalk.cyan('📂')} Directory listing:`)
+        this.addTerminalMessage(`📁 src/`)
+        this.addTerminalMessage(`📁 components/`)
+        this.addTerminalMessage(`📁 utils/`)
+        this.addTerminalMessage(`📄 package.json`)
+        this.addTerminalMessage(`📄 README.md`)
+        this.addTerminalMessage(`📄 .gitignore`)
+      } else if (command === 'clear') {
+        this.terminalBox.setContent('')
+        this.terminalHistory = []
+        this.addTerminalMessage(`${chalk.green('✨')} Terminal cleared`)
+      } else if (command === 'pwd') {
+        this.addTerminalMessage(`${chalk.blue('📍')} ${process.cwd()}`)
+      } else if (command.startsWith('echo ')) {
+        const text = command.substring(5)
+        this.addTerminalMessage(`${chalk.white(text)}`)
+      } else if (command === 'date') {
+        this.addTerminalMessage(
+          `${chalk.yellow('📅')} ${new Date().toString()}`
+        )
+      } else if (command === 'whoami') {
+        this.addTerminalMessage(
+          `${chalk.magenta('👤')} ${process.env.USER || 'user'}`
+        )
+      } else if (command === 'help') {
+        this.addTerminalMessage(
+          `${chalk.cyan('📖')} Terminal Commands: ls, dir, pwd, clear, echo <text>, date, whoami, cd <dir>`
+        )
+      } else if (command === 'forsure --version') {
+        this.addTerminalMessage(
+          `${chalk.green('🚀')} ForSure CLI v2.0 Interactive`
+        )
+      } else if (command.startsWith('mkdir ')) {
+        const dir = command.substring(6)
+        this.addTerminalMessage(
+          `${chalk.green('📁')} Simulated: Created directory ${dir}`
+        )
+      } else if (command.startsWith('touch ')) {
+        const file = command.substring(6)
+        this.addTerminalMessage(
+          `${chalk.green('📄')} Simulated: Created file ${file}`
+        )
+      } else if (command === 'exit') {
+        this.showExitConfirmation()
+      } else {
+        this.addTerminalMessage(
+          `${chalk.red('❌')} Command not recognized: ${command}`
+        )
+        this.addTerminalMessage(
+          `${chalk.gray('💡')} Type 'help' for available commands`
+        )
+      }
+    } catch (error) {
+      this.addTerminalMessage(`${chalk.red('🚨')} Error: ${error.message}`)
+    }
+  }
+
+  handleGenerate(file) {
+    try {
+      if (!fs.existsSync(file)) {
+        this.addChatMessage('error', `File '${file}' not found`)
+        return
+      }
+
+      const forsureContent = fs.readFileSync(file, 'utf8')
+      const structure = this.parseForSureFile(forsureContent)
+
+      this.addChatMessage('bot', `🔍 Processing ${chalk.bold(file)}...`)
+      this.addChatMessage(
+        'success',
+        `Found ${structure.length} items in structure`
+      )
+
+      structure.forEach((item, index) => {
+        if (item.endsWith('/')) {
+          this.addChatMessage('bot', `${index + 1}. 📁 ${chalk.cyan(item)}`)
+        } else {
+          this.addChatMessage('bot', `${index + 1}. 📄 ${chalk.yellow(item)}`)
+        }
+      })
+
+      this.addChatMessage('success', '✅ File structure parsed successfully!')
+    } catch (error) {
+      this.addChatMessage('error', `Failed to parse file: ${error.message}`)
+    }
+  }
+
+  handleValidate(file) {
+    try {
+      if (!fs.existsSync(file)) {
+        this.addChatMessage('error', `File '${file}' not found`)
+        return
+      }
+
+      const forsureContent = fs.readFileSync(file, 'utf8')
+      const structure = this.parseForSureFile(forsureContent)
+
+      this.addChatMessage('success', `✅ '${file}' is a valid ForSure file`)
+      this.addChatMessage(
+        'bot',
+        `📊 Found ${structure.length} items in the structure`
+      )
+
+      // Validation details
+      const directories = structure.filter(item => item.endsWith('/')).length
+      const files = structure.filter(item => !item.endsWith('/')).length
+
+      this.addChatMessage(
+        'bot',
+        `📁 Directories: ${directories} | 📄 Files: ${files}`
+      )
+    } catch (error) {
+      this.addChatMessage('error', `❌ Validation failed: ${error.message}`)
+    }
+  }
+
+  handleInit(filename) {
+    try {
+      if (fs.existsSync(filename)) {
+        this.addChatMessage('error', `File '${filename}' already exists`)
+        return
+      }
+
+      const basicStructure = `# ForSure Project Structure
+# Generated by ForSure CLI v2.0
+# Date: ${new Date().toLocaleDateString()}
+
+# Directories
+src/
+components/
+utils/
+docs/
+tests/
+public/
+
+# Files
+src/index.js
+src/App.js
+README.md
+package.json
+.gitignore
+.env.example
+`
+
+      fs.writeFileSync(filename, basicStructure)
+      this.addChatMessage('success', `✅ Created ForSure file: ${filename}`)
+      this.addChatMessage(
+        'bot',
+        '📝 Basic structure template added with modern project layout'
+      )
+    } catch (error) {
+      this.addChatMessage('error', `Failed to create file: ${error.message}`)
+    }
+  }
+
+  handleList() {
+    try {
+      const files = fs
+        .readdirSync('.')
+        .filter(file => file.endsWith('.forsure'))
+
+      if (files.length === 0) {
+        this.addChatMessage(
+          'bot',
+          '📂 No ForSure files found in current directory'
+        )
+        return
+      }
+
+      this.addChatMessage('bot', `📂 Found ${files.length} ForSure file(s):`)
+      files.forEach((file, index) => {
+        const stats = fs.statSync(file)
+        const size = (stats.size / 1024).toFixed(2)
+        this.addChatMessage(
+          'bot',
+          `${index + 1}. 📄 ${chalk.bold(file)} (${size} KB)`
+        )
+      })
+    } catch (error) {
+      this.addChatMessage('error', `Failed to list files: ${error.message}`)
+    }
+  }
+
+  changeTheme(theme) {
+    const themes = {
+      dark: { bg: '#0d1117', fg: '#00bfff', terminalFg: '#00ff7f' },
+      light: { bg: '#ffffff', fg: '#0066cc', terminalFg: '#00aa00' },
+      blue: { bg: '#001f3f', fg: '#00ffff', terminalFg: '#ffff00' },
+    }
+
+    if (!themes[theme]) {
+      this.addChatMessage(
+        'error',
+        `Unknown theme: ${theme}. Available: dark, light, blue`
+      )
+      return
+    }
+
+    const selectedTheme = themes[theme]
+    this.leftPanel.style.bg = selectedTheme.bg
+    this.rightPanel.style.bg = selectedTheme.bg
+    this.chatBox.style.bg = selectedTheme.bg
+    this.terminalBox.style.bg = selectedTheme.bg
+
+    this.addChatMessage('success', `🎨 Theme changed to ${theme}`)
+    this.screen.render()
+  }
+
+  saveConversation(name) {
+    try {
+      const sessionData = {
+        name,
+        timestamp: new Date().toISOString(),
+        chatHistory: this.chatHistory,
+        terminalHistory: this.terminalHistory,
+      }
+
+      const filename = `forsure-session-${name}.json`
+      fs.writeFileSync(filename, JSON.stringify(sessionData, null, 2))
+      this.addChatMessage('success', `💾 Conversation saved to ${filename}`)
+    } catch (error) {
+      this.addChatMessage(
+        'error',
+        `Failed to save conversation: ${error.message}`
+      )
+    }
+  }
+
+  loadConversation(name) {
+    try {
+      const filename = `forsure-session-${name}.json`
+      if (!fs.existsSync(filename)) {
+        this.addChatMessage('error', `Session file '${filename}' not found`)
+        return
+      }
+
+      const sessionData = JSON.parse(fs.readFileSync(filename, 'utf8'))
+      this.chatHistory = sessionData.chatHistory || []
+      this.terminalHistory = sessionData.terminalHistory || []
+
+      // Reload the chat and terminal boxes
+      this.reloadChatBox()
+      this.reloadTerminalBox()
+
+      this.addChatMessage('success', `📂 Loaded conversation from ${filename}`)
+    } catch (error) {
+      this.addChatMessage(
+        'error',
+        `Failed to load conversation: ${error.message}`
+      )
+    }
+  }
+
+  reloadChatBox() {
+    this.chatBox.setContent('')
+    this.chatHistory.forEach(item => {
+      const formattedMessage = this.formatChatMessage(item)
+      this.chatBox.pushLine(formattedMessage)
+    })
+    this.chatBox.setScrollPerc(100)
+  }
+
+  reloadTerminalBox() {
+    this.terminalBox.setContent('')
+    this.terminalHistory.forEach(item => {
+      const formattedMessage = `[${chalk.gray(item.timestamp)}] ${item.message}`
+      this.terminalBox.pushLine(formattedMessage)
+    })
+    this.terminalBox.setScrollPerc(100)
+  }
+
+  formatChatMessage(item) {
+    const { sender, message, timestamp } = item
+    switch (sender) {
+      case 'user':
+        return `[${chalk.gray(timestamp)}] ${chalk.bold.cyan('👤 USER')}: ${message}`
+      case 'bot':
+        return `[${chalk.gray(timestamp)}] ${chalk.bold.green('🤖 BOT')}: ${message}`
+      case 'system':
+        return `[${chalk.gray(timestamp)}] ${chalk.bold.magenta('🔧 SYSTEM')}: ${message}`
+      case 'error':
+        return `[${chalk.gray(timestamp)}] ${chalk.bold.red('❌ ERROR')}: ${message}`
+      case 'success':
+        return `[${chalk.gray(timestamp)}] ${chalk.bold.green('✅ SUCCESS')}: ${message}`
+      default:
+        return `[${chalk.gray(timestamp)}] ${chalk.bold.yellow(sender.toUpperCase())}]: ${message}`
+    }
+  }
+
+  parseForSureFile(content) {
+    const lines = content.split('\n')
+    const structure = []
+
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (trimmed && !trimmed.startsWith('#')) {
+        structure.push(trimmed)
+      }
+    }
+
+    return structure
+  }
+
+  showHelp() {
+    const helpContent = `
+${chalk.bold.cyan('🚀 ForSure CLI Interactive Mode - Help')}
+
+${chalk.yellow('🎮 Navigation Controls:')}
+• ${chalk.cyan('[Tab]')} - Switch between Chat and Terminal panels
+• ${chalk.cyan('[F1]')} - Show this help modal
+• ${chalk.cyan('[F2]')} - Clear all panels and history
+• ${chalk.cyan('[F3]')} - Save current session
+• ${chalk.cyan('[F4]')} - Export chat history to file
+• ${chalk.cyan('[Ctrl+C]')} - Exit with confirmation
+
+${chalk.yellow('💬 Chat Panel Commands:')}
+• ${chalk.green('help')} - Show available commands
+• ${chalk.green('generate <file>')} - Generate file structure from ForSure file
+• ${chalk.green('validate <file>')} - Validate ForSure file syntax
+• ${chalk.green('init [filename]')} - Create new ForSure file with template
+• ${chalk.green('list')} - List all ForSure files in current directory
+• ${chalk.green('clear')} - Clear chat history
+• ${chalk.green('status')} - Show current session status
+• ${chalk.green('about')} - Show ForSure CLI information
+• ${chalk.green('theme <name>')} - Change color theme (dark/light/blue)
+• ${chalk.green('save <name>')} - Save current conversation
+• ${chalk.green('load <name>')} - Load saved conversation
+• ${chalk.green('export')} - Export chat history to file
+
+${chalk.yellow('🖥️  Terminal Panel Commands:')}
+• ${chalk.blue('ls / dir')} - Simulated directory listing
+• ${chalk.blue('pwd')} - Show current directory
+• ${chalk.blue('clear')} - Clear terminal output
+• ${chalk.blue('echo <text>')} - Echo text back
+• ${chalk.blue('date')} - Show current date and time
+• ${chalk.blue('whoami')} - Show current user
+
+${chalk.yellow('🎨 Available Themes:')}
+• ${chalk.magenta('dark')} - GitHub-inspired dark theme (default)
+• ${chalk.magenta('light')} - Clean light theme
+• ${chalk.magenta('blue')} - Ocean blue theme
+
+${chalk.yellow('💡 Pro Tips:')}
+• Chat panel is for long-term task management and detailed operations
+• Terminal panel is for quick commands and immediate feedback
+• Both panels maintain their own history and scroll independently
+• Sessions are automatically saved when you use the save command
+• Use Tab to quickly switch between panels during workflow
+
+${chalk.gray('Press any key to close this help modal')}
+`
+
+    // Create help modal
+    const helpModal = blessed.box({
+      parent: this.screen,
+      top: 'center',
+      left: 'center',
+      width: '90%',
+      height: '90%',
+      content: helpContent,
+      border: {
+        type: 'thick',
+        fg: '#00bfff',
+      },
+      style: {
+        bg: '#0d1117',
+        fg: '#c9d1d9',
+        border: {
+          fg: '#00bfff',
+        },
+      },
+      tags: true,
+      scrollable: true,
+      alwaysScroll: true,
+    })
+
+    this.screen.append(helpModal)
+    this.screen.render()
+
+    // Close on any key
+    this.screen.key(['escape', 'q', 'enter', 'space'], () => {
+      this.screen.remove(helpModal)
+      this.screen.render()
+    })
+  }
+
+  clearAll() {
+    this.chatBox.setContent('')
+    this.terminalBox.setContent('')
+    this.chatHistory = []
+    this.terminalHistory = []
+
+    this.addChatMessage('success', '🧹 All panels cleared')
+    this.addTerminalMessage('🧹 Terminal cleared')
+    this.screen.render()
+  }
+
+  saveSession() {
+    try {
+      const sessionData = {
+        timestamp: new Date().toISOString(),
+        chatHistory: this.chatHistory,
+        terminalHistory: this.terminalHistory,
+        uptime: Date.now() - this.startTime,
+      }
+
+      const filename = `forsure-session-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`
+      fs.writeFileSync(filename, JSON.stringify(sessionData, null, 2))
+
+      this.addChatMessage('success', `💾 Session auto-saved to ${filename}`)
+      this.addTerminalMessage(`💾 Session saved: ${filename}`)
+    } catch (error) {
+      this.addChatMessage('error', `Failed to save session: ${error.message}`)
+    }
+  }
+
+  exportHistory() {
+    try {
+      const exportData = {
+        exportDate: new Date().toISOString(),
+        chatHistory: this.chatHistory,
+        terminalHistory: this.terminalHistory,
+        summary: {
+          totalChatMessages: this.chatHistory.length,
+          totalTerminalCommands: this.terminalHistory.length,
+          sessionDuration: Math.floor((Date.now() - this.startTime) / 1000),
+        },
+      }
+
+      const filename = `forsure-export-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.json`
+      fs.writeFileSync(filename, JSON.stringify(exportData, null, 2))
+
+      this.addChatMessage('success', `📤 History exported to ${filename}`)
+      this.addTerminalMessage(`📤 Export complete: ${filename}`)
+    } catch (error) {
+      this.addChatMessage('error', `Failed to export history: ${error.message}`)
+    }
+  }
+
+  showExitConfirmation() {
+    const confirmationContent = `
+${chalk.yellow('🚪 Exit Confirmation')}
+${chalk.white('Are you sure you want to exit ForSure CLI?')}
+${chalk.gray("Unsaved work will be lost if you haven't saved your session.")}
+${chalk.cyan('[Y] Yes, Exit    [N] No, Cancel    [S] Save and Exit')}
+`
+
+    const confirmModal = blessed.box({
+      parent: this.screen,
+      top: 'center',
+      left: 'center',
+      width: 60,
+      height: 10,
+      content: confirmationContent,
+      border: {
+        type: 'thick',
+        fg: '#ff6b6b',
+      },
+      style: {
+        bg: '#0d1117',
+        fg: '#c9d1d9',
+        border: {
+          fg: '#ff6b6b',
+        },
+      },
+      tags: true,
+    })
+
+    this.screen.append(confirmModal)
+    this.screen.render()
+
+    this.screen.key(['y', 'Y'], () => {
+      this.screen.remove(confirmModal)
+      process.exit(0)
+    })
+
+    this.screen.key(['n', 'N', 'escape'], () => {
+      this.screen.remove(confirmModal)
+      this.screen.render()
+    })
+
+    this.screen.key(['s', 'S'], () => {
+      this.saveSession()
+      this.screen.remove(confirmModal)
+      process.exit(0)
+    })
+  }
+
+  start() {
+    // Clear screen and show banner
+    console.clear()
+    console.log(banner)
+    console.log('\n')
+
+    // Add welcome messages
+    this.addChatMessage(
+      'bot',
+      `${chalk.green('🎉 Welcome to ForSure Interactive CLI v2.0!')}`
+    )
+    this.addChatMessage(
+      'bot',
+      `${chalk.blue('💡')} Type 'help' for commands or use ${chalk.yellow('F1')} for comprehensive help.`
+    )
+    this.addChatMessage(
+      'bot',
+      `${chalk.magenta('🎮')} Use ${chalk.yellow('Tab')} to switch between panels and start exploring!`
+    )
+
+    this.addTerminalMessage(`${chalk.green('✨')} Terminal ready for commands!`)
+    this.addTerminalMessage(
+      `${chalk.blue('💡')} Try 'ls', 'pwd', or 'help' to get started`
+    )
+
+    // Show initial status
+    setTimeout(() => {
+      this.addChatMessage(
+        'system',
+        `${chalk.cyan('🔄')} System initialized successfully`
+      )
+      this.addTerminalMessage(
+        `${chalk.cyan('📊')} Session started at ${new Date().toLocaleTimeString()}`
+      )
+    }, 1000)
+
+    this.screen.render()
+  }
+}
+
+// Start the interactive CLI
+if (require.main === module) {
+  const cli = new ForSureInteractiveCLI()
+  cli.start()
+}
+
+module.exports = ForSureInteractiveCLI

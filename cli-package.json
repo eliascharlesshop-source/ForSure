@@ -3,7 +3,9 @@
   "version": "0.1.1",
   "description": "ForSure CLI - Generate file structures from ForSure files",
   "main": "index.js",
-  "bin": "./bin/forsure",
+  "bin": {
+    "forsure": "./bin/forsure"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

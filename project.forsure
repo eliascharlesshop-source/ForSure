@@ -1,0 +1,14 @@
+# ForSure Project Structure
+# This file defines the structure of your project
+
+# Directories
+src/
+components/
+utils/
+docs/
+
+# Files
+src/index.js
+src/App.js
+README.md
+package.json

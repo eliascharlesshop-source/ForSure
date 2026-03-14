@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import {
@@ -27,6 +27,7 @@ import { Slider } from '@/components/ui/slider'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import { toast } from '@/components/ui/use-toast'
+import { useStatusBar } from '@/contexts/status-bar-context'
 import {
   ArrowLeft,
   Settings,
@@ -41,7 +42,17 @@ import {
 
 export default function SettingsPage() {
   const router = useRouter()
+  const { visible: statusBarVisible, setVisible: setStatusBarVisible } =
+    useStatusBar()
   const [isLoading, setIsLoading] = useState(false)
+
+  // Sync status bar visibility with context
+  useEffect(() => {
+    setAppearanceSettings(prev => ({
+      ...prev,
+      showStatusBar: statusBarVisible,
+    }))
+  }, [statusBarVisible])
 
   // Editor settings
   const [editorSettings, setEditorSettings] = useState({
@@ -569,13 +580,8 @@ export default function SettingsPage() {
                     </p>
                   </div>
                   <Switch
-                    checked={appearanceSettings.showStatusBar}
-                    onCheckedChange={checked =>
-                      setAppearanceSettings(prev => ({
-                        ...prev,
-                        showStatusBar: checked,
-                      }))
-                    }
+                    checked={statusBarVisible}
+                    onCheckedChange={setStatusBarVisible}
                   />
                 </div>
               </div>

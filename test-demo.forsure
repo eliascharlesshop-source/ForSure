@@ -1,0 +1,59 @@
+# Enhanced ForSure Demo Project
+# Test file for interactive CLI demonstration
+
+# Project Structure
+src/
+components/
+utils/
+hooks/
+services/
+public/
+tests/
+docs/
+
+# Core Files
+src/index.js
+src/App.js
+src/config.js
+src/main.css
+package.json
+README.md
+.gitignore
+.env.example
+docker-compose.yml
+
+# Component Files
+components/Header.js
+components/Footer.js
+components/Sidebar.js
+components/Button.js
+
+# Utility Files
+utils/helpers.js
+utils/validators.js
+utils/constants.js
+
+# Hook Files
+hooks/useAuth.js
+hooks/useData.js
+hooks/useLocalStorage.js
+
+# Service Files
+services/api.js
+services/auth.js
+services/database.js
+
+# Public Files
+public/index.html
+public/favicon.ico
+public/manifest.json
+
+# Test Files
+tests/App.test.js
+tests/components.test.js
+tests/utils.test.js
+
+# Documentation Files
+docs/API.md
+docs/DEPLOYMENT.md
+docs/CONTRIBUTING.md
