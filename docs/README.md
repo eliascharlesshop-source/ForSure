@@ -1,116 +1,364 @@
-# ForSure Documentation
+# ForSure
 
-Welcome to the comprehensive documentation for the ForSure platform. This modern, full-stack web application is built with Next.js 15, React 19, TypeScript, and integrates cutting-edge technologies including Supabase for backend services, Solana for blockchain functionality, and advanced UI components.
+> A modern, full-stack web application built with Next.js 15, featuring advanced animations, authentication, and AI-powered features.
 
-## 📚 Documentation Structure
+[![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4.17-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-8.15.0-green?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
 
-### 🚀 [Getting Started](./getting-started/)
+## ✨ Features
 
-- [Installation Guide](./getting-started/installation.md) - Set up your development environment
-- [Quick Start](./getting-started/quick-start.md) - Get the application running in minutes
-- [Environment Setup](./getting-started/environment-setup.md) - Configure your development environment
-- [Prerequisites](./getting-started/prerequisites.md) - Required tools and dependencies
+- **🚀 Modern Stack**: Built with Next.js 15, React 19, and TypeScript
+- **⚡ Turbopack**: Lightning-fast development with Turbopack bundler
+- **🎨 Beautiful UI**: Responsive design with Tailwind CSS and Radix UI components
+- **🔐 Authentication**: Secure JWT-based authentication system
+- **📊 Database**: MongoDB integration with Mongoose ODM
+- **🎭 Animations**: Smooth animations powered by GSAP and Framer Motion
+- **🌙 Dark Mode**: Built-in dark/light theme support
+- **📱 Responsive**: Mobile-first responsive design
+- **🔍 Search**: Advanced search functionality
+- **📝 Blog**: Built-in blog system
+- **💼 Career Pages**: Job listings and career information
+- **📚 Documentation**: Comprehensive docs with interactive examples
+- **🤖 AI Features**: AI-powered functionality and chat system
 
-### 🏗️ [Architecture](./architecture/)
-
-- [System Overview](./architecture/system-overview.md) - High-level architecture and design principles
-- [Frontend Architecture](./architecture/frontend.md) - React/Next.js frontend structure
-- [Backend Architecture](./architecture/backend.md) - API routes and serverless functions
-- [Database Design](./architecture/database.md) - Supabase/PostgreSQL schema and design
-- [Authentication Flow](./architecture/authentication.md) - User authentication and authorization
-- [Blockchain Integration](./architecture/blockchain.md) - Solana integration and smart contracts
-- [Component Architecture](./architecture/components.md) - UI component system and design patterns
-
-### 📖 [API Reference](./api-reference/)
-
-- [REST API Documentation](./api-reference/rest-api.md) - Complete API endpoint reference
-- [Authentication Endpoints](./api-reference/auth-endpoints.md) - Auth-specific API documentation
-- [WebSocket API](./api-reference/websocket.md) - Real-time communication protocols
-- [GraphQL Schema](./api-reference/graphql.md) - GraphQL queries and mutations
-- [Rate Limiting](./api-reference/rate-limiting.md) - API rate limits and usage policies
-
-### 🚀 [Deployment](./deployment/)
-
-- [Production Deployment](./deployment/production.md) - Deploy to Vercel and other platforms
-- [Environment Configuration](./deployment/environment-config.md) - Environment variables and secrets
-- [Monitoring & Logging](./deployment/monitoring.md) - Application monitoring and error tracking
-- [Security Best Practices](./deployment/security.md) - Security configuration and hardening
-- [Scaling Guide](./deployment/scaling.md) - Performance optimization and scaling strategies
-
-### 💻 [Development](./development/)
-
-- [Development Workflow](./development/workflow.md) - Git workflow and development processes
-- [Coding Standards](./development/coding-standards.md) - Code style and conventions
-- [Testing Guide](./development/testing.md) - Unit, integration, and E2E testing
-- [Component Development](./development/components.md) - Building and testing components
-- [API Development](./development/api-development.md) - Creating and maintaining API endpoints
-- [Database Migrations](./development/database-migrations.md) - Database schema management
-
-### 🔧 [Troubleshooting](./troubleshooting/)
-
-- [Common Issues](./troubleshooting/common-issues.md) - Solutions to frequent problems
-- [Debugging Guide](./troubleshooting/debugging.md) - Debugging techniques and tools
-- [Performance Issues](./troubleshooting/performance.md) - Performance optimization and debugging
-- [FAQ](./troubleshooting/faq.md) - Frequently asked questions
-
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
 ### Frontend
 
 - **Framework**: Next.js 15.2.4 with App Router
 - **Language**: TypeScript 5
-- **UI Library**: React 19
 - **Styling**: Tailwind CSS 3.4.17
-- **Components**: Radix UI primitives
+- **UI Components**: Radix UI primitives
 - **Animations**: GSAP, Framer Motion
 - **Forms**: React Hook Form with Zod validation
 - **State Management**: React Context API
+- **Theme**: next-themes for dark/light mode
 
 ### Backend
 
 - **Runtime**: Node.js with Next.js API routes
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth + JWT
-- **File Storage**: Supabase Storage
-- **Real-time**: Supabase Realtime
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT with bcryptjs
 - **Validation**: Zod schema validation
-- **Rate Limiting**: Custom implementation
-
-### Blockchain
-
-- **Platform**: Solana
-- **SDK**: Rust-based microservice
-- **Integration**: REST/gRPC/WebSocket APIs
+- **File Upload**: Built-in file handling
 
 ### Development Tools
 
-- **Package Manager**: pnpm
+- **Bundler**: Turbopack (development) / Webpack (production)
 - **Linting**: ESLint with Next.js config
-- **Formatting**: Prettier
-- **Testing**: Jest with React Testing Library
-- **Git Hooks**: Husky
-- **Type Checking**: TypeScript compiler
+- **Package Manager**: npm/pnpm
+- **Version Control**: Git
 
-## 🚀 Quick Links
+## 🚀 Quick Start
 
-- [GitHub Repository](https://github.com/elicharlese/ForSure)
-- [Live Demo](https://your-app.vercel.app)
-- [API Documentation](./api-reference/)
-- [Component Library](./architecture/components.md)
-- [Deployment Guide](./deployment/)
+### Prerequisites
 
-## 📞 Support
+- Node.js 18+
+- npm or pnpm
+- MongoDB (local or Atlas)
 
-- **Documentation Issues**: [Create an issue](https://github.com/elicharlese/ForSure/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/elicharlese/ForSure/discussions)
-- **Bug Reports**: [Bug Report Template](https://github.com/elicharlese/ForSure/issues/new?template=bug_report.md)
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/elicharlese/ForSure.git
+   cd ForSure
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   # or
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Configure your environment variables:
+
+   ```env
+   # Database
+   MONGODB_URI=mongodb://localhost:27017/forsure
+
+   # Authentication
+   JWT_SECRET=your-super-secret-jwt-key-here
+
+   # App Configuration
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   NODE_ENV=development
+   ```
+
+4. **Start the development server**
+
+   ```bash
+   npm run dev
+   # or with Turbopack (recommended)
+   npm run turbo
+   ```
+
+5. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 📁 Project Structure
+
+```
+ForSure/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   │   ├── auth/          # Authentication endpoints
+│   │   ├── projects/      # Project management
+│   │   ├── chat/          # AI chat functionality
+│   │   └── users/         # User management
+│   ├── (pages)/           # Application pages
+│   │   ├── about/         # About page
+│   │   ├── blog/          # Blog system
+│   │   ├── careers/       # Career pages
+│   │   ├── docs/          # Documentation
+│   │   └── ...
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Home page
+├── components/            # Reusable components
+│   ├── ui/               # Base UI components
+│   ├── animated-*.tsx    # Animation components
+│   ├── docs-*.tsx        # Documentation components
+│   └── ...
+├── contexts/             # React contexts
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility libraries
+│   ├── auth.ts           # Authentication utilities
+│   ├── db.ts             # Database connection
+│   └── utils.ts          # General utilities
+├── models/               # Database models
+│   ├── User.ts           # User model
+│   ├── Project.ts        # Project model
+│   └── Team.ts           # Team model
+├── public/               # Static assets
+└── styles/               # Additional styles
+```
+
+## 🔧 Development
+
+### Available Scripts
+
+```bash
+# Development with Turbopack (recommended)
+npm run dev
+
+# Development with Webpack
+npm run dev:webpack
+
+# Production build
+npm run build
+
+# Start production server
+npm run start
+
+# Lint code
+npm run lint
+
+# Turbopack development (alias)
+npm run turbo
+```
+
+### Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```env
+# Required
+MONGODB_URI=mongodb://localhost:27017/forsure
+JWT_SECRET=your-super-secret-jwt-key-here
+
+# Optional
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NODE_ENV=development
+NEXT_PUBLIC_ANALYTICS_ID=your-analytics-id
+```
+
+## 🔐 Authentication
+
+The application includes a complete authentication system:
+
+- **Registration**: `/register`
+- **Login**: `/login`
+- **Password Reset**: `/forgot-password`
+- **Protected Routes**: Automatic redirection for authenticated content
+- **JWT Tokens**: Secure token-based authentication
+- **Password Hashing**: bcryptjs for secure password storage
+
+### API Endpoints
+
+```
+POST /api/auth/register    # User registration
+POST /api/auth/login       # User login
+POST /api/auth/logout      # User logout
+GET  /api/auth/me          # Get current user
+POST /api/auth/refresh     # Refresh JWT token
+```
+
+## 📊 Database Models
+
+### User Model
+
+```typescript
+{
+  _id: ObjectId
+  email: string
+  password: string (hashed)
+  name: string
+  avatar?: string
+  role: 'user' | 'admin'
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+### Project Model
+
+```typescript
+{
+  _id: ObjectId
+  title: string
+  description: string
+  owner: ObjectId (User)
+  collaborators: ObjectId[] (Users)
+  status: 'active' | 'completed' | 'archived'
+  createdAt: Date
+  updatedAt: Date
+}
+```
+
+## 🎨 UI Components
+
+The application uses a comprehensive set of UI components built on Radix UI:
+
+- **Forms**: Input, Textarea, Select, Checkbox, Radio
+- **Navigation**: Dropdown, Menu, Tabs, Breadcrumb
+- **Feedback**: Toast, Alert, Progress, Badge
+- **Overlay**: Dialog, Popover, Tooltip, Sheet
+- **Data Display**: Table, Card, Avatar, Separator
+
+### Example Usage
+
+```tsx
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card } from '@/components/ui/card'
+
+export function MyComponent() {
+  return (
+    <Card className="p-6">
+      <Input placeholder="Enter your name" />
+      <Button className="mt-4">Submit</Button>
+    </Card>
+  )
+}
+```
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. **Connect to Vercel**
+
+   ```bash
+   npm i -g vercel
+   vercel
+   ```
+
+2. **Set Environment Variables**
+   Configure the following in your Vercel dashboard:
+   - `MONGODB_URI`
+   - `JWT_SECRET`
+   - `NEXT_PUBLIC_APP_URL`
+
+3. **Deploy**
+   ```bash
+   vercel --prod
+   ```
+
+### Other Platforms
+
+The application can be deployed to any platform that supports Next.js:
+
+- **Netlify**: Use the Next.js build command
+- **Railway**: Connect your GitHub repository
+- **DigitalOcean**: Use App Platform with Node.js
+- **AWS**: Use Amplify or EC2 with PM2
+
+## 🧪 Testing
+
+```bash
+# Run tests (when available)
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
 
 ## 🤝 Contributing
 
-We welcome contributions! Please read our [Development Guide](./development/) and [Coding Standards](./development/coding-standards.md) before submitting pull requests.
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Commit your changes**
+   ```bash
+   git commit -m 'Add some amazing feature'
+   ```
+4. **Push to the branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+5. **Open a Pull Request**
+
+### Development Guidelines
+
+- Follow TypeScript best practices
+- Use ESLint and Prettier for code formatting
+- Write meaningful commit messages
+- Add tests for new features
+- Update documentation as needed
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - The React framework for production
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
+- [Radix UI](https://www.radix-ui.com/) - Low-level UI primitives
+- [GSAP](https://greensock.com/gsap/) - Professional-grade animation
+- [MongoDB](https://www.mongodb.com/) - The database for modern applications
+
+## 📞 Support
+
+- **Documentation**: [/docs](./docs)
+- **Issues**: [GitHub Issues](https://github.com/elicharlese/ForSure/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/elicharlese/ForSure/discussions)
 
 ---
 
-**Last Updated**: 2024-01-01  
-**Version**: 1.0.0  
-**Maintainers**: ForSure Development Team
+<div align="center">
+  <p>Built with ❤️ by the ForSure team</p>
+  <p>
+    <a href="https://github.com/elicharlese/ForSure">⭐ Star us on GitHub</a> •
+    <a href="https://github.com/elicharlese/ForSure/issues">🐛 Report Bug</a> •
+    <a href="https://github.com/elicharlese/ForSure/issues">✨ Request Feature</a>
+  </p>
+</div>
