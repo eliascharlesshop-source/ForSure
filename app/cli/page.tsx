@@ -47,11 +47,11 @@ export default function CLIPage() {
   const [activeTip, setActiveTip] = useState(0)
 
   const tips = [
-    'Use --dry-run to preview changes without making them',
-    'The CLI supports environment variables via .env files',
-    'Use the --verbose flag for detailed logging',
-    "Create templates with the 'forsure template' command",
-    "Export your project structure with 'forsure export'",
+    'Use forsure dev to start the development server',
+    'Run forsure test before committing changes',
+    'Use forsure migrate to update database schema',
+    'forsure build creates optimized production build',
+    'forsure start runs the production server',
   ]
 
   useEffect(() => {
@@ -85,16 +85,21 @@ export default function CLIPage() {
 
     if (terminalInput === 'help' || terminalInput === 'forsure help') {
       output =
-        'Available commands:\n  - forsure --version\n  - forsure generate <file>\n  - forsure validate <file>\n  - forsure init <file>\n  - forsure template <name>\n  - forsure export <project>'
+        'Available commands:\n  - forsure --version\n  - forsure dev\n  - forsure build\n  - forsure test\n  - forsure migrate\n  - forsure start'
     } else if (terminalInput === 'forsure --version') {
-      output = 'forsure-cli v1.2.0'
-    } else if (terminalInput.startsWith('forsure init')) {
-      output = '✅ Created new ForSure file template'
-    } else if (terminalInput.startsWith('forsure validate')) {
-      output = '✅ File structure is valid'
-    } else if (terminalInput.startsWith('forsure generate')) {
+      output = 'forsure-cli v0.1.1'
+    } else if (terminalInput.startsWith('forsure dev')) {
       output =
-        'Generating file structure...\n✅ Created 12 files\n✅ Created 5 directories\n✅ Generation complete'
+        'Starting development server...\n✅ Development server started on http://localhost:3000'
+    } else if (terminalInput.startsWith('forsure build')) {
+      output = 'Building project...\n✅ Build completed successfully'
+    } else if (terminalInput.startsWith('forsure test')) {
+      output = 'Running tests...\n✅ All tests passed'
+    } else if (terminalInput.startsWith('forsure migrate')) {
+      output = 'Running database migrations...\n✅ Migrations completed'
+    } else if (terminalInput.startsWith('forsure start')) {
+      output =
+        'Starting production server...\n✅ Production server started on http://localhost:3000'
     } else if (terminalInput === 'clear') {
       setTerminalHistory([])
       setTerminalInput('')
@@ -127,12 +132,11 @@ export default function CLIPage() {
                 </h1>
               </div>
               <Badge variant="outline" className="w-fit">
-                v1.2.0
+                v0.1.1
               </Badge>
             </div>
             <p className="text-lg md:text-xl text-muted-foreground">
-              A powerful command-line interface for generating project
-              structures from ForSure files.
+              A command-line interface for ForSure project development tools.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
@@ -199,10 +203,10 @@ export default function CLIPage() {
 
                 <div>
                   <h3 className="text-sm font-semibold mb-2">
-                    2. Create a ForSure file
+                    2. Start development
                   </h3>
                   <CodeExample
-                    code={`forsure init my-project.forsure`}
+                    code={`forsure dev`}
                     language="bash"
                     className="mb-2"
                   />
@@ -210,12 +214,9 @@ export default function CLIPage() {
 
                 <div>
                   <h3 className="text-sm font-semibold mb-2">
-                    3. Generate your project structure
+                    3. Build for production
                   </h3>
-                  <CodeExample
-                    code={`forsure generate my-project.forsure --output ./my-project`}
-                    language="bash"
-                  />
+                  <CodeExample code={`forsure build`} language="bash" />
                 </div>
               </div>
             </CardContent>
@@ -273,7 +274,7 @@ export default function CLIPage() {
               </div>
             </CardContent>
             <CardFooter className="border-t pt-4 text-xs text-muted-foreground">
-              Try: forsure --version, forsure init, forsure generate, help,
+              Try: forsure --version, forsure dev, forsure build, forsure test,
               clear
             </CardFooter>
           </Card>
@@ -321,27 +322,109 @@ export default function CLIPage() {
               </CardHeader>
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="generate">
+                  <AccordionItem value="dev">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center">
                         <Badge variant="outline" className="mr-2 font-mono">
-                          generate
+                          dev
                         </Badge>
-                        <span>
-                          Generate a file structure from a ForSure file
-                        </span>
+                        <span>Start development server</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-3 pl-4">
                         <p className="text-sm text-muted-foreground">
-                          Creates directories and files based on the structure
-                          defined in your ForSure file.
+                          Starts the Next.js development server with hot reload.
+                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
+                          <CodeExample code={`forsure dev`} language="bash" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">
+                            Example:
+                          </h4>
+                          <CodeExample code={`forsure dev`} language="bash" />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="build">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="mr-2 font-mono">
+                          build
+                        </Badge>
+                        <span>Build the project</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 pl-4">
+                        <p className="text-sm text-muted-foreground">
+                          Creates an optimized production build of the
+                          application.
+                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
+                          <CodeExample code={`forsure build`} language="bash" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">
+                            Example:
+                          </h4>
+                          <CodeExample code={`forsure build`} language="bash" />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="test">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="mr-2 font-mono">
+                          test
+                        </Badge>
+                        <span>Run tests</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 pl-4">
+                        <p className="text-sm text-muted-foreground">
+                          Runs the test suite using Jest.
+                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
+                          <CodeExample code={`forsure test`} language="bash" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">
+                            Example:
+                          </h4>
+                          <CodeExample code={`forsure test`} language="bash" />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="migrate">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="mr-2 font-mono">
+                          migrate
+                        </Badge>
+                        <span>Run database migrations</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 pl-4">
+                        <p className="text-sm text-muted-foreground">
+                          Runs Prisma database migrations to update the schema.
                         </p>
                         <div>
                           <h4 className="text-sm font-semibold mb-1">Usage:</h4>
                           <CodeExample
-                            code={`forsure generate <file> [options]`}
+                            code={`forsure migrate`}
                             language="bash"
                           />
                         </div>
@@ -350,7 +433,7 @@ export default function CLIPage() {
                             Example:
                           </h4>
                           <CodeExample
-                            code={`forsure generate project.forsure --output ./my-project`}
+                            code={`forsure migrate`}
                             language="bash"
                           />
                         </div>
@@ -358,141 +441,30 @@ export default function CLIPage() {
                     </AccordionContent>
                   </AccordionItem>
 
-                  <AccordionItem value="validate">
+                  <AccordionItem value="start">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center">
                         <Badge variant="outline" className="mr-2 font-mono">
-                          validate
+                          start
                         </Badge>
-                        <span>Validate a ForSure file</span>
+                        <span>Start production server</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-3 pl-4">
                         <p className="text-sm text-muted-foreground">
-                          Checks if a ForSure file is valid without generating
-                          the structure.
+                          Starts the production server after building the
+                          project.
                         </p>
                         <div>
                           <h4 className="text-sm font-semibold mb-1">Usage:</h4>
-                          <CodeExample
-                            code={`forsure validate <file>`}
-                            language="bash"
-                          />
+                          <CodeExample code={`forsure start`} language="bash" />
                         </div>
                         <div>
                           <h4 className="text-sm font-semibold mb-1">
                             Example:
                           </h4>
-                          <CodeExample
-                            code={`forsure validate project.forsure`}
-                            language="bash"
-                          />
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="init">
-                    <AccordionTrigger className="hover:no-underline">
-                      <div className="flex items-center">
-                        <Badge variant="outline" className="mr-2 font-mono">
-                          init
-                        </Badge>
-                        <span>Create a new ForSure file</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3 pl-4">
-                        <p className="text-sm text-muted-foreground">
-                          Creates a new ForSure file with a basic structure
-                          template.
-                        </p>
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
-                          <CodeExample
-                            code={`forsure init <file>`}
-                            language="bash"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">
-                            Example:
-                          </h4>
-                          <CodeExample
-                            code={`forsure init my-project.forsure`}
-                            language="bash"
-                          />
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="template">
-                    <AccordionTrigger className="hover:no-underline">
-                      <div className="flex items-center">
-                        <Badge variant="outline" className="mr-2 font-mono">
-                          template
-                        </Badge>
-                        <span>Work with templates</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3 pl-4">
-                        <p className="text-sm text-muted-foreground">
-                          Create, list, and apply templates for reusable project
-                          structures.
-                        </p>
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
-                          <CodeExample
-                            code={`forsure template <command> [options]`}
-                            language="bash"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">
-                            Example:
-                          </h4>
-                          <CodeExample
-                            code={`forsure template create react-app --from project.forsure`}
-                            language="bash"
-                          />
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-
-                  <AccordionItem value="export">
-                    <AccordionTrigger className="hover:no-underline">
-                      <div className="flex items-center">
-                        <Badge variant="outline" className="mr-2 font-mono">
-                          export
-                        </Badge>
-                        <span>Export existing project structure</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-3 pl-4">
-                        <p className="text-sm text-muted-foreground">
-                          Creates a ForSure file from an existing project
-                          structure.
-                        </p>
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
-                          <CodeExample
-                            code={`forsure export <directory> [options]`}
-                            language="bash"
-                          />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">
-                            Example:
-                          </h4>
-                          <CodeExample
-                            code={`forsure export ./my-project --output project.forsure`}
-                            language="bash"
-                          />
+                          <CodeExample code={`forsure start`} language="bash" />
                         </div>
                       </div>
                     </AccordionContent>
@@ -511,102 +483,24 @@ export default function CLIPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto -mx-4 md:mx-0">
-                  <div className="min-w-full px-4 md:px-0">
-                    <table className="w-full border-collapse min-w-[600px]">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-2 px-2 md:px-4 text-sm">
-                            Option
-                          </th>
-                          <th className="text-left py-2 px-2 md:px-4 text-sm">
-                            Description
-                          </th>
-                          <th className="text-left py-2 px-2 md:px-4 text-sm">
-                            Example
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --output, -o
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Specify the output directory or file
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--output ./my-project</code>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --force, -f
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Overwrite existing files
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--force</code>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --dry-run, -d
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Show what would be generated without creating files
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--dry-run</code>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --verbose, -v
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Show detailed output
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--verbose</code>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --ignore, -i
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Ignore specific files or patterns
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--ignore "node_modules/**"</code>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --template, -t
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Use a specific template
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--template react-app</code>
-                          </td>
-                        </tr>
-                        <tr className="border-b">
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs md:text-sm">
-                            --config, -c
-                          </td>
-                          <td className="py-3 px-2 md:px-4 text-sm">
-                            Specify a configuration file
-                          </td>
-                          <td className="py-3 px-2 md:px-4 font-mono text-xs">
-                            <code>--config .forsurerc</code>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div className="space-y-4">
+                  <div className="grid gap-4">
+                    <div className="flex items-center gap-3 p-3 border rounded-lg">
+                      <div className="font-mono text-sm font-semibold">
+                        --version
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Show CLI version
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 border rounded-lg">
+                      <div className="font-mono text-sm font-semibold">
+                        --help
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        Show help information
+                      </div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -623,236 +517,78 @@ export default function CLIPage() {
               </CardHeader>
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="react-app">
+                  <AccordionItem value="development-workflow">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center">
-                        <span>Creating a React application structure</span>
+                        <span>Daily Development Workflow</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-3">
                         <p className="text-sm text-muted-foreground">
-                          Generate a standard React application structure with
-                          components, pages, and assets.
+                          Typical workflow for developing the ForSure
+                          application.
                         </p>
                         <CodeExample
-                          code={`# react-app.forsure
-root:
-  - Type: Directory
-  - Path: ./
-  <description>
-  React application root directory.
-  </description>
+                          code={`# Start development server
+forsure dev
 
-  - Type: File
-    - Name: package.json
-    <description>
-    NPM package configuration.
-    </description>
+# Run tests before committing
+forsure test
 
-  - Type: Directory
-    - Name: src/
-    <description>
-    Source code directory.
-    </description>
-
-    - Type: File
-      - Name: index.js
-      <description>
-      Application entry point.
-      </description>
-
-    - Type: Directory
-      - Name: components/
-      <description>
-      React components.
-      </description>
-
-    - Type: Directory
-      - Name: pages/
-      <description>
-      Page components.
-      </description>
-
-    - Type: Directory
-      - Name: assets/
-      <description>
-      Static assets like images and fonts.
-      </description>`}
-                          language="forsure"
+# Run database migrations if needed
+forsure migrate`}
+                          language="bash"
                           className="mb-4"
                         />
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">
-                            Generate the structure:
-                          </h4>
-                          <CodeExample
-                            code={`forsure generate react-app.forsure --output ./my-react-app`}
-                            language="bash"
-                          />
-                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
 
-                  <AccordionItem value="nextjs-app">
+                  <AccordionItem value="deployment-workflow">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center">
-                        <span>Setting up a Next.js project</span>
+                        <span>Production Deployment</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-3">
                         <p className="text-sm text-muted-foreground">
-                          Generate a Next.js application structure with app
-                          directory, components, and API routes.
+                          Steps to deploy the application to production.
                         </p>
                         <CodeExample
-                          code={`# nextjs-app.forsure
-root:
-  - Type: Directory
-  - Path: ./
-  <description>
-  Next.js application root directory.
-  </description>
+                          code={`# Build for production
+forsure build
 
-  - Type: File
-    - Name: package.json
-    <description>
-    NPM package configuration.
-    </description>
-
-  - Type: File
-    - Name: next.config.js
-    <description>
-    Next.js configuration file.
-    </description>
-
-  - Type: Directory
-    - Name: app/
-    <description>
-    App directory for Next.js 13+ App Router.
-    </description>
-
-    - Type: File
-      - Name: layout.tsx
-      <description>
-      Root layout component.
-      </description>
-
-    - Type: File
-      - Name: page.tsx
-      <description>
-      Home page component.
-      </description>
-
-  - Type: Directory
-    - Name: components/
-    <description>
-    Reusable React components.
-    </description>
-
-  - Type: Directory
-    - Name: public/
-    <description>
-    Static files served at the root.
-    </description>`}
-                          language="forsure"
+# Start production server
+forsure start`}
+                          language="bash"
                           className="mb-4"
                         />
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">
-                            Generate the structure:
-                          </h4>
-                          <CodeExample
-                            code={`forsure generate nextjs-app.forsure --output ./my-nextjs-app`}
-                            language="bash"
-                          />
-                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>
 
-                  <AccordionItem value="node-api">
+                  <AccordionItem value="testing-workflow">
                     <AccordionTrigger className="hover:no-underline">
                       <div className="flex items-center">
-                        <span>Building a Node.js API</span>
+                        <span>Testing Workflow</span>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-3">
                         <p className="text-sm text-muted-foreground">
-                          Generate a Node.js API structure with routes,
-                          controllers, and models.
+                          Running tests and ensuring code quality.
                         </p>
                         <CodeExample
-                          code={`# node-api.forsure
-root:
-  - Type: Directory
-  - Path: ./
-  <description>
-  Node.js API root directory.
-  </description>
+                          code={`# Run all tests
+forsure test
 
-  - Type: File
-    - Name: package.json
-    <description>
-    NPM package configuration.
-    </description>
-
-  - Type: File
-    - Name: server.js
-    <description>
-    API entry point.
-    </description>
-
-  - Type: Directory
-    - Name: src/
-    <description>
-    Source code directory.
-    </description>
-
-    - Type: Directory
-      - Name: routes/
-      <description>
-      API route definitions.
-      </description>
-
-    - Type: Directory
-      - Name: controllers/
-      <description>
-      Request handlers.
-      </description>
-
-    - Type: Directory
-      - Name: models/
-      <description>
-      Data models.
-      </description>
-
-    - Type: Directory
-      - Name: middleware/
-      <description>
-      Express middleware.
-      </description>
-
-  - Type: Directory
-    - Name: config/
-    <description>
-    Configuration files.
-    </description>`}
-                          language="forsure"
+# Run tests in watch mode during development
+npm run test:watch`}
+                          language="bash"
                           className="mb-4"
                         />
-                        <div>
-                          <h4 className="text-sm font-semibold mb-1">
-                            Generate the structure:
-                          </h4>
-                          <CodeExample
-                            code={`forsure generate node-api.forsure --output ./my-node-api`}
-                            language="bash"
-                          />
-                        </div>
                       </div>
                     </AccordionContent>
                   </AccordionItem>

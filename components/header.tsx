@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -14,10 +14,15 @@ import { usePathname } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
   const isDark = theme === 'dark'
   const { isAuthenticated, enterDemoMode } = useAuth()
   const pathname = usePathname()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // If we're in the /app route, don't render the header content
   if (pathname?.startsWith('/app')) {
@@ -33,7 +38,7 @@ export default function Header() {
             <div className="relative w-10 h-10">
               <div
                 className={`absolute inset-0 rounded-full blur-lg ${
-                  isDark ? 'bg-primary/15' : 'bg-primary/10'
+                  mounted && isDark ? 'bg-primary/15' : 'bg-primary/10'
                 } scale-125`}
               />
               <Image
@@ -43,14 +48,15 @@ export default function Header() {
                 height={40}
                 className="h-10 w-10"
                 style={{
-                  filter: isDark
-                    ? 'drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))'
-                    : 'drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))',
+                  filter:
+                    mounted && isDark
+                      ? 'drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))'
+                      : 'drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))',
                 }}
               />
             </div>
             <span
-              className={`font-bold text-2xl ${isDark ? 'text-primary' : 'text-secondary'}`}
+              className={`font-bold text-2xl ${mounted && isDark ? 'text-primary' : 'text-secondary'}`}
             >
               ForSure
             </span>

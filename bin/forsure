@@ -1,0 +1,191 @@
+#!/usr/bin/env node
+
+const { program } = require('commander')
+const fs = require('fs')
+const path = require('path')
+
+// Set up CLI program
+program
+  .name('forsure')
+  .description('ForSure CLI - Generate file structures from ForSure files')
+  .version('0.1.0')
+
+// Generate command
+program
+  .command('generate')
+  .description('Generates a file structure from a ForSure file')
+  .argument('<file>', 'ForSure file to process')
+  .option(
+    '-o, --output <directory>',
+    'Specify the output directory',
+    './output'
+  )
+  .option('-f, --force', 'Overwrite existing files')
+  .option(
+    '-d, --dry-run',
+    'Show what would be generated without actually creating files'
+  )
+  .option('-v, --verbose', 'Show detailed output')
+  .action((file, options) => {
+    try {
+      if (!fs.existsSync(file)) {
+        console.error(`Error: File '${file}' not found`)
+        process.exit(1)
+      }
+
+      const forsureContent = fs.readFileSync(file, 'utf8')
+
+      if (options.verbose) {
+        console.log(`Processing ForSure file: ${file}`)
+        console.log(`Output directory: ${options.output}`)
+      }
+
+      // Parse ForSure file (basic implementation)
+      const structure = parseForSureFile(forsureContent)
+
+      if (options.dryRun) {
+        console.log('Dry run - files that would be created:')
+        displayStructure(structure, options.output)
+        return
+      }
+
+      // Create output directory if it doesn't exist
+      if (!fs.existsSync(options.output)) {
+        fs.mkdirSync(options.output, { recursive: true })
+      }
+
+      // Generate file structure
+      generateStructure(structure, options.output, options)
+
+      if (options.verbose) {
+        console.log('File structure generated successfully!')
+      }
+    } catch (error) {
+      console.error(`Error: ${error.message}`)
+      process.exit(1)
+    }
+  })
+
+// Validate command
+program
+  .command('validate')
+  .description('Validates a ForSure file without generating the structure')
+  .argument('<file>', 'ForSure file to validate')
+  .action(file => {
+    try {
+      if (!fs.existsSync(file)) {
+        console.error(`Error: File '${file}' not found`)
+        process.exit(1)
+      }
+
+      const forsureContent = fs.readFileSync(file, 'utf8')
+
+      // Validate ForSure file syntax
+      const structure = parseForSureFile(forsureContent)
+
+      console.log(`✓ '${file}' is a valid ForSure file`)
+      console.log(`✓ Found ${structure.length} items in the structure`)
+    } catch (error) {
+      console.error(`✗ Validation failed: ${error.message}`)
+      process.exit(1)
+    }
+  })
+
+// Init command
+program
+  .command('init')
+  .description('Creates a new ForSure file with a basic structure')
+  .argument(
+    '[filename]',
+    'Name of the ForSure file to create',
+    'project.forsure'
+  )
+  .action(filename => {
+    try {
+      if (fs.existsSync(filename)) {
+        console.error(`Error: File '${filename}' already exists`)
+        process.exit(1)
+      }
+
+      const basicStructure = `# ForSure Project Structure
+# This file defines the structure of your project
+
+# Directories
+src/
+components/
+utils/
+docs/
+
+# Files
+src/index.js
+src/App.js
+README.md
+package.json
+`
+
+      fs.writeFileSync(filename, basicStructure)
+      console.log(`✓ Created ForSure file: ${filename}`)
+      console.log('✓ Basic structure template added')
+    } catch (error) {
+      console.error(`Error: ${error.message}`)
+      process.exit(1)
+    }
+  })
+
+// Helper functions
+function parseForSureFile(content) {
+  const lines = content.split('\n')
+  const structure = []
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+    if (trimmed && !trimmed.startsWith('#')) {
+      structure.push(trimmed)
+    }
+  }
+
+  return structure
+}
+
+function displayStructure(structure, basePath) {
+  structure.forEach(item => {
+    const fullPath = path.join(basePath, item)
+    if (item.endsWith('/')) {
+      console.log(`📁 ${fullPath}`)
+    } else {
+      console.log(`📄 ${fullPath}`)
+    }
+  })
+}
+
+function generateStructure(structure, basePath, options) {
+  structure.forEach(item => {
+    const fullPath = path.join(basePath, item)
+
+    if (item.endsWith('/')) {
+      // Create directory
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true })
+        if (options.verbose) console.log(`Created directory: ${fullPath}`)
+      }
+    } else {
+      // Create file
+      if (fs.existsSync(fullPath) && !options.force) {
+        console.warn(
+          `Warning: File '${fullPath}' already exists. Use --force to overwrite.`
+        )
+      } else {
+        // Create parent directories if they don't exist
+        const parentDir = path.dirname(fullPath)
+        if (!fs.existsSync(parentDir)) {
+          fs.mkdirSync(parentDir, { recursive: true })
+        }
+
+        fs.writeFileSync(fullPath, '')
+        if (options.verbose) console.log(`Created file: ${fullPath}`)
+      }
+    }
+  })
+}
+
+program.parse()

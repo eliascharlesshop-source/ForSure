@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
@@ -29,10 +29,16 @@ import FloatingLogo from '@/components/floating-logo'
 import { useTheme } from 'next-themes'
 
 export default function Home() {
-  const { theme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const isDark = theme === 'dark'
   const [currentSlide, setCurrentSlide] = useState(0)
   const [copied, setCopied] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  // Ensure theme is synchronized to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Example slides data
   const slides = [
@@ -164,13 +170,13 @@ root:
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary dark:bg-secondary-dark relative overflow-hidden">
-          {/* Only show the gradient overlay in dark mode */}
-          {isDark && (
+          {/* Only show the gradient overlay in dark mode and after mounting */}
+          {mounted && isDark && (
             <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>
           )}
 
-          {/* Only show the cyber grid in dark mode */}
-          {isDark ? (
+          {/* Only show the cyber grid in dark mode and after mounting */}
+          {mounted && isDark ? (
             <div className="absolute inset-0 pointer-events-none">
               <div className="cyber-grid-bg opacity-30 w-full h-[200%]"></div>
             </div>

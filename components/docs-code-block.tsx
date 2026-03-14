@@ -36,26 +36,26 @@ export default function DocsCodeBlock({
       )}
     >
       {fileName && (
-        <div className="px-4 py-1 bg-secondary-dark/90 text-xs font-mono text-primary/80 border-b border-primary/20 truncate">
+        <div className="px-4 py-1 bg-white/10 backdrop-blur-sm text-xs font-mono text-gray-800 border-b border-white/20 truncate">
           {fileName}
         </div>
       )}
-      <div className="flex items-center justify-between px-4 py-2 bg-secondary-dark/80 border-b border-primary/30">
-        <span className="text-xs font-mono text-primary">{language}</span>
+      <div className="flex items-center justify-between px-4 py-2 bg-white/10 backdrop-blur-sm border-b border-white/30">
+        <span className="text-xs font-mono text-gray-700">{language}</span>
         <Button
           variant="ghost"
           size="sm"
           onClick={copyToClipboard}
-          className="h-8 text-primary hover:text-white hover:bg-secondary"
+          className="h-8 text-gray-800 hover:text-gray-900 hover:bg-white/20"
         >
           {copied ? (
             <>
-              <Check className="h-4 w-4 mr-1" />
+              <Check className="h-4 w-3 mr-1" />
               Copied
             </>
           ) : (
             <>
-              <Clipboard className="h-4 w-4 mr-1" />
+              <Clipboard className="h-4 w-3 mr-1" />
               Copy
             </>
           )}
@@ -63,7 +63,7 @@ export default function DocsCodeBlock({
       </div>
       <div
         className={cn(
-          'p-4 overflow-x-auto text-sm text-white font-mono',
+          'p-4 overflow-x-auto text-sm text-gray-900 font-mono backdrop-blur-md bg-white/5 border border-white/20',
           showLineNumbers && 'line-numbers'
         )}
       >

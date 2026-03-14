@@ -4,7 +4,7 @@ import type React from 'react'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Sparkles, ChevronLeft, ChevronRight, Palette } from 'lucide-react'
 import {
   ProjectDetailsForm,
   type ProjectDetails,
@@ -16,6 +16,7 @@ import { VisualizationPanel } from './components/visualization-panel'
 import { useFileStructureHistory } from './hooks/use-file-structure-history'
 import { useAuth } from '@/contexts/auth-context'
 import EnhancedDashboard from './components/enhanced-dashboard'
+import WhiteboardDashboard from '@/components/whiteboard-dashboard'
 import { useToast } from '@/components/ui/use-toast'
 import { Badge } from '@/components/ui/badge'
 
@@ -31,6 +32,7 @@ export default function ChatApp() {
   const [isMobile, setIsMobile] = useState(false)
   const [showMobileChat, setShowMobileChat] = useState(true)
   const [showDashboard, setShowDashboard] = useState(true)
+  const [useWhiteboardDashboard, setUseWhiteboardDashboard] = useState(true)
   const [leftPanelWidth, setLeftPanelWidth] = useState(40)
   const { toast } = useToast()
   const { isDemoMode, user } = useAuth()
@@ -412,12 +414,42 @@ export default function ChatApp() {
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
       {/* Header */}
+      {showDashboard && (
+        <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-bold">ForSure AI Studio</h1>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={useWhiteboardDashboard ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setUseWhiteboardDashboard(true)}
+                className="flex items-center gap-2"
+              >
+                <Palette className="h-4 w-4" />
+                Whiteboard
+              </Button>
+              <Button
+                variant={!useWhiteboardDashboard ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setUseWhiteboardDashboard(false)}
+                className="flex items-center gap-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                Classic
+              </Button>
+            </div>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleStartNewProject}>
+            New Project
+          </Button>
+        </div>
+      )}
 
       {/* Main content */}
       <div className="flex-1 flex flex-col h-full">
         {showDashboard ? (
-          <div className="container py-6">
-            <EnhancedDashboard
+          useWhiteboardDashboard ? (
+            <WhiteboardDashboard
               projects={savedProjects}
               onNewProject={handleStartNewProject}
               onSelectProject={handleLoadProject}
@@ -426,7 +458,19 @@ export default function ChatApp() {
               onStartChat={handleStartChatFromDashboard}
               isLoaded={isLoaded}
             />
-          </div>
+          ) : (
+            <div className="container py-6">
+              <EnhancedDashboard
+                projects={savedProjects}
+                onNewProject={handleStartNewProject}
+                onSelectProject={handleLoadProject}
+                onDeleteProject={handleDeleteProject}
+                onQuickCreateProject={handleQuickCreateProject}
+                onStartChat={handleStartChatFromDashboard}
+                isLoaded={isLoaded}
+              />
+            </div>
+          )
         ) : !projectDetails || editingProject ? (
           <div className="container py-8">
             <div className="max-w-3xl mx-auto">

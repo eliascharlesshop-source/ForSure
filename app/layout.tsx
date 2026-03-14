@@ -14,6 +14,10 @@ export const metadata = {
   description:
     'Define, document, and generate project structures with a powerful language and CLI tool.',
   generator: 'v0.dev',
+  icons: {
+    icon: '/fs-logo.png',
+    apple: '/fs-logo.png',
+  },
 }
 
 export default function RootLayout({

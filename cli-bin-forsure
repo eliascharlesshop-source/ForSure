@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+const { program } = require('commander')
+const { spawn } = require('child_process')
+const path = require('path')
+
+program
+  .name('forsure')
+  .description('ForSure CLI - Development tools for the ForSure project')
+  .version('0.1.1')
+
+const runScript = scriptName => {
+  const child = spawn('npm', ['run', scriptName], {
+    stdio: 'inherit',
+    cwd: process.cwd(),
+  })
+  child.on('close', code => process.exit(code))
+}
+
+program
+  .command('dev')
+  .description('Start development server')
+  .action(() => runScript('dev'))
+
+program
+  .command('build')
+  .description('Build the project')
+  .action(() => runScript('build'))
+
+program
+  .command('test')
+  .description('Run tests')
+  .action(() => runScript('test'))
+
+program
+  .command('migrate')
+  .description('Run database migrations')
+  .action(() => runScript('db:migrate'))
+
+program
+  .command('start')
+  .description('Start production server')
+  .action(() => runScript('start'))
+
+program.parse()

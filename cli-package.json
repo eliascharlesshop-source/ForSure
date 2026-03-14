@@ -1,0 +1,19 @@
+{
+  "name": "forsure-cli",
+  "version": "0.1.1",
+  "description": "ForSure CLI - Generate file structures from ForSure files",
+  "main": "index.js",
+  "bin": "./bin/forsure",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["cli", "forsure", "file-structure", "generator"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^4.1.2",
+    "blessed": "^0.1.81",
+    "inquirer": "^8.2.6"
+  }
+}

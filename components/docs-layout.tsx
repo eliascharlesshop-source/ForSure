@@ -85,7 +85,7 @@ export function DocsSidebarNav({ items }: DocsSidebarNavProps) {
             <X className="h-5 w-5" />
           </Button>
         </div>
-        <ScrollArea className="flex-1 py-6 px-4 max-h-[calc(100vh-10rem)] overflow-y-auto">
+        <ScrollArea className="flex-1 py-6 px-4 max-h-[calc(100vh-10rem)] overflow-y-auto scrollbar-hide">
           {items.map((item, index) => (
             <div key={index} className="pb-6">
               <h4 className="mb-2 text-sm font-semibold text-primary">
@@ -276,8 +276,10 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <div className="flex-1 flex flex-col lg:flex-row">
         <DocsSidebarNav items={sidebarItems} />
-        <main className="flex-1 py-6 px-4 lg:px-8 max-w-full w-full overflow-hidden max-h-[calc(100vh-4rem)] overflow-y-auto">
-          <div className="max-w-3xl mx-auto w-full">{children}</div>
+        <main className="flex-1 py-6 px-4 lg:px-8 max-w-full overflow-hidden max-h-[calc(100vh-4rem)] overflow-y-auto scrollbar-hide">
+          <div className="max-w-3xl mx-auto w-full lg:pr-16 xl:pr-24">
+            {children}
+          </div>
         </main>
       </div>
     </div>

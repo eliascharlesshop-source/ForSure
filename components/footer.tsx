@@ -1,13 +1,19 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Github, Twitter, Terminal, Code, BookOpen } from 'lucide-react'
 import { useTheme } from 'next-themes'
 
 export default function Footer() {
+  const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
   const isDark = theme === 'dark'
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <footer className="w-full border-t border-primary/20 bg-background">
@@ -18,7 +24,7 @@ export default function Footer() {
               <div className="relative w-8 h-8">
                 <div
                   className={`absolute inset-0 rounded-full blur-lg ${
-                    isDark ? 'bg-primary/15' : 'bg-primary/10'
+                    mounted && isDark ? 'bg-primary/15' : 'bg-primary/10'
                   } scale-125`}
                 />
                 <Image
@@ -28,14 +34,15 @@ export default function Footer() {
                   height={32}
                   className="h-8 w-8"
                   style={{
-                    filter: isDark
-                      ? 'drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))'
-                      : 'drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))',
+                    filter:
+                      mounted && isDark
+                        ? 'drop-shadow(0 0 8px rgba(140, 255, 230, 0.25))'
+                        : 'drop-shadow(0 0 6px rgba(140, 255, 230, 0.15))',
                   }}
                 />
               </div>
               <span
-                className={`font-bold text-xl ${isDark ? 'text-primary' : 'text-secondary'}`}
+                className={`font-bold text-xl ${mounted && isDark ? 'text-primary' : 'text-secondary'}`}
               >
                 ForSure
               </span>
