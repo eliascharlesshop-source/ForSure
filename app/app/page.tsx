@@ -459,7 +459,7 @@ export default function ChatApp() {
               isLoaded={isLoaded}
             />
           ) : (
-            <div className="container py-6">
+            <div className="flex-1 overflow-y-auto">
               <EnhancedDashboard
                 projects={savedProjects}
                 onNewProject={handleStartNewProject}

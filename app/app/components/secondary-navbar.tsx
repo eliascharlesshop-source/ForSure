@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +27,7 @@ import {
 import { useAuth } from '@/contexts/auth-context'
 
 export function SecondaryNavbar() {
-  const { user, isDemoMode, exitDemoMode } = useAuth()
+  const { user } = useAuth()
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -73,14 +72,6 @@ export function SecondaryNavbar() {
                 ForSure
               </span>
             </Link>
-            {isDemoMode && (
-              <Badge
-                variant="outline"
-                className="text-xs bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-200 dark:border-yellow-800"
-              >
-                Demo
-              </Badge>
-            )}
           </div>
 
           <div className="hidden md:flex items-center">
@@ -110,16 +101,6 @@ export function SecondaryNavbar() {
 
         {/* Right side - Action buttons */}
         <div className="hidden md:flex items-center gap-1">
-          {isDemoMode && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-xs mr-2 bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-200 dark:border-yellow-800 dark:hover:bg-yellow-900/50"
-              onClick={exitDemoMode}
-            >
-              Exit Demo
-            </Button>
-          )}
           <Button variant="ghost" size="icon" title="Share">
             <Share2 className="h-4 w-4" />
           </Button>
@@ -183,12 +164,6 @@ export function SecondaryNavbar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                {isDemoMode && (
-                  <DropdownMenuItem onClick={exitDemoMode}>
-                    <X className="mr-2 h-4 w-4" />
-                    <span>Exit Demo Mode</span>
-                  </DropdownMenuItem>
-                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -200,16 +175,6 @@ export function SecondaryNavbar() {
         <div className="md:hidden border-t">
           <div className="container py-3 space-y-3">
             <div className="flex flex-wrap gap-2">
-              {isDemoMode && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-full text-xs bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-200 dark:border-yellow-800 dark:hover:bg-yellow-900/50"
-                  onClick={exitDemoMode}
-                >
-                  Exit Demo Mode
-                </Button>
-              )}
               <Button
                 variant="outline"
                 size="sm"

@@ -1,5 +1,4 @@
 import type React from 'react'
-import { DemoBanner } from '@/components/demo-banner'
 import { ProtectedRoute } from '@/components/protected-route'
 import { SecondaryNavbar } from './components/secondary-navbar'
 import StatusBar from '@/components/status-bar'
@@ -10,7 +9,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <ProtectedRoute>
       <StatusBarProvider>
         <div className="h-screen flex flex-col overflow-hidden">
-          <DemoBanner />
           <SecondaryNavbar />
           <div className="flex-1 flex flex-col overflow-hidden">{children}</div>
           <StatusBar />
