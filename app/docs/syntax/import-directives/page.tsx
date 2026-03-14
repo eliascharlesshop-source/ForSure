@@ -119,11 +119,11 @@ root:
             </p>
             <DocsCodeBlock
               code={`# Conditional imports
-@import "templates/${FRAMEWORK}.forsure"
-@import "configs/${ENVIRONMENT}.forsure" if ENVIRONMENT
+@import "templates/\${FRAMEWORK}.forsure"
+@import "configs/\${ENVIRONMENT}.forsure" if ENVIRONMENT
 
 # Variable-based imports
-@import "user-templates/${USER_TEMPLATE}.forsure"
+@import "user-templates/\${USER_TEMPLATE}.forsure"
 
 root:
   - Type: Directory
