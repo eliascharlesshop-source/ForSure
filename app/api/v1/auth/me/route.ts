@@ -23,8 +23,16 @@ export const GET = withAuth(async (request: NextRequest, { user }) => {
     }
 
     return apiResponse(profile)
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Get user error:', error)
+    const err = error as Error & { code?: string }
+    if (
+      err.code === 'P1001' ||
+      err.code === 'P1002' ||
+      err.message?.includes('connection')
+    ) {
+      return apiError('Database unavailable', 503)
+    }
     return apiError('Internal server error', 500)
   }
 })

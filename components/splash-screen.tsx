@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Sparkles, Zap } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import FloatingLogo from '@/components/floating-logo'
 
 interface SplashScreenProps {
@@ -58,7 +58,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
             <h1 className="text-2xl font-bold text-white">
               Initializing ForSure
             </h1>
-            <Zap className="h-6 w-6 text-primary animate-pulse" />
           </div>
 
           <p className="text-white/80 text-sm max-w-md mx-auto">
