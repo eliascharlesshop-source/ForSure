@@ -104,12 +104,12 @@ export default function DocsPage() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center text-lg">
                   <Terminal className="h-5 w-5 mr-2 text-primary" />
-                  CLI & Web App
+                  Enhanced CLI & Code Generation
                 </CardTitle>
               </CardHeader>
               <CardContent className="pb-2">
                 <p className="text-sm text-muted-foreground">
-                  Learn how to use the ForSure CLI and web application.
+                  Advanced CLI with component generation, design system tools, and project management.
                 </p>
               </CardContent>
               <CardFooter>
@@ -246,13 +246,12 @@ export default function DocsPage() {
                 <CardHeader className="pb-2">
                   <CardTitle className="flex items-center text-base">
                     <Terminal className="h-5 w-5 mr-2 text-primary" />
-                    CLI Tool
+                    Enhanced CLI Tool
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">
-                    Powerful command-line interface for generating and managing
-                    project structures from ForSure prompts.
+                    Advanced command-line interface with component generation, design system tools, project management, and automated workflows.
                   </p>
                 </CardContent>
               </Card>
@@ -490,7 +489,14 @@ forsure init my-project.forsure`}
                   from your .forsure file.
                 </p>
                 <DocsCodeBlock
-                  code={`forsure generate my-first-project.forsure --output ./my-project`}
+                  code={`# Generate the file structure
+forsure generate my-first-project.forsure --output ./my-project
+
+# Or use the enhanced CLI with more options
+forsure generate my-first-project.forsure --output ./my-project --typescript --test
+
+# Validate your ForSure file
+forsure validate my-first-project.forsure`}
                   language="bash"
                 />
                 <div className="mt-2">
