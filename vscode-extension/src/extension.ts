@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger'
 import * as vscode from 'vscode'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -12,7 +13,7 @@ import { QuantumStatusBar } from '../quantum-language/src/quantum-status-bar'
 import { QuantumExplorer } from '../quantum-language/src/quantum-explorer'
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('ForSure Design System extension with quantum features is now active!')
+  logger.info('ForSure Design System extension with quantum features is now active!', {}, 'VSCodeExtension')
 
   // Initialize quantum providers
   const quantumValidator = new QuantumValidator()
@@ -97,37 +98,37 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register completion provider
   const completionProvider = vscode.languages.registerCompletionItemProvider(
-    { language: 'typescript', language: 'typescriptreact' },
+    [{ language: 'typescript' }, { language: 'typescriptreact' }],
     new ForSureCompletionProvider(),
     '.'
   )
 
   // Register hover provider
   const hoverProvider = vscode.languages.registerHoverProvider(
-    { language: 'typescript', language: 'typescriptreact' },
+    [{ language: 'typescript' }, { language: 'typescriptreact' }],
     new ForSureHoverProvider()
   )
 
   // Register diagnostic provider
   const diagnosticProvider = vscode.languages.registerDiagnosticProvider(
-    { language: 'typescript', language: 'typescriptreact' },
+    [{ language: 'typescript' }, { language: 'typescriptreact' }],
     new ForSureDiagnosticProvider()
   )
 
   // Register quantum language providers
   const quantumCompletionProvider = vscode.languages.registerCompletionItemProvider(
-    { language: 'quantum', language: 'quantum-circuit', language: 'quantum-algorithm' },
+    [{ language: 'quantum' }, { language: 'quantum-circuit' }, { language: 'quantum-algorithm' }],
     quantumLanguageProvider,
     '.'
   )
 
   const quantumHoverProvider = vscode.languages.registerHoverProvider(
-    { language: 'quantum', language: 'quantum-circuit', language: 'quantum-algorithm' },
+    [{ language: 'quantum' }, { language: 'quantum-circuit' }, { language: 'quantum-algorithm' }],
     quantumLanguageProvider
   )
 
   const quantumDiagnosticProvider = vscode.languages.registerDiagnosticProvider(
-    { language: 'quantum', language: 'quantum-circuit', language: 'quantum-algorithm' },
+    [{ language: 'quantum' }, { language: 'quantum-circuit' }, { language: 'quantum-algorithm' }],
     quantumLanguageProvider
   )
 
@@ -502,5 +503,5 @@ async function showDesignTokens() {
 }
 
 export function deactivate() {
-  console.log('ForSure Design System extension with quantum features deactivated')
+  logger.info('ForSure Design System extension with quantum features deactivated', {}, 'VSCodeExtension')
 }

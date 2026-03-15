@@ -1,3 +1,4 @@
+import { logger } from '../logger'
 import * as fs from 'fs'
 import * as path from 'path'
 import { glob } from 'glob'
@@ -95,7 +96,7 @@ export class PerformanceMonitor {
     // Start monitoring in background
     this.monitorLoop()
     
-    console.log(chalk.green('🚀 Performance monitoring started'))
+    logger.info('Performance monitoring started', {}, 'PerformanceMonitor')
   }
 
   async stopMonitoring(): Promise<PerformanceMetrics> {
@@ -104,7 +105,7 @@ export class PerformanceMonitor {
     const finalMetrics = await this.collectMetrics()
     this.metricsHistory.push(finalMetrics)
     
-    console.log(chalk.yellow('⏹️  Performance monitoring stopped'))
+    logger.info('Performance monitoring stopped', {}, 'PerformanceMonitor')
     return finalMetrics
   }
 
@@ -196,7 +197,7 @@ export class PerformanceMonitor {
         // Wait before next check
         await new Promise(resolve => setTimeout(resolve, 5000))
       } catch (error) {
-        console.error('Monitoring error:', error)
+        logger.error('Monitoring error', error as Error, {}, 'PerformanceMonitor')
       }
     }
   }
@@ -414,10 +415,7 @@ export class PerformanceMonitor {
     }
     
     if (issues.length > 0) {
-      console.log(chalk.yellow('\n⚠️  Performance Issues Detected:'))
-      issues.forEach(issue => {
-        console.log(chalk.yellow(`  • ${issue}`))
-      })
+      logger.warn('Performance issues detected', { issues }, 'PerformanceMonitor')
     }
   }
 
@@ -555,91 +553,24 @@ export class PerformanceMonitor {
   }
 
   private displayMetrics(metrics: PerformanceMetrics): void {
-    console.log(chalk.cyan('\n📊 Performance Metrics:'))
-    
-    // Bundle size
-    console.log(chalk.blue('\n📦 Bundle Size:'))
-    console.log(`  Total: ${this.formatBytes(metrics.bundleSize.total)}`)
-    console.log(`  Compressed: ${this.formatBytes(metrics.bundleSize.compressed)}`)
-    console.log(`  Gzipped: ${this.formatBytes(metrics.bundleSize.gzipped)}`)
-    console.log(`  Chunks: ${metrics.bundleSize.chunks.length}`)
-    
-    // Render performance
-    console.log(chalk.blue('\n⚡ Render Performance:'))
-    console.log(`  FCP: ${metrics.renderPerformance.firstContentfulPaint.toFixed(0)}ms`)
-    console.log(`  LCP: ${metrics.renderPerformance.largestContentfulPaint.toFixed(0)}ms`)
-    console.log(`  TTI: ${metrics.renderPerformance.timeToInteractive.toFixed(0)}ms`)
-    console.log(`  CLS: ${metrics.renderPerformance.cumulativeLayoutShift.toFixed(3)}`)
-    console.log(`  FID: ${metrics.renderPerformance.firstInputDelay.toFixed(0)}ms`)
-    
-    // Memory usage
-    console.log(chalk.blue('\n💾 Memory Usage:'))
-    console.log(`  Heap Used: ${this.formatBytes(metrics.memoryUsage.heapUsed)}`)
-    console.log(`  Heap Total: ${this.formatBytes(metrics.memoryUsage.heapTotal)}`)
-    console.log(`  RSS: ${this.formatBytes(metrics.memoryUsage.rss)}`)
-    console.log(`  Components: ${metrics.memoryUsage.components.length}`)
-    
-    // Accessibility
-    console.log(chalk.blue('\n♿ Accessibility:'))
-    console.log(`  Score: ${metrics.accessibilityScore.toFixed(1)}%`)
-    console.log(`  Violations: ${metrics.accessibilityScore.violations}`)
-    console.log(`  WCAG Level: ${metrics.accessibilityScore.wcagLevel}`)
-    console.log(`  Compliant: ${metrics.accessibilityScore.compliant ? 'Yes' : 'No'}`)
-    
-    // Code quality
-    console.log(chalk.blue('\n📈 Code Quality:'))
-    console.log(`  Maintainability: ${metrics.codeQuality.maintainability.toFixed(1)}%`)
-    console.log(`  Complexity: ${metrics.codeQuality.complexity}`)
-    console.log(`  Coverage: ${metrics.codeQuality.coverage.toFixed(1)}%`)
-    console.log(`  Lines: ${metrics.codeQuality.lines.toLocaleString()}`)
-    
-    // Load time
-    console.log(chalk.blue('\n⏱️  Load Time:'))
-    console.log(`  Total: ${metrics.loadTime.toFixed(2)}ms`)
+    logger.info('Performance metrics collected', {
+      bundleSize: metrics.bundleSize.total,
+      renderPerformance: metrics.renderPerformance.timeToInteractive,
+      memoryUsage: metrics.memoryUsage.heapUsed,
+      accessibilityScore: metrics.accessibilityScore.score,
+      codeQuality: metrics.codeQuality.maintainability,
+      loadTime: metrics.loadTime
+    }, 'PerformanceMonitor')
   }
 
   private displayOptimizationResult(result: OptimizationResult): void {
-    console.log(chalk.cyan('\n🔧 Optimization Results:'))
-    console.log(chalk.green(`✅ Success: ${result.success ? 'Yes' : 'No'}`))
-    console.log(chalk.blue(`📦 Optimizations: ${result.optimizations.length}`))
-    
-    if (result.improvements.bundle) {
-      console.log(chalk.blue('\n📦 Bundle Improvements:'))
-      console.log(`  Size Reduction: ${result.improvements.bundle.sizeReduction?.toFixed(1)}%`)
-      console.log(`  Compression: ${result.improvements.bundle.compressionImprovement?.toFixed(1)}%`)
-    }
-    
-    if (result.improvements.render) {
-      console.log(chalk.blue('\n⚡ Render Improvements:'))
-      console.log(`  Render Time: ${result.improvements.render.renderTimeImprovement?.toFixed(1)}%`)
-      console.log(`  Re-renders: ${result.improvements.render.reRenderReduction?.toFixed(1)}%`)
-    }
-    
-    if (result.improvements.memory) {
-      console.log(chalk.blue('\n💾 Memory Improvements:'))
-      console.log(`  Memory Usage: ${result.improvements.memory.memoryReduction?.toFixed(1)}%`)
-      console.log(`  Leak Prevention: ${result.improvements.memory.leakPrevention?.toFixed(1)}%`)
-    }
-    
-    if (result.improvements.accessibility) {
-      console.log(chalk.blue('\n♿ Accessibility Improvements:'))
-      console.log(`  Score: ${result.improvements.accessibility.scoreImprovement?.toFixed(1)}%`)
-      console.log(`  Violations Fixed: ${result.improvements.accessibility.violationsFixed}`)
-    }
-    
-    if (result.warnings.length > 0) {
-      console.log(chalk.yellow('\n⚠️  Warnings:'))
-      result.warnings.forEach(warning => {
-        console.log(chalk.yellow(`  • ${warning}`))
-      })
-    }
-    
-    if (result.errors.length > 0) {
-      console.log(chalk.red('\n❌ Errors:'))
-      result.errors.forEach(error => {
-        console.log(chalk.red(`  • ${error}`))
-      })
-    }
+    logger.info('Performance optimization completed', {
+      success: result.success,
+      optimizationCount: result.optimizations.length,
+      improvements: result.improvements,
+      warningCount: result.warnings.length,
+      errorCount: result.errors.length
+    }, 'PerformanceMonitor')
   }
 
   private formatBytes(bytes: number): string {

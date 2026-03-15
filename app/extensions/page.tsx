@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { Download, Code, Github, ArrowRight } from 'lucide-react'
 import AnimateOnScroll from '@/components/animate-on-scroll'
 

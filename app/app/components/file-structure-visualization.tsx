@@ -20,8 +20,8 @@ import {
   ArrowUp,
   ArrowDown,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -29,7 +29,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   Tooltip,
   TooltipContent,

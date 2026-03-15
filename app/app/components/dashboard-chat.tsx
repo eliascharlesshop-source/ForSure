@@ -3,9 +3,9 @@
 import type React from 'react'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
+import { Card, CardContent } from '@/components/ui/forsure-card'
 import { SendHorizontal, Sparkles } from 'lucide-react'
 
 interface DashboardChatProps {

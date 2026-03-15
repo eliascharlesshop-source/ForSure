@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   ArrowRight,
@@ -31,7 +31,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   Card,
   CardContent,
@@ -39,8 +39,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/forsure-card'
+import { Input } from '@/components/ui/forsure-input'
 
 export default function LanguagePage() {
   const [openSection, setOpenSection] = useState<string | null>('syntax')

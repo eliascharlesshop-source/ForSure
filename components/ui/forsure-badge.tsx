@@ -48,15 +48,10 @@ export interface BadgeProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, keyof ForSureComponentProps<HTMLDivElement>>,
     VariantProps<typeof badgeVariants>,
     Omit<ForSureComponentProps<HTMLDivElement>, 'size' | 'shape'> {
-  asChild?: boolean
 }
 
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(
-  ({ className, variant, size, shape, asChild = false, ...props }, ref) => {
-    if (asChild) {
-      return <>{props.children}</>
-    }
-    
+  ({ className, variant, size, shape, ...props }, ref) => {
     return (
       <div
         className={cn(badgeVariants({ variant, size, shape }), className)}

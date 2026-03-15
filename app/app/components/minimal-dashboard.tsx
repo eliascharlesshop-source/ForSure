@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/forsure-button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card'
 
 export default function MinimalDashboard() {
   return (

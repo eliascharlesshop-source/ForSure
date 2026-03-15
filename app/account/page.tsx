@@ -5,16 +5,10 @@ import type React from 'react'
 import { useState } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import { Label } from '@/components/ui/label'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/forsure-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader2, User, Key, LogOut } from 'lucide-react'

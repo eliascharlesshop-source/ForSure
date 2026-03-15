@@ -3,8 +3,8 @@
 import type React from 'react'
 
 import { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Card,
@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import {
   Select,
   SelectContent,
@@ -35,7 +35,7 @@ import {
 import { TemplateBrowser } from './template-browser'
 import { getTemplateById, applyTemplate } from '../services/template-service'
 import type { FileNode } from './file-structure-visualization'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { useToast } from '@/components/ui/use-toast'
 

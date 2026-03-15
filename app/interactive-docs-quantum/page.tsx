@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/forsure-button'
 import { Badge } from '@/components/ui/forsure-badge'
 import { Input } from '@/components/ui/forsure-input'
 import { cn } from '@/lib/utils'
-import { QuantumLiveExample, QuantumComponentShowcase, QuantumComponentGrid, QuantumDesignSystemOverview } from '@/components/interactive-docs-quantum'
+import { ConsolidatedLiveExample, ConsolidatedComponentShowcase } from '@/components/interactive-docs-consolidated'
 
 // Mock data for the quantum-interactive documentation
 const mockQuantumComponents = [
@@ -212,7 +212,7 @@ export default function QuantumInteractiveDocsPage() {
         <section className="mb-16">
           <h2 className="text-3xl font-bold mb-8 text-center text-white">⚛️ Quantum Live Examples</h2>
           <div className="space-y-8">
-            <QuantumLiveExample
+            <ConsolidatedLiveExample
               title="Quantum-Enhanced Button"
               description="Experience quantum computing with superposition states and entanglement effects"
               code={`import { QuantumButton } from '@/components/ui/quantum-button'
@@ -243,7 +243,7 @@ function QuantumButtonExample() {
               accessibility={true}
             />
 
-            <QuantumLiveExample
+            <ConsolidatedLiveExample
               title="AI-Quantum Hybrid Component"
               description="Experience the power of AI-enhanced quantum computing with neural network integration"
               code={`import { AIQuantumHybrid } from '@/components/ui/ai-quantum-hybrid'
@@ -282,7 +282,7 @@ function AIQuantumExample() {
           <h2 className="text-3xl font-bold mb-8 text-center text-white">🎨 Quantum Component Showcase</h2>
           <div className="space-y-12">
             {mockQuantumComponents.map((component, index) => (
-              <QuantumComponentShowcase
+              <ConsolidatedComponentShowcase
                 key={index}
                 component={component.name}
                 title={component.name}
@@ -332,32 +332,81 @@ function AIQuantumExample() {
         {/* Quantum Component Grid */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold mb-8 text-center text-white">📚 Quantum Component Library</h2>
-          <QuantumComponentGrid
-            components={mockQuantumComponents}
-            quantumOptimized={true}
-            aiOptimized={true}
-            blockchainVerified={true}
-            realTimeCollaboration={true}
-            performance={true}
-            accessibility={true}
-          />
+          {/* Component Library - Simple Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mockQuantumComponents.map((component, index) => (
+              <Card key={index} variant="elevated" className="p-6">
+                <CardHeader>
+                  <CardTitle className="text-lg">{component.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-300 dark:text-gray-200 mb-4">
+                    {component.description}
+                  </p>
+                  <div className="flex items-center gap-2 mb-4">
+                    {component.quantumOptimized && (
+                      <Badge variant="success" className="text-xs quantum-glow">⚛️ Quantum</Badge>
+                    )}
+                    {component.aiOptimized && (
+                      <Badge variant="success" className="text-xs ai-glow">🤖 AI</Badge>
+                    )}
+                    {component.blockchainVerified && (
+                      <Badge variant="success" className="text-xs blockchain-glow">⛓️ Blockchain</Badge>
+                    )}
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full">
+                    View Component
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </section>
 
         {/* Quantum Design System Overview */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold mb-8 text-center text-white">🏗️ Quantum Design System Overview</h2>
-          <QuantumDesignSystemOverview
-            components={mockQuantumComponents}
-            hooks={mockQuantumHooks}
-            utilities={mockQuantumUtilities}
-            quantumOptimized={true}
-            aiOptimized={true}
-            blockchainVerified={true}
-            realTimeCollaboration={true}
-            interactive={true}
-            performance={true}
-            accessibility={true}
-          />
+        {/* Design System Overview - Simple Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card variant="elevated" className="p-6">
+            <CardHeader>
+              <CardTitle className="text-xl">⚛️ Quantum Components</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 dark:text-gray-200 mb-4">
+                Quantum-enhanced components with superposition and entanglement.
+              </p>
+              <div className="text-2xl font-bold text-primary">{mockQuantumComponents.length}</div>
+              <div className="text-sm text-muted-foreground">Components Available</div>
+            </CardContent>
+          </Card>
+
+          <Card variant="elevated" className="p-6">
+            <CardHeader>
+              <CardTitle className="text-xl">🧠 Cognitive Hooks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 dark:text-gray-200 mb-4">
+                Cognitive intelligence hooks for learning and adaptation.
+              </p>
+              <div className="text-2xl font-bold text-primary">{mockQuantumHooks.length}</div>
+              <div className="text-sm text-muted-foreground">Hooks Available</div>
+            </CardContent>
+          </Card>
+
+          <Card variant="elevated" className="p-6">
+            <CardHeader>
+              <CardTitle className="text-xl">🛠️ Utilities</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300 dark:text-gray-200 mb-4">
+                Advanced utilities for quantum, AI, and blockchain operations.
+              </p>
+              <div className="text-2xl font-bold text-primary">{mockQuantumUtilities.length}</div>
+              <div className="text-sm text-muted-foreground">Utilities Available</div>
+            </CardContent>
+          </Card>
+        </div>
         </section>
 
         {/* Quantum Features Section */}

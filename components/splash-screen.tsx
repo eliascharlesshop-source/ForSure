@@ -75,17 +75,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
           </div>
           <p className="text-white/60 text-xs mt-2">{progress}% Complete</p>
         </div>
-
-        {/* Animated Dots */}
-        <div className="flex justify-center space-x-1">
-          {[0, 1, 2].map(i => (
-            <div
-              key={i}
-              className="w-2 h-2 bg-primary rounded-full animate-bounce"
-              style={{ animationDelay: `${i * 0.2}s` }}
-            ></div>
-          ))}
-        </div>
       </div>
     </div>
   )

@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/forsure-badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card'
 import DocsCodeBlock from '@/components/docs-code-block'
 
 export default function ExamplesPage() {

@@ -4,7 +4,7 @@ import type React from 'react'
 
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import {
   Terminal,
   ArrowRight,
@@ -27,8 +27,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+} from '@/components/ui/forsure-card'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   Accordion,
   AccordionContent,

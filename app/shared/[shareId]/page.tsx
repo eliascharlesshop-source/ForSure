@@ -4,8 +4,8 @@ import type React from 'react'
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import {
   Card,
   CardContent,
@@ -13,13 +13,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import { FileStructureVisualization } from '@/app/app/components/file-structure-visualization'
 import { CommentSection } from '@/app/app/components/comment-section'
 import { generateFileStructure } from '@/app/app/services/file-structure-service'
 import { useSavedProjects } from '@/app/app/hooks/use-saved-projects'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   Copy,
   ArrowLeft,

@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import { Download, Search, ArrowRight, Check, Copy } from 'lucide-react'
 import CodeExample from '@/components/code-example'
 import AnimateOnScroll from '@/components/animate-on-scroll'

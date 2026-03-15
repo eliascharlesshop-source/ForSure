@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { Textarea } from '@/components/ui/textarea'
-import { Input } from '@/components/ui/input'
+import { Input } from '@/components/ui/forsure-input'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import {
   MessageSquare,
   MoreVertical,

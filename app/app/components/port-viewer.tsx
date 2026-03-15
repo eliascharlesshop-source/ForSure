@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   RefreshCw,
   ExternalLink,
@@ -54,7 +54,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 // Types for console logs

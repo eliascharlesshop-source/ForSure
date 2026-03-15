@@ -3,8 +3,8 @@
 import type React from 'react'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Sparkles, ChevronLeft, ChevronRight, Palette } from 'lucide-react'
+import { Button } from '@/components/ui/forsure-button'
+import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   ProjectDetailsForm,
   type ProjectDetails,
@@ -18,9 +18,18 @@ import { useAuth } from '@/contexts/auth-context'
 import EnhancedDashboard from './components/enhanced-dashboard'
 import WhiteboardDashboard from '@/components/whiteboard-dashboard'
 import { useToast } from '@/components/ui/use-toast'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
+import { MegaMenu } from '@/components/mega-menu'
+import { useDesignDevMode } from '@/hooks/use-design-dev-mode'
+import Header from '@/components/header'
 
 export default function ChatApp() {
+  const { mode, setMode, isDesignMode, isDevMode } = useDesignDevMode({
+    storageKey: 'forsure-studio-mode',
+    onChange: (newMode) => {
+      console.log(`Switched to ${newMode} mode`)
+    }
+  })
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
     null
   )
@@ -32,7 +41,6 @@ export default function ChatApp() {
   const [isMobile, setIsMobile] = useState(false)
   const [showMobileChat, setShowMobileChat] = useState(true)
   const [showDashboard, setShowDashboard] = useState(true)
-  const [useWhiteboardDashboard, setUseWhiteboardDashboard] = useState(true)
   const [leftPanelWidth, setLeftPanelWidth] = useState(40)
   const { toast } = useToast()
   const { isDemoMode, user } = useAuth()
@@ -414,30 +422,16 @@ export default function ChatApp() {
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
       {/* Header */}
+      <Header mode={mode} onModeChange={setMode} />
+      
       {showDashboard && (
         <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold">ForSure AI Studio</h1>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={useWhiteboardDashboard ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setUseWhiteboardDashboard(true)}
-                className="flex items-center gap-2"
-              >
-                <Palette className="h-4 w-4" />
-                Whiteboard
-              </Button>
-              <Button
-                variant={!useWhiteboardDashboard ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setUseWhiteboardDashboard(false)}
-                className="flex items-center gap-2"
-              >
-                <Sparkles className="h-4 w-4" />
-                Classic
-              </Button>
-            </div>
+            <MegaMenu
+              mode={mode}
+              onModeChange={setMode}
+              className="bg-white/10 backdrop-blur-sm border-white/20"
+            />
           </div>
           <Button variant="outline" size="sm" onClick={handleStartNewProject}>
             New Project
@@ -448,7 +442,7 @@ export default function ChatApp() {
       {/* Main content */}
       <div className="flex-1 flex flex-col h-full">
         {showDashboard ? (
-          useWhiteboardDashboard ? (
+          isDesignMode ? (
             <WhiteboardDashboard
               projects={savedProjects}
               onNewProject={handleStartNewProject}

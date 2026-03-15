@@ -1,7 +1,7 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/forsure-button'
+import { Badge } from '@/components/ui/forsure-badge'
 import { MessageSquare } from 'lucide-react'
 import { TeamChatDialog } from './team-chat-dialog'
 import { useTeamChat } from '../hooks/use-team-chat'

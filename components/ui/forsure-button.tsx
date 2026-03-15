@@ -77,8 +77,16 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button'
     const isDisabled = disabled || loading
 
+    if (asChild) {
+      return (
+        <Comp ref={ref} {...props}>
+          {children}
+        </Comp>
+      )
+    }
+
     return (
-      <Comp
+      <button
         className={cn(buttonVariants({ variant, size, fullWidth, loading }), className)}
         ref={ref}
         disabled={isDisabled}
@@ -110,7 +118,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {!loading && leftIcon && <span className="mr-2">{leftIcon}</span>}
         {loading ? loadingText : children}
         {!loading && rightIcon && <span className="ml-2">{rightIcon}</span>}
-      </Comp>
+      </button>
     )
   }
 )

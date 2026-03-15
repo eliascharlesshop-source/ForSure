@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { Download, Code, Terminal, Github } from 'lucide-react'
 import DocsCodeBlock from '@/components/docs-code-block'
 import VSCodePreview from '@/components/vscode-preview'

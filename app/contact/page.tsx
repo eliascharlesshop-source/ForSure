@@ -3,8 +3,8 @@
 import type React from 'react'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
 import { Textarea } from '@/components/ui/textarea'
 import { Mail, MapPin, Phone, Send, Check } from 'lucide-react'
 import AnimateOnScroll from '@/components/animate-on-scroll'

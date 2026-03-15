@@ -3,7 +3,7 @@
 import type React from 'react'
 
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import {
   Card,
   CardContent,
@@ -11,9 +11,9 @@ import {
   CardHeader,
   CardTitle,
   CardFooter,
-} from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/forsure-card'
+import { Badge } from '@/components/ui/forsure-badge'
+import { Input } from '@/components/ui/forsure-input'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,

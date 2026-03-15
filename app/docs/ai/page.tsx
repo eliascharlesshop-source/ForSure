@@ -11,9 +11,9 @@ import {
   Settings,
   Zap,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import DocsCodeBlock from '@/components/docs-code-block'
 import DocsSearch from '@/components/docs-search'

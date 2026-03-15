@@ -43,15 +43,10 @@ export interface CardProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, keyof ForSureComponentProps<HTMLDivElement>>,
     VariantProps<typeof cardVariants>,
     Omit<ForSureComponentProps<HTMLDivElement>, 'padding' | 'fullWidth'> {
-  asChild?: boolean
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, variant, padding, interactive, fullWidth, asChild = false, ...props }, ref) => {
-    if (asChild) {
-      return <>{props.children}</>
-    }
-    
+  ({ className, variant, padding, interactive, fullWidth, ...props }, ref) => {
     return (
       <div
         className={cn(cardVariants({ variant, padding, interactive, fullWidth }), className)}

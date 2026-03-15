@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/forsure-card'
 
 interface FeatureCardProps {
   icon: ReactNode

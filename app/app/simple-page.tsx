@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 
 export default function SimplePage() {
   return (

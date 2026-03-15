@@ -464,49 +464,45 @@ export class QuantumMetricsProvider {
     return estimatedCoverage
   }
 
-  private detectImprovements(old: QuantumMetrics, new: QuantumMetrics): string[] {
+  private detectImprovements(old: QuantumMetrics, newMetrics: QuantumMetrics): string[] {
     const improvements: string[] = []
     
-    if (new.estimatedFidelity > old.estimatedFidelity) {
-      improvements.push(`Fidelity improved by ${((new.estimatedFidelity - old.estimatedFidelity) * 100).toFixed(2)}%`)
+    if (newMetrics.estimatedFidelity > old.estimatedFidelity) {
+      improvements.push(`Fidelity improved by ${((newMetrics.estimatedFidelity - old.estimatedFidelity) * 100).toFixed(2)}%`)
     }
     
-    if (new.complexity < old.complexity) {
-      improvements.push(`Complexity reduced by ${old.complexity - new.complexity}`)
+    if (newMetrics.complexity < old.complexity) {
+      improvements.push(`Complexity reduced by ${old.complexity - newMetrics.complexity}`)
     }
     
-    if (new.optimizationPotential < old.optimizationPotential) {
-      improvements.push(`Optimization potential reduced by ${((old.optimizationPotential - new.optimizationPotential) * 100).toFixed(2)}%`)
+    if (newMetrics.optimizationPotential < old.optimizationPotential) {
+      improvements.push(`Optimization potential reduced by ${((old.optimizationPotential - newMetrics.optimizationPotential) * 100).toFixed(2)}%`)
     }
     
-    if (new.performanceScore > old.performanceScore) {
-      improvements.push(`Performance score improved by ${new.performanceScore - old.performanceScore}`)
-    }
-    
-    if (new.documentationCoverage > old.documentationCoverage) {
-      improvements.push(`Documentation coverage increased by ${(new.documentationCoverage - old.documentationCoverage).toFixed(2)}%`)
+    if (newMetrics.documentationCoverage > old.documentationCoverage) {
+      improvements.push(`Documentation coverage increased by ${(newMetrics.documentationCoverage - old.documentationCoverage).toFixed(2)}%`)
     }
     
     return improvements
   }
 
-  private detectWarnings(old: QuantumMetrics, new: QuantumMetrics): string[] {
+  private detectWarnings(old: QuantumMetrics, newMetrics: QuantumMetrics): string[] {
     const warnings: string[] = []
     
-    if (new.estimatedFidelity < old.estimatedFidelity) {
-      warnings.push(`Fidelity decreased by ${((old.estimatedFidelity - new.estimatedFidelity) * 100).toFixed(2)}%`)
+    if (newMetrics.estimatedFidelity < old.estimatedFidelity) {
+      warnings.push(`Fidelity decreased by ${((old.estimatedFidelity - newMetrics.estimatedFidelity) * 100).toFixed(2)}%`)
     }
     
-    if (new.complexity > old.complexity) {
-      warnings.push(`Complexity increased by ${new.complexity - old.complexity}`)
+    if (newMetrics.complexity > old.complexity) {
+      warnings.push(`Complexity increased by ${newMetrics.complexity - old.complexity}`)
     }
     
-    if (new.errorRate > old.errorRate) {
-      warnings.push(`Error rate increased by ${((new.errorRate - old.errorRate) * 100).toFixed(2)}%`)
+    if (newMetrics.errorRate > old.errorRate) {
+      warnings.push(`Error rate increased by ${((newMetrics.errorRate - old.errorRate) * 100).toFixed(2)}%`)
     }
     
-    if (new.quantumGates > old.quantumGates + 10) {
-      warnings.push(`Gate count increased significantly (${new.quantumGates - old.quantumGates} gates)`)
+    if (newMetrics.quantumGates > old.quantumGates + 10) {
+      warnings.push(`Gate count increased significantly (${newMetrics.quantumGates - old.quantumGates} gates)`)
     }
     
     return warnings

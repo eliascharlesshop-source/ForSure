@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { RefreshCwIcon as Refresh, Copy, Check } from 'lucide-react'
 
 const defaultCode = `root:

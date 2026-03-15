@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import {
   Card,
   CardContent,
@@ -10,11 +10,11 @@ import {
   CardHeader,
   CardTitle,
   CardFooter,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
+import { Input } from '@/components/ui/forsure-input'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Select,

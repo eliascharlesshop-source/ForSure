@@ -3,8 +3,8 @@
 import type React from 'react'
 
 import { useEffect, useRef, useState } from 'react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/forsure-card'
+import { Button } from '@/components/ui/forsure-button'
 import {
   ZoomIn,
   ZoomOut,
@@ -20,7 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 
 interface VersionNode {
   id: string

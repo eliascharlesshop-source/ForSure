@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, Terminal, Code } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card'
+import { Badge } from '@/components/ui/forsure-badge'
 import DocsCodeBlock from '@/components/docs-code-block'
 
 export default function QuickStartPage() {

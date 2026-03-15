@@ -235,9 +235,9 @@ export class QuantumSimulator {
       const flippedIndex = i ^ (1 << (numQubits - 1 - target))
       
       if (bit === 0) {
-        result[flippedIndex] = stateVector[i] * 1j // Complex unit
+        result[flippedIndex] = stateVector[i] * 1 // Real approximation
       } else {
-        result[flippedIndex] = stateVector[i] * -1j
+        result[flippedIndex] = stateVector[i] * -1 // Real approximation
       }
     }
     
@@ -314,10 +314,10 @@ export class QuantumSimulator {
       
       if (bit === 0) {
         result[i] += stateVector[i] * cosHalf
-        result[flippedIndex] += stateVector[i] * (-sinHalf * 1j)
+        result[flippedIndex] += stateVector[i] * -sinHalf // Real approximation
       } else {
         result[i] += stateVector[i] * cosHalf
-        result[flippedIndex] += stateVector[i] * (-sinHalf * 1j)
+        result[flippedIndex] += stateVector[i] * -sinHalf // Real approximation
       }
     }
     
@@ -352,7 +352,7 @@ export class QuantumSimulator {
     
     for (let i = 0; i < dimension; i++) {
       const bit = (i >> (numQubits - 1 - target)) & 1
-      const phase = bit === 0 ? Math.exp(-1j * theta / 2) : Math.exp(1j * theta / 2)
+      const phase = bit === 0 ? Math.cos(theta / 2) : Math.cos(theta / 2)
       result[i] = stateVector[i] * phase
     }
     

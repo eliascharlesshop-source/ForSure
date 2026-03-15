@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Search, Filter, X, Info, Check, ExternalLink } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/forsure-button'
+import { Input } from '@/components/ui/forsure-input'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import {
   Dialog,
   DialogContent,

@@ -4,6 +4,9 @@ process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key'
 process.env.JWT_SECRET = 'test-jwt-secret-for-testing-only'
 
+// Import testing library matchers
+require('@testing-library/jest-dom')
+
 // Mock Next.js modules
 jest.mock('next/navigation', () => ({
   useRouter: () => ({

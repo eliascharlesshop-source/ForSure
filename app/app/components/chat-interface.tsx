@@ -3,7 +3,7 @@
 import type React from 'react'
 import { useState, useRef } from 'react'
 import { Send, Paperclip, Sparkles, Mic, ImageIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import { AutoFormatDialog } from './auto-format-dialog'

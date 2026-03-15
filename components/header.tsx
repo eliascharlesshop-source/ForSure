@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { ModeToggle } from '@/components/mode-toggle'
+import { MegaMenu } from '@/components/mega-menu'
 import { Menu, X, Terminal, Code, FileText, Package } from 'lucide-react'
 import ScrollProgress from '@/components/scroll-progress'
 import { useTheme } from 'next-themes'
@@ -12,7 +13,12 @@ import { UserNav } from '@/components/user-nav'
 import { useAuth } from '@/contexts/auth-context'
 import { usePathname } from 'next/navigation'
 
-export default function Header() {
+interface HeaderProps {
+  mode?: 'design' | 'dev'
+  onModeChange?: (mode: 'design' | 'dev') => void
+}
+
+export default function Header({ mode = 'design', onModeChange }: HeaderProps = {}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
@@ -95,16 +101,21 @@ export default function Header() {
               Documentation
             </span>
           </Link>
-          <Link
-            href="/components"
-            className="flex items-center gap-1 group mr-8"
-          >
+          <Link href="/components" className="flex items-center gap-1 group mr-4">
             <Package className="h-4 w-4 group-hover:text-primary transition-colors" />
             <span className="text-sm font-medium group-hover:text-primary transition-colors">
               Components
             </span>
           </Link>
           <div className="h-6 w-px bg-border mr-4 hidden md:block"></div>
+
+          {/* MegaMenu - only show on /app route */}
+          {pathname?.startsWith('/app') && (
+            <MegaMenu 
+              mode={mode} 
+              onModeChange={onModeChange || ((mode) => console.log('Mode changed to:', mode))} 
+            />
+          )}
 
           {isAuthenticated ? (
             <UserNav />
@@ -169,6 +180,16 @@ export default function Header() {
                   Components
                 </span>
               </Link>
+
+              {/* MegaMenu - only show on /app route */}
+              {pathname?.startsWith('/app') && (
+                <div className="px-4 py-2">
+                  <MegaMenu 
+                    mode={mode} 
+                    onModeChange={onModeChange || ((mode) => console.log('Mode changed to:', mode))} 
+                  />
+                </div>
+              )}
 
               <div className="flex items-center gap-4 px-4">
                 {isAuthenticated ? (

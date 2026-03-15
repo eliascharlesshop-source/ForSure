@@ -3,7 +3,7 @@
 import type React from 'react'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import {
   Dialog,
   DialogContent,
@@ -33,7 +33,7 @@ import {
 import { VersionMergeDialog, type MergeOptions } from './version-merge-dialog'
 import { VersionHistoryGraph } from './version-history-graph'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import { BranchManagementDialog } from './branch-management-dialog'
 import { TagManagementDialog } from './tag-management-dialog'
 

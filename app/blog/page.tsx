@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { ArrowRight, Calendar, User, Clock, Tag } from 'lucide-react'
 import AnimateOnScroll from '@/components/animate-on-scroll'
 

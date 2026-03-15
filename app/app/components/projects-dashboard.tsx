@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/forsure-badge'
+import { Button } from '@/components/ui/forsure-button'
 import {
   Card,
   CardContent,
@@ -10,8 +10,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/forsure-card'
+import { Input } from '@/components/ui/forsure-input'
 import {
   Clock,
   Code,

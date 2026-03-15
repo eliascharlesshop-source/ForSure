@@ -3,7 +3,7 @@
 import type React from 'react'
 
 import { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import { Download, Upload, Check, AlertCircle, FileJson } from 'lucide-react'
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import type { SavedProject } from '../hooks/use-saved-projects'
 import type { ProjectDetails } from './project-details-form'
 

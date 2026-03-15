@@ -1,0 +1,170 @@
+import { useState } from 'react'
+import { Button } from '@/components/ui/forsure-button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card'
+import { Badge } from '@/components/ui/forsure-badge'
+import { ErrorBoundary } from '@/components/error-boundary'
+
+// Mock components for demonstration
+const ComponentShowcase = ({ component, title, description, props, variants }: any) => (
+  <Card>
+    <CardHeader>
+      <CardTitle>{title}</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p className="text-sm text-muted-foreground mb-4">{description}</p>
+      <div className="space-y-4">
+        <Button variant="default">Default {component}</Button>
+        <Button variant="brand">Brand {component}</Button>
+        <Button variant="outline">Outline {component}</Button>
+      </div>
+    </CardContent>
+  </Card>
+)
+
+const ConsolidatedLiveExample = ({ 
+  quantumOptimized, 
+  cognitiveOptimized, 
+  neuralOptimized, 
+  aiOptimized,
+  children 
+}: any) => (
+  <Card className="border-2 border-dashed border-purple-300">
+    <CardHeader>
+      <CardTitle className="flex items-center gap-2">
+        <Badge variant="outline">Quantum</Badge>
+        <Badge variant="outline">Cognitive</Badge>
+        <Badge variant="outline">Neural</Badge>
+        <Badge variant="outline">AI</Badge>
+      </CardTitle>
+    </CardHeader>
+    <CardContent>
+      {children}
+    </CardContent>
+  </Card>
+)
+
+const ConsolidatedComponent = ({ 
+  systems, 
+  quantumOptimized, 
+  cognitiveOptimized, 
+  neuralOptimized, 
+  aiOptimized,
+  children 
+}: any) => (
+  <div className="p-4 border rounded-lg bg-gradient-to-r from-purple-50 to-blue-50">
+    <div className="mb-2">
+      {quantumOptimized && <Badge className="mr-2">⚛️ Quantum</Badge>}
+      {cognitiveOptimized && <Badge className="mr-2">🧠 Cognitive</Badge>}
+      {neuralOptimized && <Badge className="mr-2">🔗 Neural</Badge>}
+      {aiOptimized && <Badge className="mr-2">🤖 AI</Badge>}
+    </div>
+    {children}
+  </div>
+)
+
+export default function InteractiveDocumentation() {
+  return (
+    <ErrorBoundary>
+      <div className="min-h-screen bg-background">
+        {/* Navigation */}
+        <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+          <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+
+            <Card>
+              <CardHeader>
+                <CardTitle>CLI Tools</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">Generate components</h4>
+                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-md text-sm overflow-x-auto">
+                      <code>{`forsure gen component -n my-button
+forsure gen hook -n use-data-fetcher
+forsure gen utility -n format-currency`}</code>
+                    </pre>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Quantum CLI commands</h4>
+                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-md text-sm overflow-x-auto">
+                      <code>{`forsure quantum circuit -n bell-state
+forsure quantum simulate --shots 1000
+forsure quantum optimize --depth-reduction
+forsure quantum measure --basis computational`}</code>
+                    </pre>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Design tokens</h4>
+                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-md text-sm overflow-x-auto">
+                      <code>{`forsure design tokens --format css
+forsure design tokens --format scss
+forsure design tokens --watch`}</code>
+                    </pre>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Quantum features</h4>
+                    <pre className="bg-gray-900 text-gray-100 p-4 rounded-md text-sm overflow-x-auto">
+                      <code>{`forsure quantum scaffold --template quantum-app
+forsure quantum migrate --framework ant-design
+forsure quantum publish --registry npm`}</code>
+                    </pre>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t mt-16">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-brand-primary rounded flex items-center justify-center">
+                <span className="text-brand-secondary font-bold text-xs">FS</span>
+              </div>
+              <span className="text-sm text-muted-foreground">
+                © 2024 ForSure Design System. All rights reserved.
+              </span>
+            </div>
+            <div className="flex gap-4">
+              <Button variant="ghost" size="sm">GitHub</Button>
+              <Button variant="ghost" size="sm">Documentation</Button>
+              <Button variant="ghost" size="sm">Storybook</Button>
+              <Button variant="ghost" size="sm">Quantum Docs</Button>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
+
+// Icon components for examples
+const PlusIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+  </svg>
+)
+
+const ArrowRightIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+)
+
+const ClearIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+  </svg>
+)

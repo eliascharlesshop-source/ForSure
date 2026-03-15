@@ -476,7 +476,7 @@ export class ComponentLibraryPublisher {
     
     let totalLines = 0
     let totalComplexity = 0
-    let testCoverage = 0
+    const testCoverage = 0
     
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf8')

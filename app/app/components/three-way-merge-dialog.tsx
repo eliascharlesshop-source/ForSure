@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/forsure-button'
 import {
   Dialog,
   DialogContent,
@@ -33,7 +33,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { ProjectVersion } from '../hooks/use-saved-projects'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import {
   ThreeWayMergeService,
   type ThreeWayMergeResult,

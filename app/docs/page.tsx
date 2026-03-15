@@ -18,9 +18,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/forsure-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import DocsCodeBlock from '@/components/docs-code-block'
 import DocsSearch from '@/components/docs-search'
 import DocsToc from '@/components/docs-toc'

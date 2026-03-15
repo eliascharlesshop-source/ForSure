@@ -1,5 +1,5 @@
 import { MessageSquare } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@/components/ui/forsure-badge'
 import type { Comment } from '../hooks/use-saved-projects'
 
 interface CommentCountBadgeProps {
