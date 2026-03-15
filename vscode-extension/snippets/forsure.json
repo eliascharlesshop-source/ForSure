@@ -1,0 +1,140 @@
+{
+  "ForSure Button": {
+    "prefix": "fbutton",
+    "body": [
+      "<Button variant=\"${1:default}\" size=\"${2:md}\"${3: loading={false}}${4: disabled={false}}>",
+      "  ${5:Button Text}",
+      "</Button>$0"
+    ],
+    "description": "ForSure Button component with variants and sizes"
+  },
+  "ForSure Card": {
+    "prefix": "fcard",
+    "body": [
+      "<Card variant=\"${1:default}\"${2: interactive={false}}>",
+      "  <CardHeader>",
+      "    <CardTitle>${3:Card Title}</CardTitle>",
+      "  </CardHeader>",
+      "  <CardContent>",
+      "    ${4:Card content goes here}",
+      "  </CardContent>",
+      "</Card>$0"
+    ],
+    "description": "ForSure Card component with header and content"
+  },
+  "ForSure Badge": {
+    "prefix": "fbadge",
+    "body": [
+      "<Badge variant=\"${1:default}\" shape=\"${2:pill}\">${3:Badge Text}</Badge>$0"
+    ],
+    "description": "ForSure Badge component with variants and shapes"
+  },
+  "ForSure Input": {
+    "prefix": "finput",
+    "body": [
+      "<Input",
+      "  label=\"${1:Label Text}\"",
+      "  type=\"${2:text}\"",
+      "  placeholder=\"${3:Enter text...}\"",
+      "  ${4:error=\"\"}",
+      "  ${5:leftIcon={<Icon />}}",
+      "  ${6:rightIcon={<Icon />}}",
+      "/>$0"
+    ],
+    "description": "ForSure Input component with validation and icons"
+  },
+  "useResponsive Hook": {
+    "prefix": "useresponsive",
+    "body": [
+      "const {",
+      "  breakpoint,",
+      "  screenSize,",
+      "  isMobile,",
+      "  isTablet,",
+      "  isDesktop,",
+      "  isLargeScreen",
+      "} = useResponsive()$0"
+    ],
+    "description": "ForSure useResponsive hook for responsive design"
+  },
+  "useAccessibility Hook": {
+    "prefix": "useaccessibility",
+    "body": [
+      "const {",
+      "  screenReaderEnabled,",
+      "  prefersReducedMotion,",
+      "  highContrastMode,",
+      "  keyboardNavigation,",
+      "  announceToScreenReader",
+      "  setFocus",
+      "  trapFocus",
+      "} = useAccessibility()$0"
+    ],
+    "description": "ForSure useAccessibility hook for accessibility features"
+  },
+  "Design Token Color": {
+    "prefix": "fcolor",
+    "body": [
+      "getColorValue('${1:brand-primary}')$0"
+    ],
+    "description": "Get design token color value"
+  },
+  "Design Token Spacing": {
+    "prefix": "fspacing",
+    "body": [
+      "getSpacingValue('${1:md}')$0"
+    ],
+    "description": "Get design token spacing value"
+  },
+  "Accessibility Skip Link": {
+    "prefix": "fskiplink",
+    "body": [
+      "<SkipLink href=\"#${1:main-content}\">Skip to main content</SkipLink>$0"
+    ],
+    "description": "ForSure SkipLink component for accessibility"
+  },
+  "Accessibility Landmark": {
+    "prefix": "flandmark",
+    "body": [
+      "<Landmark role=\"${1:main}\" label=\"${2:Main content}\">",
+      "  ${3:Content goes here}",
+      "</Landmark>$0"
+    ],
+    "description": "ForSure Landmark component for semantic structure"
+  },
+  "cn Utility": {
+    "prefix": "cn",
+    "body": [
+      "cn('${1:base-class}', ${2:condition && 'conditional-class'}, '${3:additional-class}')$0"
+    ],
+    "description": "ForSure cn utility for conditional class names"
+  },
+  "getContrastRatio": {
+    "prefix": "contrast",
+    "body": [
+      "getContrastRatio('${1:foreground}', '${2:background}')$0"
+    ],
+    "description": "Calculate contrast ratio between two colors"
+  },
+  "getAccessibleColor": {
+    "prefix": "accessible",
+    "body": [
+      "getAccessibleColor('${1:color}', '${2:background}', ${3:4.5})$0"
+    ],
+    "description": "Get accessible color that meets contrast requirements"
+  },
+  "debounce Utility": {
+    "prefix": "debounce",
+    "body": [
+      "debounce(${1:function}, ${2:300})$0"
+    ],
+    "description": "ForSure debounce utility for performance optimization"
+  },
+  "throttle Utility": {
+    "prefix": "throttle",
+    "body": [
+      "throttle(${1:function}, ${2:300})$0"
+    ],
+    "description": "ForSure throttle utility for performance optimization"
+  }
+}

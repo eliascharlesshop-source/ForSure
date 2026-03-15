@@ -1,0 +1,349 @@
+{
+  "Quantum State": {
+    "prefix": "qstate",
+    "body": [
+      "createQuantumState(${1:qubits}, {",
+      "  amplitudes: [${2:amplitudes}],",
+      "  phase: ${3:phase},",
+      "  coherence: ${4:coherence},",
+      "  superposition: ${5:true},",
+      "  entanglement: ${6:false}",
+      "})"
+    ],
+    "description": "Create a quantum state with specified parameters"
+  },
+  "Superposition State": {
+    "prefix": "superposition",
+    "body": [
+      "createSuperposition([${1:states}], {",
+      "  amplitudes: [${2:amplitudes}],",
+      "  normalization: ${3:1.0},",
+      "  coherence: ${4:0.98},",
+      "  phase: ${5:0}",
+      "  probability: ${6:0.5}",
+      "})"
+    ],
+    "description": "Create a quantum superposition state"
+  },
+  "Entanglement State": {
+    "prefix": "entanglement",
+    "body": [
+      "createEntanglement([${1:qubits}], {",
+      "  bellState: '${2:Φ+}',",
+      "  correlation: ${3:0.95},",
+      "  maximallyEntangled: ${4:true},",
+      "  fidelity: ${5:0.99},",
+      "  strength: ${6:0.96}",
+      "})"
+    ],
+    "description": "Create quantum entanglement between qubits"
+  },
+  "Quantum Measurement": {
+    "prefix": "measurement",
+    "body": [
+      "performMeasurement('${1:stateId}', {",
+      "  basis: '${2:computational}',",
+      "  probability: ${3:0.5},",
+      "  result: '${4:|0⟩}',",
+      "  collapse: ${5:true},",
+      "  accuracy: ${6:0.97}",
+      "})"
+    ],
+    "description": "Perform quantum measurement"
+  },
+  "Quantum Gate": {
+    "prefix": "gate",
+    "body": [
+      "applyGate('${1:H}', ${2:target}, {",
+      "  control: ${3:null},",
+      "  phase: ${4:0},",
+      "  amplitude: ${5:1.0},",
+      "  fidelity: ${6:0.99},",
+      "  matrix: ${7:null}",
+      "})"
+    ],
+    "description": "Apply quantum gate to qubit"
+  },
+  "Quantum Circuit": {
+    "prefix": "circuit",
+    "body": [
+      "quantumCircuit({",
+      "  name: '${1:circuitName}',",
+      "  qubits: ${2:2},",
+      "  gates: [",
+      "    { gate: 'H', target: 0 },",
+      "    { gate: 'CNOT', control: 0, target: 1 },",
+      "    { gate: 'MEASURE', target: 0 }",
+      "  ],",
+      "  depth: ${3:3},",
+      "  fidelity: ${4:0.98},",
+      "  optimization: ${5:true}",
+      "})"
+    ],
+    "description": "Create a quantum circuit"
+  },
+  "Hadamard Gate": {
+    "prefix": "H",
+    "body": "applyGate('H', ${1:target})",
+    "description": "Apply Hadamard gate"
+  },
+  "Pauli-X Gate": {
+    "prefix": "X",
+    "body": "applyGate('X', ${1:target})",
+    "description": "Apply Pauli-X gate"
+  },
+  "Pauli-Y Gate": {
+    "prefix": "Y",
+    "body": "applyGate('Y', ${1:target})",
+    "description": "Apply Pauli-Y gate"
+  },
+  "Pauli-Z Gate": {
+    "prefix": "Z",
+    "body": "applyGate('Z', ${1:target})",
+    "description": "Apply Pauli-Z gate"
+  },
+  "CNOT Gate": {
+    "prefix": "CNOT",
+    "body": "applyGate('CNOT', { control: ${1:control}, target: ${2:target} })",
+    "description": "Apply CNOT gate"
+  },
+  "Phase Gate": {
+    "prefix": "S",
+    "body": "applyGate('S', ${1:target})",
+    "description": "Apply Phase gate"
+  },
+  "T Gate": {
+    "prefix": "T",
+    "body": "applyGate('T', ${1:target})",
+    "description": "Apply T gate"
+  },
+  "Rotation Gates": {
+    "prefix": "rotation",
+    "body": [
+      "applyGate('RX', ${1:target}, { phase: ${2:theta} })",
+      "applyGate('RY', ${1:target}, { phase: ${3:phi} })",
+      "applyGate('RZ', ${1:target}, { phase: ${4:lambda} })"
+    ],
+    "description": "Apply rotation gates"
+  },
+  "Quantum Function": {
+    "prefix": "qfunc",
+    "body": [
+      "function ${1:functionName}(${2:params}) {",
+      "  // Quantum function implementation",
+      "  const state = createQuantumState(${3:qubits});",
+      "  ",
+      "  // Apply quantum operations",
+      "  ${4:// operations here}",
+      "  ",
+      "  return ${5:result};",
+      "}"
+    ],
+    "description": "Create a quantum function"
+  },
+  "Quantum Class": {
+    "prefix": "qclass",
+    "body": [
+      "class ${1:ClassName} {",
+      "  constructor(${2:params}) {",
+      "    this.qubits = ${3:qubits};",
+      "    this.state = createQuantumState(this.qubits);",
+      "    this.coherence = ${4:0.98};",
+      "    this.fidelity = ${5:0.99};",
+      "  }",
+      "  ",
+      "  ${6:// methods}",
+      "}"
+    ],
+    "description": "Create a quantum class"
+  },
+  "Bell State": {
+    "prefix": "bell",
+    "body": [
+      "// Create Bell state |Φ+⟩",
+      "const bellState = createEntanglement([0, 1], {",
+      "  bellState: 'Φ+',",
+      "  maximallyEntangled: true,",
+      "  fidelity: 0.99",
+      "});"
+    ],
+    "description": "Create Bell state"
+  },
+  "GHZ State": {
+    "prefix": "ghz",
+    "body": [
+      "// Create GHZ state",
+      "const ghzState = createSuperposition(['|000⟩', '|111⟩'], {",
+      "  amplitudes: [1/√2, 1/√2],",
+      "  normalization: 1.0,",
+      "  coherence: 0.98",
+      "});"
+    ],
+    "description": "Create GHZ state"
+  },
+  "W State": {
+    "prefix": "wstate",
+    "body": [
+      "// Create W state",
+      "const wState = createSuperposition(['|100⟩', '|010⟩', '|001⟩'], {",
+      "  amplitudes: [1/√3, 1/√3, 1/√3],",
+      "  normalization: 1.0,",
+      "  coherence: 0.97",
+      "});"
+    ],
+    "description": "Create W state"
+  },
+  "Quantum Teleportation": {
+    "prefix": "teleport",
+    "body": [
+      "// Quantum teleportation protocol",
+      "function teleportQuantumState(state, aliceQubits, bobQubit) {",
+      "  // Create entanglement between Alice and Bob",
+      "  const entanglement = createEntanglement([aliceQubits[1], bobQubit]);",
+      "  ",
+      "  // Bell measurement on Alice's qubits",
+      "  const measurement = performMeasurement(aliceQubits, {",
+      "    basis: 'bell'",
+      "    collapse: true",
+      "  });",
+      "  ",
+      "  // Apply correction based on measurement result",
+      "  if (measurement.result === '|01⟩') {",
+      "    applyGate('X', bobQubit);",
+      "  } else if (measurement.result === '|10⟩') {",
+      "    applyGate('Z', bobQubit);",
+      "  } else if (measurement.result === '|11⟩') {",
+      "    applyGate('X', bobQubit);",
+      "    applyGate('Z', bobQubit);",
+      "  }",
+      "  ",
+      "  return bobQubit; // State teleported to Bob",
+      "}"
+    ],
+    "description": "Quantum teleportation protocol"
+  },
+  "Quantum Fourier Transform": {
+    "prefix": "qft",
+    "body": [
+      "// Quantum Fourier Transform",
+      "function quantumFourierTransform(qubits) {",
+      "  const n = qubits.length;",
+      "  ",
+      "  for (let i = 0; i < n; i++) {",
+      "    // Apply Hadamard gate",
+      "    applyGate('H', qubits[i]);",
+      "    ",
+      "    // Apply controlled phase gates",
+      "    for (let j = i + 1; j < n; j++) {",
+      "      const phase = Math.PI / Math.pow(2, j - i);",
+      "      applyGate('CZ', { control: qubits[j], target: qubits[i] }, { phase });",
+      "    }",
+      "  }",
+      "  ",
+      "  // Reverse qubit order",
+      "  for (let i = 0; i < n / 2; i++) {",
+      "    applyGate('SWAP', { qubits: [qubits[i], qubits[n - 1 - i]] });",
+      "  }",
+      "}"
+    ],
+    "description": "Quantum Fourier Transform"
+  },
+  "Grover's Algorithm": {
+    "prefix": "grover",
+    "body": [
+      "// Grover's algorithm",
+      "function groversAlgorithm(oracle, n, iterations) {",
+      "  // Initialize qubits",
+      "  const qubits = Array(n).fill(0).map((_, i) => i);",
+      "  ",
+      "  // Apply Hadamard gates to create uniform superposition",
+      "  qubits.forEach(q => applyGate('H', q));",
+      "  ",
+      "  // Grover iterations",
+      "  for (let i = 0; i < iterations; i++) {",
+      "    // Apply oracle",
+      "    oracle(qubits);",
+      "    ",
+      "    // Apply diffusion operator",
+      "    qubits.forEach(q => applyGate('H', q));",
+      "    qubits.forEach(q => applyGate('X', q));",
+      "    applyGate('CZ', { control: qubits[0], target: qubits[1] });",
+      "    qubits.forEach(q => applyGate('X', q));",
+      "    qubits.forEach(q => applyGate('H', q));",
+      "  }",
+      "  ",
+      "  // Measure all qubits",
+      "  return qubits.map(q => performMeasurement(q));",
+      "}"
+    ],
+    "description": "Grover's search algorithm"
+  },
+  "Quantum Error Correction": {
+    "prefix": "qec",
+    "body": [
+      "// Quantum error correction (Surface code)",
+      "function surfaceCodeCorrection(dataQubits, ancillaQubits) {",
+      "  // Stabilizer measurements",
+      "  for (let i = 0; i < ancillaQubits.length; i++) {",
+      "    const ancilla = ancillaQubits[i];",
+      "    const neighbors = getNeighbors(ancilla, dataQubits);",
+      "    ",
+      "    // Prepare ancilla in |+⟩ state",
+      "    applyGate('H', ancilla);",
+      "    ",
+      "    // CNOT gates with neighboring data qubits",
+      "    neighbors.forEach(qubit => {",
+      "      applyGate('CNOT', { control: qubit, target: ancilla });",
+      "    });",
+      "    ",
+      "    // Measure ancilla",
+      "    const syndrome = performMeasurement(ancilla);",
+      "    ",
+      "    // Record syndrome for error correction",
+      "    recordSyndrome(ancilla, syndrome);",
+      "  }",
+      "  ",
+      "  // Apply error correction based on syndrome",
+      "  applyErrorCorrection(syndrome);",
+      "}"
+    ],
+    "description": "Quantum error correction with surface code"
+  },
+  "Quantum Benchmark": {
+    "prefix": "benchmark",
+    "body": [
+      "// Quantum circuit benchmark",
+      "function benchmarkCircuit(circuit, shots = 1000) {",
+      "  const results = [];",
+      "  ",
+      "  for (let i = 0; i < shots; i++) {",
+      "    // Initialize circuit",
+      "    const state = initializeState(circuit.qubits);",
+      "    ",
+      "    // Execute circuit",
+      "    circuit.gates.forEach(gate => {",
+      "      applyGate(gate.gate, gate.target, gate.options);",
+      "    });",
+      "    ",
+      "    // Measure results",
+      "    const measurement = performMeasurement(state);",
+      "    results.push(measurement);",
+      "  }",
+      "  ",
+      "  // Calculate statistics",
+      "  const stats = calculateStatistics(results);",
+      "  const fidelity = calculateFidelity(stats, circuit.expected);",
+      "  const coherence = calculateCoherence(results);",
+      "  ",
+      "  return {",
+      "    results,",
+      "    statistics: stats,",
+      "    fidelity,",
+      "    coherence,",
+      "    shots",
+      "  };",
+      "}"
+    ],
+    "description": "Benchmark quantum circuit performance"
+  }
+}

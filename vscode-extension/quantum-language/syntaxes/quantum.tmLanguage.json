@@ -1,0 +1,266 @@
+{
+  "scopeName": "source.quantum",
+  "patterns": [
+    {
+      "include": "#quantum-states"
+    },
+    {
+      "include": "#quantum-gates"
+    },
+    {
+      "include": "#quantum-operations"
+    },
+    {
+      "include": "#quantum-functions"
+    },
+    {
+      "include": "#quantum-comments"
+    },
+    {
+      "include": "#quantum-strings"
+    },
+    {
+      "include": "#quantum-numbers"
+    },
+    {
+      "include": "#quantum-keywords"
+    },
+    {
+      "include": "#quantum-operators"
+    },
+    {
+      "include": "#quantum-brackets"
+    }
+  ],
+  "repository": {
+    "quantum-states": {
+      "name": "quantum.state",
+      "match": "\\|(0|1|\\+|\\-|\\+i|\\-i|ψ|φ|θ)⟩",
+      "captures": {
+        "0": {
+          "name": "constant.numeric.quantum.zero"
+        },
+        "1": {
+          "name": "constant.numeric.quantum.one"
+        },
+        "\\+": {
+          "name": "constant.numeric.quantum.plus"
+        },
+        "\\-": {
+          "name": "constant.numeric.quantum.minus"
+        },
+        "\\+i": {
+          "name": "constant.numeric.quantum.plus-i"
+        },
+        "\\-i": {
+          "name": "constant.numeric.quantum.minus-i"
+        },
+        "ψ": {
+          "name": "variable.parameter.quantum.psi"
+        },
+        "φ": {
+          "name": "variable.parameter.quantum.phi"
+        },
+        "θ": {
+          "name": "variable.parameter.quantum.theta"
+        }
+      }
+    },
+    "quantum-gates": {
+      "name": "quantum.gate",
+      "match": "\\b(H|X|Y|Z|I|S|T|CNOT|CX|CZ|CY|SWAP|CCX|CCZ|TOFFOLI|FREDKIN|HADAMARD|PAULI-X|PAULI-Y|PAULI-Z|IDENTITY|PHASE|PI|RX|RY|RZ|U|CU|CRX|CRY|CRZ|CH|CS|CT)\\b",
+      "captures": {
+        "0": {
+          "name": "keyword.control.quantum.gate"
+        }
+      }
+    },
+    "quantum-operations": {
+      "patterns": [
+        {
+          "name": "keyword.control.quantum.operation",
+          "match": "\\b(quantum|superposition|entanglement|measurement|coherent|superposed|entangled|measured|collapse|decoherence|fidelity|amplitude|phase|probability|correlation|bell-state|ghz-state|w-state)\\b"
+        },
+        {
+          "name": "keyword.control.quantum.algorithm",
+          "match": "\\b(grover|shor|qft|quantum-fourier|variational|vqe|qaoa|quantum-approximate|optimization|teleportation|dense-coding|error-correction|surface-code|shor-code|stein-code)\\b"
+        }
+      ]
+    },
+    "quantum-functions": {
+      "name": "entity.name.function.quantum",
+      "match": "\\b(createQuantumState|createSuperposition|createEntanglement|performMeasurement|applyGate|measureQubit|resetQubit|initializeState|entangleQubits|swapQubits|controlledGate|quantumCircuit|simulateCircuit|optimizeCircuit|validateCircuit)\\b(?=\\s*\\()"
+    },
+    "quantum-comments": {
+      "patterns": [
+        {
+          "name": "comment.line.quantum",
+          "begin": "//",
+          "end": "$"
+        },
+        {
+          "name": "comment.block.quantum",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "quantum-strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.quantum",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.quantum",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.quantum",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.quantum",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.backtick.quantum",
+          "begin": "`",
+          "end": "`",
+          "patterns": [
+            {
+              "name": "constant.character.escape.quantum",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "quantum-numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.quantum.complex",
+          "match": "\\b\\d+(\\.\\d+)?[+-]?\\d*(\\.\\d+)?i\\b"
+        },
+        {
+          "name": "constant.numeric.quantum.decimal",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.quantum.integer",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "quantum-keywords": {
+      "name": "keyword.control.quantum",
+      "match": "\\b(qubit|qubits|register|circuit|gate|measurement|classical|quantum|if|else|for|while|function|return|import|export|as|from|const|let|var|true|false|null|undefined)\\b"
+    },
+    "quantum-operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.quantum.tensor",
+          "match": "⊗"
+        },
+        {
+          "name": "keyword.operator.quantum.control",
+          "match": "●"
+        },
+        {
+          "name": "keyword.operator.quantum.not",
+          "match": "¬"
+        },
+        {
+          "name": "keyword.operator.quantum.sqrt",
+          "match": "√"
+        },
+        {
+          "name": "keyword.operator.quantum.sum",
+          "match": "∑"
+        },
+        {
+          "name": "keyword.operator.quantum.product",
+          "match": "∏"
+        },
+        {
+          "name": "keyword.operator.quantum.integral",
+          "match": "∫"
+        },
+        {
+          "name": "keyword.operator.quantum.partial",
+          "match": "∂"
+        },
+        {
+          "name": "keyword.operator.quantum.nabla",
+          "match": "∇"
+        },
+        {
+          "name": "keyword.operator.quantum.infinity",
+          "match": "∞"
+        },
+        {
+          "name": "keyword.operator.quantum.approx",
+          "match": "≈"
+        },
+        {
+          "name": "keyword.operator.quantum.equals",
+          "match": "≠"
+        },
+        {
+          "name": "keyword.operator.quantum.less-equal",
+          "match": "≤"
+        },
+        {
+          "name": "keyword.operator.quantum.greater-equal",
+          "match": "≥"
+        },
+        {
+          "name": "keyword.operator.quantum.arrow",
+          "match": "→|←|↔|⇒|⇐|⇔"
+        }
+      ]
+    },
+    "quantum-brackets": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.bracket.quantum.begin",
+          "match": "⟨"
+        },
+        {
+          "name": "punctuation.definition.bracket.quantum.end",
+          "match": "⟩"
+        },
+        {
+          "name": "punctuation.definition.bracket.round.begin",
+          "match": "\\("
+        },
+        {
+          "name": "punctuation.definition.bracket.round.end",
+          "match": "\\)"
+        },
+        {
+          "name": "punctuation.definition.bracket.square.begin",
+          "match": "\\["
+        },
+        {
+          "name": "punctuation.definition.bracket.square.end",
+          "match": "\\]"
+        },
+        {
+          "name": "punctuation.definition.bracket.curly.begin",
+          "match": "\\{"
+        },
+        {
+          "name": "punctuation.definition.bracket.curly.end",
+          "match": "\\}"
+        }
+      ]
+    }
+  }
+}

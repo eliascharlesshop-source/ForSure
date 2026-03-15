@@ -1,0 +1,38 @@
+{
+  "name": "@forsure/storybook-addon",
+  "version": "1.0.0",
+  "description": "ForSure Design System Storybook Addon",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "storybook",
+    "addon",
+    "design-system",
+    "forsure",
+    "components"
+  ],
+  "author": "ForSure Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@storybook/types": "^7.0.0",
+    "@types/react": "^18.0.0",
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0"
+  },
+  "peerDependencies": {
+    "@storybook/components": "^7.0.0",
+    "@storybook/core-events": "^7.0.0",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "storybook": {
+    "displayName": "ForSure Design System",
+    "icon": "https://forsure.com/icon.png"
+  }
+}

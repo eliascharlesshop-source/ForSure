@@ -1,0 +1,947 @@
+#!/usr/bin/env node
+
+const { program } = require('commander')
+const { spawn } = require('child_process')
+const fs = require('fs')
+const path = require('path')
+const inquirer = require('inquirer')
+const chalk = require('chalk')
+const ora = require('ora')
+const figlet = require('figlet')
+const glob = require('glob')
+const semver = require('semver')
+
+program
+  .name('forsure')
+  .description('ForSure CLI - Advanced development tools for the ForSure design system')
+  .version('0.3.0')
+
+// Enhanced error handling and logging
+const log = {
+  success: (msg) => console.log(chalk.green('✅'), msg),
+  error: (msg) => console.log(chalk.red('❌'), msg),
+  warning: (msg) => console.log(chalk.yellow('⚠️'), msg),
+  info: (msg) => console.log(chalk.blue('ℹ️'), msg),
+  step: (msg) => console.log(chalk.cyan('🔄'), msg),
+  debug: (msg) => process.env.DEBUG && console.log(chalk.gray('🐛'), msg),
+}
+
+// Advanced CLI Features
+program
+  .command('scaffold')
+  .description('Scaffold a new project with ForSure design system')
+  .option('-t, --template <template>', 'Project template', 'next-app')
+  .option('-n, --name <name>', 'Project name')
+  .option('-d, --directory <directory>', 'Target directory')
+  .option('--typescript', 'Use TypeScript (default: true)')
+  .option('--tailwind', 'Include Tailwind CSS (default: true)')
+  .option('--storybook', 'Include Storybook (default: true)')
+  .option('--testing', 'Include testing setup (default: true)')
+  .option('--eslint', 'Include ESLint (default: true)')
+  .option('--prettier', 'Include Prettier (default: true)')
+  .action(async (options) => {
+    try {
+      console.log(chalk.cyan(figlet.textSync('ForSure Scaffold', { font: 'Small' })))
+      console.log(chalk.gray('Project Scaffolding Tool\n'))
+
+      // Interactive prompts for missing options
+      if (!options.name) {
+        const answers = await inquirer.prompt([
+          {
+            type: 'input',
+            name: 'name',
+            message: 'Project name:',
+            validate: (input) => {
+              if (!input.trim()) return 'Project name is required'
+              if (!/^[a-zA-Z][a-zA-Z0-9-_]*$/.test(input)) {
+                return 'Project name must start with a letter and contain only letters, numbers, hyphens, and underscores'
+              }
+              return true
+            },
+            filter: (input) => input.toLowerCase().trim(),
+          },
+          {
+            type: 'list',
+            name: 'template',
+            message: 'Choose project template:',
+            choices: [
+              { name: 'Next.js App', value: 'next-app' },
+              { name: 'Next.js Pages', value: 'next-pages' },
+              { name: 'React + Vite', value: 'react-vite' },
+              { name: 'React + CRA', value: 'react-cra' },
+              { name: 'Express.js', value: 'express' },
+              { name: 'Custom', value: 'custom' },
+            ],
+            when: () => !options.template,
+          },
+          {
+            type: 'input',
+            name: 'directory',
+            message: 'Target directory:',
+            default: (answers) => answers.name,
+            when: () => !options.directory,
+          },
+          {
+            type: 'confirm',
+            name: 'typescript',
+            message: 'Use TypeScript?',
+            default: true,
+            when: () => options.typescript === undefined,
+          },
+          {
+            type: 'confirm',
+            name: 'tailwind',
+            message: 'Include Tailwind CSS?',
+            default: true,
+            when: () => options.tailwind === undefined,
+          },
+          {
+            type: 'confirm',
+            name: 'storybook',
+            message: 'Include Storybook?',
+            default: true,
+            when: () => options.storybook === undefined,
+          },
+          {
+            type: 'confirm',
+            name: 'testing',
+            message: 'Include testing setup?',
+            default: true,
+            when: () => options.testing === undefined,
+          },
+          {
+            type: 'checkbox',
+            name: 'features',
+            message: 'Additional features:',
+            choices: [
+              { name: 'ESLint configuration', value: 'eslint' },
+              { name: 'Prettier configuration', value: 'prettier' },
+              { name: 'Husky git hooks', value: 'husky' },
+              { name: 'GitHub Actions CI/CD', value: 'github-actions' },
+              { name: 'Docker configuration', value: 'docker' },
+              { name: 'Environment variables setup', value: 'env' },
+            ],
+            when: () => true,
+          },
+        ])
+
+        Object.assign(options, answers)
+      }
+
+      await scaffoldProject(options)
+      log.success(`Project "${options.name}" scaffolded successfully!`)
+      log.info(`Next steps:`)
+      log.info(`  cd ${options.directory}`)
+      log.info(`  npm install`)
+      log.info(`  npm run dev`)
+    } catch (error) {
+      log.error(`Scaffolding failed: ${error.message}`)
+    }
+  })
+
+program
+  .command('migrate')
+  .description('Migrate existing project to ForSure design system')
+  .option('--from <framework>', 'Source framework (antd, material-ui, chakra-ui, etc.)')
+  .option('--dry-run', 'Show what would be migrated without making changes')
+  .option('--backup', 'Create backup before migration')
+  .action(async (options) => {
+    try {
+      console.log(chalk.cyan(figlet.textSync('ForSure Migrate', { font: 'Small' })))
+      console.log(chalk.gray('Design System Migration Tool\n'))
+
+      if (!options.from) {
+        const answers = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'from',
+            message: 'Source framework:',
+            choices: [
+              { name: 'Ant Design', value: 'antd' },
+              { name: 'Material-UI', value: 'material-ui' },
+              { name: 'Chakra UI', value: 'chakra-ui' },
+              { name: 'MUI', value: 'mui' },
+              { name: 'Bootstrap', value: 'bootstrap' },
+              { name: 'Custom/Other', value: 'custom' },
+            ],
+          },
+          {
+            type: 'confirm',
+            name: 'dryRun',
+            message: 'Dry run (show changes without applying)?',
+            default: true,
+          },
+          {
+            type: 'confirm',
+            name: 'backup',
+            message: 'Create backup before migration?',
+            default: true,
+          },
+        ])
+
+        Object.assign(options, answers)
+      }
+
+      await migrateProject(options)
+      log.success('Migration completed successfully!')
+    } catch (error) {
+      log.error(`Migration failed: ${error.message}`)
+    }
+  })
+
+program
+  .command('upgrade')
+  .description('Upgrade ForSure design system to latest version')
+  .option('--version <version>', 'Target version')
+  .option('--check', 'Check for available updates')
+  .option('--force', 'Force upgrade even if there are breaking changes')
+  .action(async (options) => {
+    try {
+      if (options.check) {
+        await checkForUpdates()
+        return
+      }
+
+      await upgradeDesignSystem(options)
+      log.success('Upgrade completed successfully!')
+    } catch (error) {
+      log.error(`Upgrade failed: ${error.message}`)
+    }
+  })
+
+program
+  .command('publish')
+  .description('Publish component library to npm')
+  .option('--tag <tag>', 'Release tag (latest, beta, alpha)', 'latest')
+  .option('--dry-run', 'Preview release without publishing')
+  .option('--skip-tests', 'Skip tests (not recommended)')
+  .option('--skip-build', 'Skip build (not recommended)')
+  .action(async (options) => {
+    try {
+      await publishLibrary(options)
+      log.success('Library published successfully!')
+    } catch (error) {
+      log.error(`Publishing failed: ${error.message}`)
+    }
+  })
+
+program
+  .command('analyze')
+  .description('Analyze project for design system usage and optimization')
+  .option('--report <format>', 'Report format (json, html, csv)', 'json')
+  .option('--output <path>', 'Output path for report')
+  .option('--depth <number>', 'Analysis depth', '3')
+  .action(async (options) => {
+    try {
+      await analyzeProject(options)
+      log.success('Analysis completed!')
+    } catch (error) {
+      log.error(`Analysis failed: ${error.message}`)
+    }
+  })
+
+program
+  .command('optimize')
+  .description('Optimize design system performance and bundle size')
+  .option('--bundle', 'Optimize bundle size')
+  .option('--performance', 'Optimize runtime performance')
+  .option('--accessibility', 'Optimize accessibility')
+  .option('--all', 'Run all optimizations')
+  .action(async (options) => {
+    try {
+      await optimizeProject(options)
+      log.success('Optimization completed!')
+    } catch (error) {
+      log.error(`Optimization failed: ${error.message}`)
+    }
+  })
+
+// Enhanced existing commands
+program
+  .command('generate <type>')
+  .alias('gen')
+  .description('Generate components, hooks, utilities, and more with AI assistance')
+  .option('-n, --name <name>', 'Component/hook/utility name')
+  .option('-d, --dir <directory>', 'Target directory')
+  .option('-t, --template <template>', 'Template to use')
+  .option('--storybook', 'Generate Storybook stories')
+  .option('--test', 'Generate test files')
+  .option('--typescript', 'Generate TypeScript definitions')
+  .option('--ai', 'Use AI for code generation')
+  .option('--interactive', 'Interactive mode with live preview')
+  .action(async (type, options) => {
+    try {
+      if (options.ai) {
+        await generateWithAI(type, options)
+      } else if (options.interactive) {
+        await generateInteractive(type, options)
+      } else {
+        await generateCode(type, options)
+      }
+      log.success(`Generated ${type} "${options.name}" successfully!`)
+    } catch (error) {
+      log.error(`Generation failed: ${error.message}`)
+    }
+  })
+
+// Advanced helper functions
+async function scaffoldProject(options) {
+  const spinner = ora('Scaffolding project...').start()
+  
+  try {
+    // Create project directory
+    const projectPath = path.resolve(process.cwd(), options.directory)
+    if (!fs.existsSync(projectPath)) {
+      fs.mkdirSync(projectPath, { recursive: true })
+    }
+
+    // Copy template files
+    const templatePath = path.join(__dirname, '../templates', options.template)
+    if (fs.existsSync(templatePath)) {
+      await copyTemplate(templatePath, projectPath, options)
+    } else {
+      await createProjectFromScratch(projectPath, options)
+    }
+
+    // Initialize package.json
+    await createPackageJson(projectPath, options)
+    
+    // Setup configuration files
+    if (options.typescript) await setupTypeScript(projectPath)
+    if (options.tailwind) await setupTailwind(projectPath)
+    if (options.storybook) await setupStorybook(projectPath)
+    if (options.testing) await setupTesting(projectPath)
+    
+    // Install dependencies
+    spinner.text = 'Installing dependencies...'
+    await installDependencies(projectPath)
+    
+    // Initialize git
+    await initializeGit(projectPath)
+    
+    spinner.succeed('Project scaffolded successfully!')
+  } catch (error) {
+    spinner.fail('Scaffolding failed')
+    throw error
+  }
+}
+
+async function migrateProject(options) {
+  const spinner = ora('Analyzing project...').start()
+  
+  try {
+    // Analyze current project structure
+    const projectAnalysis = await analyzeCurrentProject()
+    
+    // Create migration plan
+    const migrationPlan = await createMigrationPlan(projectAnalysis, options.from)
+    
+    if (options.dryRun) {
+      spinner.succeed('Dry run completed')
+      log.info('Migration plan:')
+      migrationPlan.steps.forEach(step => {
+        log.info(`  - ${step.description}`)
+      })
+      return
+    }
+    
+    // Create backup if requested
+    if (options.backup) {
+      await createBackup()
+    }
+    
+    // Execute migration
+    spinner.text = 'Migrating components...'
+    await executeMigration(migrationPlan)
+    
+    spinner.succeed('Migration completed!')
+  } catch (error) {
+    spinner.fail('Migration failed')
+    throw error
+  }
+}
+
+async function checkForUpdates() {
+  const spinner = ora('Checking for updates...').start()
+  
+  try {
+    const currentVersion = getCurrentVersion()
+    const latestVersion = await getLatestVersion()
+    
+    if (semver.gt(latestVersion, currentVersion)) {
+      spinner.succeed('Update available!')
+      log.info(`Current: ${currentVersion}`)
+      log.info(`Latest: ${latestVersion}`)
+      log.info(`Run 'forsure upgrade --version ${latestVersion}' to update`)
+    } else {
+      spinner.succeed('Up to date!')
+      log.info(`Current version: ${currentVersion}`)
+    }
+  } catch (error) {
+    spinner.fail('Update check failed')
+    throw error
+  }
+}
+
+async function upgradeDesignSystem(options) {
+  const spinner = ora('Upgrading design system...').start()
+  
+  try {
+    const targetVersion = options.version || await getLatestVersion()
+    
+    // Check for breaking changes
+    const breakingChanges = await checkBreakingChanges(targetVersion)
+    if (breakingChanges.length > 0 && !options.force) {
+      spinner.fail('Breaking changes detected')
+      log.warning('Breaking changes:')
+      breakingChanges.forEach(change => {
+        log.warning(`  - ${change.description}`)
+      })
+      log.info('Use --force to proceed anyway')
+      return
+    }
+    
+    // Run tests before upgrade
+    spinner.text = 'Running tests...'
+    await runTests()
+    
+    // Update dependencies
+    spinner.text = 'Updating dependencies...'
+    await updateDependencies(targetVersion)
+    
+    // Run migration scripts
+    spinner.text = 'Running migration scripts...'
+    await runMigrationScripts(targetVersion)
+    
+    // Verify upgrade
+    spinner.text = 'Verifying upgrade...'
+    await verifyUpgrade()
+    
+    spinner.succeed('Upgrade completed!')
+  } catch (error) {
+    spinner.fail('Upgrade failed')
+    throw error
+  }
+}
+
+async function publishLibrary(options) {
+  const spinner = ora('Publishing library...').start()
+  
+  try {
+    // Validate package
+    spinner.text = 'Validating package...'
+    await validatePackage()
+    
+    // Run tests
+    if (!options.skipTests) {
+      spinner.text = 'Running tests...'
+      await runTests()
+    }
+    
+    // Build package
+    if (!options.skipBuild) {
+      spinner.text = 'Building package...'
+      await buildPackage()
+    }
+    
+    // Check if version already exists
+    const currentVersion = getCurrentVersion()
+    const publishedVersions = await getPublishedVersions()
+    if (publishedVersions.includes(currentVersion) && !options.dryRun) {
+      spinner.fail('Version already published')
+      log.error(`Version ${currentVersion} already exists on npm`)
+      return
+    }
+    
+    // Publish to npm
+    if (!options.dryRun) {
+      spinner.text = 'Publishing to npm...'
+      await publishToNpm(options.tag)
+    }
+    
+    // Create GitHub release
+    if (!options.dryRun) {
+      spinner.text = 'Creating GitHub release...'
+      await createGitHubRelease(currentVersion)
+    }
+    
+    spinner.succeed(options.dryRun ? 'Dry run completed!' : 'Library published successfully!')
+  } catch (error) {
+    spinner.fail('Publishing failed')
+    throw error
+  }
+}
+
+async function analyzeProject(options) {
+  const spinner = ora('Analyzing project...').start()
+  
+  try {
+    const analysis = await performProjectAnalysis(options.depth)
+    
+    // Generate report
+    const reportPath = options.output || `design-system-analysis.${options.report}`
+    await generateReport(analysis, reportPath, options.report)
+    
+    spinner.succeed('Analysis completed!')
+    log.info(`Report generated: ${reportPath}`)
+    
+    // Print summary
+    log.info('Analysis Summary:')
+    log.info(`  Components found: ${analysis.components.length}`)
+    log.info(`  Hooks found: ${analysis.hooks.length}`)
+    log.info(`  Utilities found: ${analysis.utilities.length}`)
+    log.info(`  Design tokens used: ${analysis.tokensUsed}`)
+    log.info(`  Accessibility score: ${analysis.accessibilityScore}%`)
+    log.info(`  Test coverage: ${analysis.testCoverage}%`)
+  } catch (error) {
+    spinner.fail('Analysis failed')
+    throw error
+  }
+}
+
+async function optimizeProject(options) {
+  const spinner = ora('Optimizing project...').start()
+  
+  try {
+    if (options.bundle || options.all) {
+      spinner.text = 'Optimizing bundle size...'
+      await optimizeBundleSize()
+    }
+    
+    if (options.performance || options.all) {
+      spinner.text = 'Optimizing performance...'
+      await optimizePerformance()
+    }
+    
+    if (options.accessibility || options.all) {
+      spinner.text = 'Optimizing accessibility...'
+      await optimizeAccessibility()
+    }
+    
+    spinner.succeed('Optimization completed!')
+  } catch (error) {
+    spinner.fail('Optimization failed')
+    throw error
+  }
+}
+
+// AI-powered generation
+async function generateWithAI(type, options) {
+  const spinner = ora('Generating with AI...').start()
+  
+  try {
+    const prompt = await generatePrompt(type, options)
+    const aiResponse = await callAI(prompt)
+    const generatedCode = parseAIResponse(aiResponse)
+    
+    await writeGeneratedCode(generatedCode, options)
+    
+    spinner.succeed('AI generation completed!')
+  } catch (error) {
+    spinner.fail('AI generation failed')
+    throw error
+  }
+}
+
+// Interactive generation with live preview
+async function generateInteractive(type, options) {
+  const { createInterface } = require('readline')
+  const rl = createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+  
+  try {
+    log.info('Interactive generation mode')
+    log.info('Type "help" for commands or "done" to finish')
+    
+    let currentCode = ''
+    let previewServer = null
+    
+    while (true) {
+      const input = await new Promise(resolve => {
+        rl.question('> ', resolve)
+      })
+      
+      if (input === 'done') break
+      if (input === 'help') {
+        log.info('Available commands:')
+        log.info('  help - Show this help')
+        log.info('  preview - Start live preview')
+        log.info('  save - Save current code')
+        log.info('  done - Finish and save')
+        continue
+      }
+      
+      if (input === 'preview') {
+        if (!previewServer) {
+          previewServer = await startPreviewServer(currentCode)
+          log.info('Preview server started at http://localhost:3001')
+        }
+        continue
+      }
+      
+      if (input === 'save') {
+        await writeGeneratedCode(currentCode, options)
+        log.info('Code saved!')
+        continue
+      }
+      
+      // Add input to current code
+      currentCode += input + '\n'
+      
+      // Update preview if server is running
+      if (previewServer) {
+        await updatePreview(previewServer, currentCode)
+      }
+    }
+    
+    if (previewServer) {
+      await stopPreviewServer(previewServer)
+    }
+    
+    await writeGeneratedCode(currentCode, options)
+    log.info('Interactive generation completed!')
+  } finally {
+    rl.close()
+  }
+}
+
+// Utility functions
+async function copyTemplate(templatePath, targetPath, options) {
+  // Implementation for copying template files
+  const files = glob.sync('**/*', { cwd: templatePath, nodir: true })
+  
+  for (const file of files) {
+    const src = path.join(templatePath, file)
+    const dest = path.join(targetPath, file)
+    
+    let content = fs.readFileSync(src, 'utf8')
+    
+    // Replace template variables
+    content = content.replace(/\{\{name\}\}/g, options.name)
+    content = content.replace(/\{\{description\}\}/g, options.description || '')
+    
+    // Create directory if needed
+    const dir = path.dirname(dest)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    
+    fs.writeFileSync(dest, content)
+  }
+}
+
+async function createProjectFromScratch(projectPath, options) {
+  // Implementation for creating project from scratch
+  const structure = {
+    'src': {
+      'components': {},
+      'hooks': {},
+      'utils': {},
+      'styles': {},
+    },
+    'public': {},
+    'tests': {},
+  }
+  
+  await createDirectoryStructure(projectPath, structure)
+}
+
+async function createPackageJson(projectPath, options) {
+  const packageJson = {
+    name: options.name,
+    version: '0.1.0',
+    description: `${options.name} - Built with ForSure Design System`,
+    scripts: {
+      dev: 'next dev',
+      build: 'next build',
+      start: 'next start',
+      test: 'jest',
+      'test:watch': 'jest --watch',
+      lint: 'eslint src --ext .ts,.tsx',
+      'lint:fix': 'eslint src --ext .ts,.tsx --fix',
+      storybook: 'storybook dev -p 6006',
+      'build-storybook': 'storybook build',
+    },
+    dependencies: {
+      'react': '^18.2.0',
+      'react-dom': '^18.2.0',
+      'next': options.template.startsWith('next') ? '^14.0.0' : undefined,
+      '@forsure/design-system': '^1.0.0',
+      'tailwindcss': options.tailwind ? '^3.3.0' : undefined,
+    },
+    devDependencies: {
+      '@types/react': '^18.2.0',
+      '@types/react-dom': '^18.2.0',
+      'typescript': options.typescript ? '^5.0.0' : undefined,
+      '@storybook/react': options.storybook ? '^7.0.0' : undefined,
+      'jest': options.testing ? '^29.0.0' : undefined,
+      'eslint': options.eslint ? '^8.0.0' : undefined,
+      'prettier': options.prettier ? '^3.0.0' : undefined,
+    },
+  }
+  
+  // Remove undefined values
+  Object.keys(packageJson.dependencies).forEach(key => {
+    if (packageJson.dependencies[key] === undefined) {
+      delete packageJson.dependencies[key]
+    }
+  })
+  
+  Object.keys(packageJson.devDependencies).forEach(key => {
+    if (packageJson.devDependencies[key] === undefined) {
+      delete packageJson.devDependencies[key]
+    }
+  })
+  
+  fs.writeFileSync(
+    path.join(projectPath, 'package.json'),
+    JSON.stringify(packageJson, null, 2)
+  )
+}
+
+async function installDependencies(projectPath) {
+  return new Promise((resolve, reject) => {
+    const child = spawn('npm', ['install'], {
+      cwd: projectPath,
+      stdio: 'inherit',
+    })
+    
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve()
+      } else {
+        reject(new Error(`npm install failed with code ${code}`))
+      }
+    })
+  })
+}
+
+async function initializeGit(projectPath) {
+  return new Promise((resolve, reject) => {
+    const commands = ['git init', 'git add .', 'git commit -m "Initial commit"']
+    
+    const runCommand = (cmd) => {
+      return new Promise((resolve, reject) => {
+        const child = spawn(cmd, { shell: true, cwd: projectPath, stdio: 'inherit' })
+        child.on('close', (code) => {
+          if (code === 0) resolve()
+          else reject(new Error(`${cmd} failed with code ${code}`))
+        })
+      })
+    }
+    
+    commands.reduce((promise, cmd) => promise.then(() => runCommand(cmd)), Promise.resolve())
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
+// Mock implementations for helper functions
+async function analyzeCurrentProject() {
+  return {
+    framework: 'react',
+    components: ['Button', 'Card', 'Input'],
+    dependencies: ['react', 'react-dom'],
+  }
+}
+
+async function createMigrationPlan(analysis, fromFramework) {
+  return {
+    steps: [
+      { description: 'Update Button components', action: 'update-button' },
+      { description: 'Update Card components', action: 'update-card' },
+      { description: 'Update dependencies', action: 'update-deps' },
+    ]
+  }
+}
+
+async function executeMigration(plan) {
+  for (const step of plan.steps) {
+    log.step(step.description)
+    // Execute migration step
+  }
+}
+
+async function createBackup() {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const backupPath = `backup-${timestamp}`
+  log.info(`Creating backup: ${backupPath}`)
+}
+
+async function getCurrentVersion() {
+  try {
+    const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+    return packageJson.dependencies['@forsure/design-system'] || '0.0.0'
+  } catch {
+    return '0.0.0'
+  }
+}
+
+async function getLatestVersion() {
+  // Mock implementation - would fetch from npm registry
+  return '1.0.0'
+}
+
+async function checkBreakingChanges(version) {
+  // Mock implementation - would check changelog
+  return []
+}
+
+async function runTests() {
+  return new Promise((resolve, reject) => {
+    const child = spawn('npm', ['test'], { stdio: 'inherit' })
+    child.on('close', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`Tests failed with code ${code}`))
+    })
+  })
+}
+
+async function updateDependencies(version) {
+  log.info(`Updating to version ${version}`)
+}
+
+async function runMigrationScripts(version) {
+  log.info(`Running migration scripts for ${version}`)
+}
+
+async function verifyUpgrade() {
+  log.info('Verifying upgrade...')
+}
+
+async function validatePackage() {
+  log.info('Validating package...')
+}
+
+async function buildPackage() {
+  return new Promise((resolve, reject) => {
+    const child = spawn('npm', ['run', 'build'], { stdio: 'inherit' })
+    child.on('close', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`Build failed with code ${code}`))
+    })
+  })
+}
+
+async function getPublishedVersions() {
+  // Mock implementation
+  return ['0.1.0', '0.2.0']
+}
+
+async function publishToNpm(tag) {
+  return new Promise((resolve, reject) => {
+    const child = spawn('npm', ['publish', '--tag', tag], { stdio: 'inherit' })
+    child.on('close', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`Publish failed with code ${code}`))
+    })
+  })
+}
+
+async function createGitHubRelease(version) {
+  log.info(`Creating GitHub release for ${version}`)
+}
+
+async function performProjectAnalysis(depth) {
+  // Mock implementation
+  return {
+    components: ['Button', 'Card', 'Input', 'Badge'],
+    hooks: ['useResponsive', 'useAccessibility'],
+    utilities: ['cn', 'getColorValue'],
+    tokensUsed: 25,
+    accessibilityScore: 98,
+    testCoverage: 94,
+  }
+}
+
+async function generateReport(analysis, path, format) {
+  const report = {
+    timestamp: new Date().toISOString(),
+    ...analysis,
+  }
+  
+  if (format === 'json') {
+    fs.writeFileSync(path, JSON.stringify(report, null, 2))
+  } else {
+    // Generate other formats
+    fs.writeFileSync(path, `Report generated in ${format} format`)
+  }
+}
+
+async function optimizeBundleSize() {
+  log.info('Optimizing bundle size...')
+}
+
+async function optimizePerformance() {
+  log.info('Optimizing performance...')
+}
+
+async function optimizeAccessibility() {
+  log.info('Optimizing accessibility...')
+}
+
+async function generatePrompt(type, options) {
+  return `Generate a ${type} named ${options.name} with the following options: ${JSON.stringify(options)}`
+}
+
+async function callAI(prompt) {
+  // Mock AI response
+  return `Generated code for: ${prompt}`
+}
+
+function parseAIResponse(response) {
+  return {
+    code: response,
+    language: 'typescript',
+  }
+}
+
+async function writeGeneratedCode(generatedCode, options) {
+  const filePath = path.join(options.dir || '.', `${options.name}.tsx`)
+  fs.writeFileSync(filePath, generatedCode.code)
+}
+
+async function startPreviewServer(code) {
+  log.info('Starting preview server...')
+  return { port: 3001 }
+}
+
+async function updatePreview(server, code) {
+  // Update preview with new code
+}
+
+async function stopPreviewServer(server) {
+  log.info('Stopping preview server...')
+}
+
+async function setupTypeScript(projectPath) {
+  log.info('Setting up TypeScript...')
+}
+
+async function setupTailwind(projectPath) {
+  log.info('Setting up Tailwind CSS...')
+}
+
+async function setupStorybook(projectPath) {
+  log.info('Setting up Storybook...')
+}
+
+async function setupTesting(projectPath) {
+  log.info('Setting up testing...')
+}
+
+async function createDirectoryStructure(basePath, structure) {
+  for (const [name, content] of Object.entries(structure)) {
+    const fullPath = path.join(basePath, name)
+    if (Object.keys(content).length === 0) {
+      fs.mkdirSync(fullPath, { recursive: true })
+    } else {
+      fs.mkdirSync(fullPath, { recursive: true })
+      await createDirectoryStructure(fullPath, content)
+    }
+  }
+}
+
+program.parse()

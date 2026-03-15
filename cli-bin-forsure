@@ -2,7 +2,9 @@
 
 const { program } = require('commander')
 const { spawn } = require('child_process')
+const fs = require('fs')
 const path = require('path')
+const inquirer = require('inquirer')
 
 program
   .name('forsure')
@@ -41,5 +43,374 @@ program
   .command('start')
   .description('Start production server')
   .action(() => runScript('start'))
+
+// Component generation command
+program
+  .command('generate <type>')
+  .alias('gen')
+  .description('Generate a new component, hook, or utility')
+  .option('-n, --name <name>', 'Component name')
+  .option('-d, --dir <directory>', 'Target directory', 'components/ui')
+  .option('-t, --template <template>', 'Template to use', 'default')
+  .action(async (type, options) => {
+    if (!options.name) {
+      const answers = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'name',
+          message: 'Enter component name:',
+          validate: input => input.trim() !== '' || 'Name is required'
+        }
+      ])
+      options.name = answers.name
+    }
+
+    const componentName = options.name
+    const componentDir = path.join(process.cwd(), options.dir)
+    const componentFile = path.join(componentDir, `forsure-${componentName}.tsx`)
+
+    if (fs.existsSync(componentFile)) {
+      console.log(`❌ Component ${componentName} already exists`)
+      return
+    }
+
+    ensureDir(componentDir)
+
+    const templates = {
+      component: getComponentTemplate(componentName),
+      hook: getHookTemplate(componentName),
+      utility: getUtilityTemplate(componentName),
+      page: getPageTemplate(componentName),
+      layout: getLayoutTemplate(componentName)
+    }
+
+    const template = templates[type] || templates.component
+    fs.writeFileSync(componentFile, template)
+
+    console.log(`✅ Generated ${type} ${componentName} at ${componentFile}`)
+  })
+
+// Design system commands
+program
+  .command('design')
+  .description('Design system utilities')
+  .command('tokens')
+  .description('Generate CSS variables from design tokens')
+  .action(() => {
+    const tokensPath = path.join(process.cwd(), 'lib/design-tokens.ts')
+    const outputPath = path.join(process.cwd(), 'styles/design-tokens.css')
+    
+    if (!fs.existsSync(tokensPath)) {
+      console.log('❌ Design tokens file not found')
+      return
+    }
+
+    generateCSSVariables(tokensPath, outputPath)
+    console.log('✅ Generated CSS variables from design tokens')
+  })
+
+program
+  .command('publish')
+  .description('Publish a new version')
+  .option('--patch', 'Patch version (0.0.1)')
+  .option('--minor', 'Minor version (0.1.0)')
+  .option('--major', 'Major version (1.0.0)')
+  .option('--dry-run', 'Show what would be published without actually publishing')
+  .action(async (options) => {
+    const versionType = options.major ? 'major' : options.minor ? 'minor' : 'patch'
+    
+    if (options.dryRun) {
+      console.log(`🔍 Dry run: Would publish ${versionType} version`)
+      return
+    }
+
+    console.log(`🚀 Publishing ${versionType} version...`)
+    
+    // Run tests first
+    await runCommand('npm', ['run', 'test:ci'])
+    
+    // Build the project
+    await runCommand('npm', ['run', 'build'])
+    
+    // Update version
+    await runCommand('npm', ['version', versionType])
+    
+    // Publish to npm
+    await runCommand('npm', ['publish'])
+    
+    console.log('✅ Published successfully!')
+  })
+
+program
+  .command('lint')
+  .description('Run linting and formatting')
+  .option('--fix', 'Auto-fix issues')
+  .action((options) => {
+    if (options.fix) {
+      runScript('lint:fix')
+      runScript('format')
+    } else {
+      runScript('lint')
+      runScript('format:check')
+    }
+  })
+
+program
+  .command('clean')
+  .description('Clean build artifacts and dependencies')
+  .action(() => {
+    const cleanPaths = [
+      '.next',
+      'node_modules',
+      'dist',
+      '.turbo',
+      'coverage'
+    ]
+
+    cleanPaths.forEach(cleanPath => {
+      const fullPath = path.join(process.cwd(), cleanPath)
+      if (fs.existsSync(fullPath)) {
+        fs.rmSync(fullPath, { recursive: true, force: true })
+        console.log(`🗑️  Cleaned ${cleanPath}`)
+      }
+    })
+
+    console.log('✅ Clean completed')
+  })
+
+program
+  .command('setup')
+  .description('Setup development environment')
+  .action(async () => {
+    console.log('🔧 Setting up ForSure development environment...')
+    
+    // Install dependencies
+    await runCommand('npm', ['install'])
+    
+    // Setup database
+    await runCommand('npm', ['run', 'db:migrate'])
+    
+    // Seed database if needed
+    const { shouldSeed } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'shouldSeed',
+        message: 'Would you like to seed the database with sample data?',
+        default: false
+      }
+    ])
+
+    if (shouldSeed) {
+      await runCommand('npm', ['run', 'seed'])
+    }
+
+    console.log('✅ Setup completed!')
+  })
+
+// Helper functions
+function ensureDir(dir) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+}
+
+function runCommand(command, args) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    })
+    child.on('close', code => {
+      if (code === 0) {
+        resolve()
+      } else {
+        reject(new Error(`Command failed with code ${code}`))
+      }
+    })
+  })
+}
+
+function getComponentTemplate(name) {
+  const pascalName = name.charAt(0).toUpperCase() + name.slice(1)
+  return `import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
+import { ForSureComponentProps } from '@/lib/ui-types'
+
+const ${name}Variants = cva(
+  '',
+  {
+    variants: {
+      variant: {
+        default: '',
+        secondary: '',
+        destructive: '',
+        outline: '',
+        ghost: '',
+        link: '',
+      },
+      size: {
+        sm: '',
+        md: '',
+        lg: '',
+        xl: '',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'md',
+    },
+  }
+)
+
+export interface ${pascalName}Props
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof ${name}Variants>,
+    Omit<ForSureComponentProps<HTMLDivElement>, 'size'> {
+  asChild?: boolean
+}
+
+const ${pascalName} = React.forwardRef<HTMLDivElement, ${pascalName}Props>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    if (asChild) {
+      return <>{props.children}</>
+    }
+    
+    return (
+      <div
+        className={cn(${name}Variants({ variant, size }), className)}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+${pascalName}.displayName = '${pascalName}'
+
+export { ${pascalName}, ${name}Variants }
+`
+}
+
+function getHookTemplate(name) {
+  const pascalName = name.charAt(0).toUpperCase() + name.slice(1)
+  return `import { useState, useEffect, useCallback } from 'react'
+
+export interface Use${pascalName}Options {
+  // Add options here
+}
+
+export interface Use${pascalName}Return {
+  // Add return values here
+}
+
+export function use${pascalName}(options: Use${pascalName}Options = {}): Use${pascalName}Return {
+  const [state, setState] = useState(null)
+
+  const handler = useCallback(() => {
+    // Add logic here
+  }, [])
+
+  useEffect(() => {
+    // Add effects here
+  }, [])
+
+  return {
+    // Return values here
+  }
+}
+`
+}
+
+function getUtilityTemplate(name) {
+  return `/**
+ * ${name} utility function
+ */
+
+export function ${name}(param: any): any {
+  // Add logic here
+  return param
+}
+
+export type ${name.charAt(0).toUpperCase() + name.slice(1)}Options = {
+  // Add options here
+}
+`
+}
+
+function getPageTemplate(name) {
+  const pascalName = name.charAt(0).toUpperCase() + name.slice(1)
+  return `import { Metadata } from 'next'
+import { ${pascalName}Page } from './${name}-page'
+
+export const metadata: Metadata = {
+  title: '${pascalName}',
+  description: '${pascalName} page',
+}
+
+export default function ${pascalName}Route() {
+  return <${pascalName}Page />
+}
+`
+}
+
+function getLayoutTemplate(name) {
+  const pascalName = name.charAt(0).toUpperCase() + name.slice(1)
+  return `import { ReactNode } from 'react'
+
+export interface ${pascalName}LayoutProps {
+  children: ReactNode
+}
+
+export function ${pascalName}Layout({ children }: ${pascalName}LayoutProps) {
+  return (
+    <div className="${name}-layout">
+      {children}
+    </div>
+  )
+}
+`
+}
+
+function generateCSSVariables(tokensPath, outputPath) {
+  // This would parse the design tokens and generate CSS variables
+  // For now, create a basic template
+  const css = `:root {
+  /* Brand Colors */
+  --brand-primary: #8CFFE6;
+  --brand-primary-foreground: #FFFFFF;
+  --brand-secondary: #0A4D68;
+  --brand-secondary-foreground: #FFFFFF;
+
+  /* Semantic Colors */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', Menlo, Monaco, monospace;
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+[data-theme="dark"] {
+  /* Dark theme overrides */
+}
+`
+
+  fs.writeFileSync(outputPath, css)
+}
 
 program.parse()

@@ -1,0 +1,172 @@
+{
+  "ForSure Button": {
+    "prefix": ["fbutton", "fs-button"],
+    "body": [
+      "import { Button } from '@/components/ui/forsure-button';",
+      "",
+      "<Button variant=\"$1\" size=\"$2\">$3</Button>"
+    ],
+    "description": "ForSure Button component with variants and sizes"
+  },
+  "ForSure Card": {
+    "prefix": ["fcard", "fs-card"],
+    "body": [
+      "import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card';",
+      "",
+      "<Card variant=\"$1\" interactive={$2}>",
+      "  <CardHeader>",
+      "    <CardTitle>$3</CardTitle>",
+      "  </CardHeader>",
+      "  <CardContent>",
+      "    $4",
+      "  </CardContent>",
+      "</Card>"
+    ],
+    "description": "ForSure Card component with header and content"
+  },
+  "ForSure Badge": {
+    "prefix": ["fbadge", "fs-badge"],
+    "body": [
+      "import { Badge } from '@/components/ui/forsure-badge';",
+      "",
+      "<Badge variant=\"$1\" shape=\"$2\">$3</Badge>"
+    ],
+    "description": "ForSure Badge component with variants and shapes"
+  },
+  "ForSure Input": {
+    "prefix": ["finput", "fs-input"],
+    "body": [
+      "import { Input } from '@/components/ui/forsure-input';",
+      "",
+      "<Input",
+      "  label=\"$1\"",
+      "  type=\"$2\"",
+      "  placeholder=\"$3\"",
+      "  error=\"$4\"",
+      "  helperText=\"$5\"",
+      "  required={$6}",
+      "/>"
+    ],
+    "description": "ForSure Input component with validation states"
+  },
+  "useResponsive Hook": {
+    "prefix": ["fresponsive", "fs-responsive"],
+    "body": [
+      "import { useResponsive } from '@/hooks/use-responsive';",
+      "",
+      "const { width, height, isMobile, isTablet, isDesktop, currentBreakpoint } = useResponsive();"
+    ],
+    "description": "ForSure useResponsive hook for responsive design"
+  },
+  "useAccessibility Hook": {
+    "prefix": ["faccessibility", "fs-accessibility"],
+    "body": [
+      "import { useAccessibility } from '@/hooks/use-accessibility';",
+      "",
+      "const { announce, trapFocus, screenReaderEnabled, keyboardNavigation } = useAccessibility();"
+    ],
+    "description": "ForSure useAccessibility hook for accessibility features"
+  },
+  "cn Utility": {
+    "prefix": ["fcn", "fs-cn"],
+    "body": [
+      "import { cn } from '@/lib/utils';",
+      "",
+      "cn('$1', $2)"
+    ],
+    "description": "ForSure cn utility for class name merging"
+  },
+  "ForSure Component Template": {
+    "prefix": ["fcomponent", "fs-component"],
+    "body": [
+      "import * as React from 'react'",
+      "import { cva, type VariantProps } from 'class-variance-authority'",
+      "import { cn } from '@/lib/utils'",
+      "import { ForSureComponentProps } from '@/lib/ui-types'",
+      "",
+      "const ${1:componentName}Variants = cva(",
+      "  '',",
+      "  {",
+      "    variants: {",
+      "      variant: {",
+      "        default: '',",
+      "        secondary: '',",
+      "        destructive: '',",
+      "        outline: '',",
+      "        ghost: '',",
+      "        link: '',",
+      "      },",
+      "      size: {",
+      "        sm: '',",
+      "        md: '',",
+      "        lg: '',",
+      "        xl: '',",
+      "      },",
+      "    },",
+      "    defaultVariants: {",
+      "      variant: 'default',",
+      "      size: 'md',",
+      "    },",
+      "  }",
+      ")",
+      "",
+      "export interface ${2:ComponentName}Props",
+      "  extends React.HTMLAttributes<HTMLDivElement>,",
+      "    VariantProps<typeof ${1:componentName}Variants>,",
+      "    Omit<ForSureComponentProps<HTMLDivElement>, 'size'> {",
+      "  asChild?: boolean",
+      "}",
+      "",
+      "const ${2:ComponentName} = React.forwardRef<HTMLDivElement, ${2:ComponentName}Props>(",
+      "  ({ className, variant, size, asChild = false, ...props }, ref) => {",
+      "    if (asChild) {",
+      "      return <>{props.children}</>",
+      "    }",
+      "    ",
+      "    return (",
+      "      <div",
+      "        className={cn(${1:componentName}Variants({ variant, size }), className)}",
+      "        ref={ref}",
+      "        {...props}",
+      "      />",
+      "    )",
+      "  }",
+      ")",
+      "${2:ComponentName}.displayName = '${2:ComponentName}'",
+      "",
+      "export { ${2:ComponentName}, ${1:componentName}Variants }"
+    ],
+    "description": "ForSure component template with variants and TypeScript"
+  },
+  "ForSure Hook Template": {
+    "prefix": ["fhook", "fs-hook"],
+    "body": [
+      "import { useState, useEffect, useCallback } from 'react'",
+      "",
+      "export interface Use${1:HookName}Options {",
+      "  // Add options here",
+      "}",
+      "",
+      "export interface Use${1:HookName}Return {",
+      "  // Add return values here",
+      "}",
+      "",
+      "export function use${1:HookName}(options: Use${1:HookName}Options = {}): Use${1:HookName}Return {",
+      "  const [state, setState] = useState(null)",
+      "",
+      "  const handler = useCallback(() => {",
+      "    // Add logic here",
+      "  }, [])",
+      "",
+      "  useEffect(() => {",
+      "    // Add effects here",
+      "  }, [])",
+      "",
+      "  return {",
+      "    // Return values here",
+      "  }",
+      "}"
+    ],
+    "description": "ForSure hook template with TypeScript"
+  }
+}

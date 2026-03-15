@@ -1,0 +1,1213 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ForSure Design System API",
+    "description": "Comprehensive API documentation for the ForSure Design System components, hooks, and utilities",
+    "version": "1.0.0",
+    "contact": {
+      "name": "ForSure Team",
+      "email": "design-system@forsure.com",
+      "url": "https://forsure.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "x-logo": {
+      "url": "https://forsure.com/logo.png",
+      "backgroundColor": "#8CFFE6"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.forsure.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://staging-api.forsure.com/v1",
+      "description": "Staging server"
+    },
+    {
+      "url": "http://localhost:3000/v1",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/components": {
+      "get": {
+        "summary": "List all components",
+        "description": "Retrieve a comprehensive list of all available ForSure components with their metadata",
+        "tags": ["Components"],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter components by category",
+            "schema": {
+              "type": "string",
+              "enum": ["forms", "layout", "feedback", "navigation", "data-display", "all"],
+              "default": "all"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by component status",
+            "schema": {
+              "type": "string",
+              "enum": ["stable", "beta", "alpha", "deprecated"],
+              "default": "stable"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of components",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComponentListResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new component",
+        "description": "Create a new ForSure component with specified configuration",
+        "tags": ["Components"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateComponentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Component created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComponentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/components/{componentId}": {
+      "get": {
+        "summary": "Get component details",
+        "description": "Retrieve detailed information about a specific component",
+        "tags": ["Components"],
+        "parameters": [
+          {
+            "name": "componentId",
+            "in": "path",
+            "required": true,
+            "description": "Component identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Component details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComponentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Component not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update component",
+        "description": "Update an existing component with new configuration",
+        "tags": ["Components"],
+        "parameters": [
+          {
+            "name": "componentId",
+            "in": "path",
+            "required": true,
+            "description": "Component identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateComponentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Component updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComponentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Component not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete component",
+        "description": "Delete a component from the design system",
+        "tags": ["Components"],
+        "parameters": [
+          {
+            "name": "componentId",
+            "in": "path",
+            "required": true,
+            "description": "Component identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Component deleted successfully"
+          },
+          "404": {
+            "description": "Component not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/components/{componentId}/props": {
+      "get": {
+        "summary": "Get component props schema",
+        "description": "Retrieve the props schema for a specific component",
+        "tags": ["Components"],
+        "parameters": [
+          {
+            "name": "componentId",
+            "in": "path",
+            "required": true,
+            "description": "Component identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Component props schema",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComponentPropsSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/components/{componentId}/examples": {
+      "get": {
+        "summary": "Get component examples",
+        "description": "Retrieve usage examples for a specific component",
+        "tags": ["Components"],
+        "parameters": [
+          {
+            "name": "componentId",
+            "in": "path",
+            "required": true,
+            "description": "Component identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Component examples",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComponentExamples"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hooks": {
+      "get": {
+        "summary": "List all hooks",
+        "description": "Retrieve a comprehensive list of all available ForSure hooks",
+        "tags": ["Hooks"],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter hooks by category",
+            "schema": {
+              "type": "string",
+              "enum": ["state", "effect", "utility", "accessibility", "all"],
+              "default": "all"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of hooks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HookListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hooks/{hookId}": {
+      "get": {
+        "summary": "Get hook details",
+        "description": "Retrieve detailed information about a specific hook",
+        "tags": ["Hooks"],
+        "parameters": [
+          {
+            "name": "hookId",
+            "in": "path",
+            "required": true,
+            "description": "Hook identifier",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hook details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HookResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tokens": {
+      "get": {
+        "summary": "Get design tokens",
+        "description": "Retrieve all design tokens used in the ForSure design system",
+        "tags": ["Design Tokens"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter tokens by type",
+            "schema": {
+              "type": "string",
+              "enum": ["colors", "typography", "spacing", "breakpoints", "shadows", "all"],
+              "default": "all"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Output format",
+            "schema": {
+              "type": "string",
+              "enum": ["json", "css", "scss", "less"],
+              "default": "json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Design tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DesignTokensResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tokens/validate": {
+      "post": {
+        "summary": "Validate token usage",
+        "description": "Validate if design tokens are being used correctly in a project",
+        "tags": ["Design Tokens"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateTokensRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateTokensResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/utilities": {
+      "get": {
+        "summary": "List all utilities",
+        "description": "Retrieve a comprehensive list of all available utility functions",
+        "tags": ["Utilities"],
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter utilities by category",
+            "schema": {
+              "type": "string",
+              "enum": ["class-names", "colors", "responsive", "validation", "formatting", "all"],
+              "default": "all"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of utilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UtilityListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accessibility/audit": {
+      "post": {
+        "summary": "Audit accessibility",
+        "description": "Perform accessibility audit on components or project",
+        "tags": ["Accessibility"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccessibilityAuditRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Accessibility audit results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessibilityAuditResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/usage": {
+      "get": {
+        "summary": "Get usage analytics",
+        "description": "Retrieve usage analytics for components and design system",
+        "tags": ["Analytics"],
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "description": "Time period for analytics",
+            "schema": {
+              "type": "string",
+              "enum": ["day", "week", "month", "quarter", "year"],
+              "default": "month"
+            }
+          },
+          {
+            "name": "componentId",
+            "in": "query",
+            "description": "Filter by specific component",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage analytics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsageAnalyticsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ComponentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Component identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Component name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Component description"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["forms", "layout", "feedback", "navigation", "data-display"],
+            "description": "Component category"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["stable", "beta", "alpha", "deprecated"],
+            "description": "Component status"
+          },
+          "version": {
+            "type": "string",
+            "description": "Component version"
+          },
+          "props": {
+            "$ref": "#/components/schemas/ComponentPropsSchema"
+          },
+          "examples": {
+            "$ref": "#/components/schemas/ComponentExamples"
+          },
+          "accessibility": {
+            "$ref": "#/components/schemas/AccessibilityInfo"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        }
+      },
+      "ComponentListResponse": {
+        "type": "object",
+        "properties": {
+          "components": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComponentResponse"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Pagination"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of components"
+          }
+        }
+      },
+      "CreateComponentRequest": {
+        "type": "object",
+        "required": ["name", "category"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Component name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Component description"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["forms", "layout", "feedback", "navigation", "data-display"],
+            "description": "Component category"
+          },
+          "props": {
+            "$ref": "#/components/schemas/ComponentPropsSchema"
+          },
+          "examples": {
+            "$ref": "#/components/schemas/ComponentExamples"
+          }
+        }
+      },
+      "UpdateComponentRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Component name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Component description"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["stable", "beta", "alpha", "deprecated"],
+            "description": "Component status"
+          },
+          "props": {
+            "$ref": "#/components/schemas/ComponentPropsSchema"
+          }
+        }
+      },
+      "ComponentPropsSchema": {
+        "type": "object",
+        "properties": {
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PropDefinition"
+            }
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "variants": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "PropDefinition": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Prop type"
+          },
+          "default": {
+            "description": "Default value"
+          },
+          "description": {
+            "type": "string",
+            "description": "Prop description"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether prop is required"
+          }
+        }
+      },
+      "ComponentExamples": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Example title"
+            },
+            "description": {
+              "type": "string",
+              "description": "Example description"
+            },
+            "code": {
+              "type": "string",
+              "description": "Example code"
+            },
+            "sandbox": {
+              "type": "string",
+              "description": "CodeSandbox URL"
+            }
+          }
+        }
+      },
+      "AccessibilityInfo": {
+        "type": "object",
+        "properties": {
+          "wcagCompliant": {
+            "type": "boolean",
+            "description": "WCAG compliance status"
+          },
+          "keyboardNavigable": {
+            "type": "boolean",
+            "description": "Keyboard navigation support"
+          },
+          "screenReaderSupport": {
+            "type": "boolean",
+            "description": "Screen reader support"
+          },
+          "ariaAttributes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Supported ARIA attributes"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Accessibility notes"
+          }
+        }
+      },
+      "HookResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Hook identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Hook name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Hook description"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["state", "effect", "utility", "accessibility"],
+            "description": "Hook category"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HookParameter"
+            }
+          },
+          "returnValue": {
+            "$ref": "#/components/schemas/HookReturnValue"
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "code": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "HookParameter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Parameter name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Parameter type"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether parameter is required"
+          },
+          "default": {
+            "description": "Default value"
+          },
+          "description": {
+            "type": "string",
+            "description": "Parameter description"
+          }
+        }
+      },
+      "HookReturnValue": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Return value type"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "Return value description"
+          }
+        }
+      },
+      "HookListResponse": {
+        "type": "object",
+        "properties": {
+          "hooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HookResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of hooks"
+          }
+        }
+      },
+      "DesignTokensResponse": {
+        "type": "object",
+        "properties": {
+          "colors": {
+            "type": "object",
+            "description": "Color tokens"
+          },
+          "typography": {
+            "type": "object",
+            "description": "Typography tokens"
+          },
+          "spacing": {
+            "type": "object",
+            "description": "Spacing tokens"
+          },
+          "breakpoints": {
+            "type": "object",
+            "description": "Breakpoint tokens"
+          },
+          "shadows": {
+            "type": "object",
+            "description": "Shadow tokens"
+          },
+          "animations": {
+            "type": "object",
+            "description": "Animation tokens"
+          }
+        }
+      },
+      "ValidateTokensRequest": {
+        "type": "object",
+        "required": ["projectPath"],
+        "properties": {
+          "projectPath": {
+            "type": "string",
+            "description": "Project path to validate"
+          },
+          "strict": {
+            "type": "boolean",
+            "default": false,
+            "description": "Strict validation mode"
+          }
+        }
+      },
+      "ValidateTokensResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Validation result"
+          },
+          "issues": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            }
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Validation score"
+          }
+        }
+      },
+      "ValidationIssue": {
+        "type": "object",
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["error", "warning", "info"],
+            "description": "Issue severity"
+          },
+          "message": {
+            "type": "string",
+            "description": "Issue message"
+          },
+          "file": {
+            "type": "string",
+            "description": "File where issue was found"
+          },
+          "line": {
+            "type": "integer",
+            "description": "Line number"
+          }
+        }
+      },
+      "UtilityListResponse": {
+        "type": "object",
+        "properties": {
+          "utilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UtilityResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of utilities"
+          }
+        }
+      },
+      "UtilityResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Utility function name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Utility description"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["class-names", "colors", "responsive", "validation", "formatting"],
+            "description": "Utility category"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UtilityParameter"
+            }
+          },
+          "returnValue": {
+            "type": "string",
+            "description": "Return value type"
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "code": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "UtilityParameter": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Parameter name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Parameter type"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether parameter is required"
+          },
+          "description": {
+            "type": "string",
+            "description": "Parameter description"
+          }
+        }
+      },
+      "AccessibilityAuditRequest": {
+        "type": "object",
+        "required": ["target"],
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Target to audit (component ID or project path)"
+          },
+          "level": {
+            "type": "string",
+            "enum": ["AA", "AAA"],
+            "default": "AA",
+            "description": "WCAG compliance level"
+          },
+          "strict": {
+            "type": "boolean",
+            "default": false,
+            "description": "Strict audit mode"
+          }
+        }
+      },
+      "AccessibilityAuditResponse": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Accessibility score"
+          },
+          "compliant": {
+            "type": "boolean",
+            "description": "WCAG compliance status"
+          },
+          "violations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccessibilityViolation"
+            }
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Improvement recommendations"
+          }
+        }
+      },
+      "AccessibilityViolation": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "string",
+            "description": "WCAG rule violated"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "serious", "moderate", "minor"],
+            "description": "Violation severity"
+          },
+          "description": {
+            "type": "string",
+            "description": "Violation description"
+          },
+          "element": {
+            "type": "string",
+            "description": "Element causing violation"
+          },
+          "fix": {
+            "type": "string",
+            "description": "Suggested fix"
+          }
+        }
+      },
+      "UsageAnalyticsResponse": {
+        "type": "object",
+        "properties": {
+          "period": {
+            "type": "string",
+            "description": "Analytics period"
+          },
+          "totalUsage": {
+            "type": "integer",
+            "description": "Total usage count"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComponentUsage"
+            }
+          },
+          "trends": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Usage trends over time"
+          }
+        }
+      },
+      "ComponentUsage": {
+        "type": "object",
+        "properties": {
+          "componentId": {
+            "type": "string",
+            "description": "Component identifier"
+          },
+          "usage": {
+            "type": "integer",
+            "description": "Usage count"
+          },
+          "trend": {
+            "type": "string",
+            "enum": ["up", "down", "stable"],
+            "description": "Usage trend"
+          },
+          "change": {
+            "type": "number",
+            "description": "Percentage change"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "Current page"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Items per page"
+          },
+          "totalPages": {
+            "type": "integer",
+            "description": "Total pages"
+          },
+          "hasNext": {
+            "type": "boolean",
+            "description": "Has next page"
+          },
+          "hasPrev": {
+            "type": "boolean",
+            "description": "Has previous page"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["error", "message"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error type"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Components",
+      "description": "ForSure component management"
+    },
+    {
+      "name": "Hooks",
+      "description": "ForSure hook documentation"
+    },
+    {
+      "name": "Design Tokens",
+      "description": "Design token management"
+    },
+    {
+      "name": "Utilities",
+      "description": "Utility function documentation"
+    },
+    {
+      "name": "Accessibility",
+      "description": "Accessibility features and auditing"
+    },
+    {
+      "name": "Analytics",
+      "description": "Usage analytics and metrics"
+    }
+  ]
+}

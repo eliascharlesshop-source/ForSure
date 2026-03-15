@@ -1,0 +1,303 @@
+{
+  "name": "forsure-quantum-language",
+  "displayName": "ForSure Quantum Language Support",
+  "description": "Quantum computing language support with syntax highlighting, IntelliSense, and advanced features for ForSure Design System",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Languages",
+    "Snippets",
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "quantum",
+    "quantum computing",
+    "forsure",
+    "design system",
+    "syntax highlighting",
+    "intellisense",
+    "superposition",
+    "entanglement",
+    "measurement"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "quantum",
+        "aliases": [
+          "Quantum",
+          "quantum",
+          "q"
+        ],
+        "extensions": [
+          ".q",
+          ".quantum",
+          ".qc",
+          ".qs"
+        ],
+        "filenames": [
+          "quantum.config",
+          "quantum.circuit",
+          "*.quantum.js",
+          "*.quantum.ts"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/quantum-light.svg",
+          "dark": "./icons/quantum-dark.svg"
+        }
+      },
+      {
+        "id": "quantum-circuit",
+        "aliases": [
+          "Quantum Circuit",
+          "qcircuit"
+        ],
+        "extensions": [
+          ".qcircuit",
+          ".qcs"
+        ],
+        "configuration": "./circuit-configuration.json"
+      },
+      {
+        "id": "quantum-algorithm",
+        "aliases": [
+          "Quantum Algorithm",
+          "qalgo"
+        ],
+        "extensions": [
+          ".qalgo",
+          ".qal"
+        ],
+        "configuration": "./algorithm-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "quantum",
+        "scopeName": "source.quantum",
+        "path": "./syntaxes/quantum.tmLanguage.json",
+        "injectTo": [
+          "source.ts",
+          "source.tsx",
+          "source.js",
+          "source.jsx"
+        ]
+      },
+      {
+        "language": "quantum-circuit",
+        "scopeName": "source.quantum.circuit",
+        "path": "./syntaxes/quantum-circuit.tmLanguage.json"
+      },
+      {
+        "language": "quantum-algorithm",
+        "scopeName": "source.quantum.algorithm",
+        "path": "./syntaxes/quantum-algorithm.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "quantum",
+        "path": "./snippets/quantum.json"
+      },
+      {
+        "language": "quantum-circuit",
+        "path": "./snippets/quantum-circuit.json"
+      },
+      {
+        "language": "quantum-algorithm",
+        "path": "./snippets/quantum-algorithm.json"
+      }
+    ],
+    "configuration": {
+      "title": "ForSure Quantum Language",
+      "properties": {
+        "quantumLanguage.enableSyntaxHighlighting": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable quantum syntax highlighting"
+        },
+        "quantumLanguage.enableIntelliSense": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable quantum IntelliSense and auto-completion"
+        },
+        "quantumLanguage.enableRealTimeValidation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time quantum code validation"
+        },
+        "quantumLanguage.enablePerformanceMonitoring": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable quantum performance monitoring"
+        },
+        "quantumLanguage.highlightQuantumStates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight quantum states (|0⟩, |1⟩, |+⟩, etc.)"
+        },
+        "quantumLanguage.highlightQuantumGates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight quantum gates (H, CNOT, X, Y, Z, etc.)"
+        },
+        "quantumLanguage.showQuantumMetrics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show quantum metrics in status bar"
+        },
+        "quantumLanguage.autoCompleteQuantumFunctions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-complete quantum functions and operations"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "quantum.validateCircuit",
+        "title": "Validate Quantum Circuit",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.simulateCircuit",
+        "title": "Simulate Quantum Circuit",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.optimizeCircuit",
+        "title": "Optimize Quantum Circuit",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.generateSuperposition",
+        "title": "Generate Superposition State",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.createEntanglement",
+        "title": "Create Entanglement",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.performMeasurement",
+        "title": "Perform Quantum Measurement",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.showQuantumMetrics",
+        "title": "Show Quantum Metrics",
+        "category": "ForSure Quantum"
+      },
+      {
+        "command": "quantum.toggleQuantumMode",
+        "title": "Toggle Quantum Mode",
+        "category": "ForSure Quantum"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "quantum.validateCircuit",
+          "when": "editorLangId == quantum || editorLangId == quantum-circuit",
+          "group": "quantum"
+        },
+        {
+          "command": "quantum.simulateCircuit",
+          "when": "editorLangId == quantum || editorLangId == quantum-circuit",
+          "group": "quantum"
+        },
+        {
+          "command": "quantum.optimizeCircuit",
+          "when": "editorLangId == quantum || editorLangId == quantum-circuit",
+          "group": "quantum"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "quantum.validateCircuit",
+          "when": "editorLangId == quantum || editorLangId == quantum-circuit"
+        },
+        {
+          "command": "quantum.simulateCircuit",
+          "when": "editorLangId == quantum || editorLangId == quantum-circuit"
+        },
+        {
+          "command": "quantum.optimizeCircuit",
+          "when": "editorLangId == quantum || editorLangId == quantum-circuit"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "quantumExplorer",
+          "name": "Quantum Explorer",
+          "when": "workspaceHasQuantumFiles"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "quantum",
+          "title": "ForSure Quantum",
+          "icon": "./icons/quantum-activity.svg"
+        }
+      ]
+    },
+    "statusBar": [
+      {
+        "id": "quantum.status",
+        "name": "Quantum Status",
+        "alignment": "right"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onLanguage:quantum",
+    "onLanguage:quantum-circuit",
+    "onLanguage:quantum-algorithm",
+    "onCommand:quantum.*",
+    "workspaceContains:**/*.q",
+    "workspaceContains:**/*.quantum",
+    "workspaceContains:**/*.qcircuit"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "quantum-simulator": "^1.0.0",
+    "quantum-validator": "^1.0.0",
+    "quantum-optimizer": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forsure/quantum-language-support.git"
+  },
+  "bugs": {
+    "url": "https://github.com/forsure/quantum-language-support/issues"
+  },
+  "homepage": "https://github.com/forsure/quantum-language-support#readme",
+  "author": "ForSure Team",
+  "license": "MIT",
+  "publisher": "forsure"
+}
