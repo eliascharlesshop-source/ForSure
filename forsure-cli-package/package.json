@@ -4,12 +4,19 @@
   "description": "ForSure CLI - Advanced development tools for the ForSure design system",
   "main": "index.js",
   "bin": {
-    "forsure": "./bin/forsure"
+    "forsure": "bin/forsure"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["cli", "forsure", "file-structure", "generator", "design-system", "ui-components"],
+  "keywords": [
+    "cli",
+    "forsure",
+    "file-structure",
+    "generator",
+    "design-system",
+    "ui-components"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

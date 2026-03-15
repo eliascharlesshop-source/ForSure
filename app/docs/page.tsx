@@ -425,11 +425,17 @@ export default function DocsPage() {
                 </p>
                 <DocsCodeBlock
                   code={`# Install the CLI
-npm install -g forsure-cli
+npm install -g @forsure/cli
 
 # Or clone the repository
 git clone https://github.com/elicharlese/ForSure.git
-cd ForSure`}
+cd ForSure
+
+# Setup development environment
+forsure setup
+
+# Initialize a new project
+forsure init my-project.forsure`}
                   language="bash"
                 />
                 <div className="mt-2">

@@ -52,6 +52,9 @@ export default function CLIPage() {
     'Use forsure migrate to update database schema',
     'forsure build creates optimized production build',
     'forsure start runs the production server',
+    'forsure gen component creates new UI components',
+    'forsure design tokens generates CSS variables',
+    'forsure audit checks design system consistency',
   ]
 
   useEffect(() => {
@@ -85,9 +88,9 @@ export default function CLIPage() {
 
     if (terminalInput === 'help' || terminalInput === 'forsure help') {
       output =
-        'Available commands:\n  - forsure --version\n  - forsure dev\n  - forsure build\n  - forsure test\n  - forsure migrate\n  - forsure start'
+        'Available commands:\n  - forsure --version\n  - forsure dev\n  - forsure build\n  - forsure test\n  - forsure migrate\n  - forsure start\n  - forsure generate|gen <type>\n  - forsure design tokens\n  - forsure audit [--fix] [--report]'
     } else if (terminalInput === 'forsure --version') {
-      output = 'forsure-cli v0.1.1'
+      output = 'forsure-cli v0.2.0'
     } else if (terminalInput.startsWith('forsure dev')) {
       output =
         'Starting development server...\n✅ Development server started on http://localhost:3000'
@@ -97,6 +100,12 @@ export default function CLIPage() {
       output = 'Running tests...\n✅ All tests passed'
     } else if (terminalInput.startsWith('forsure migrate')) {
       output = 'Running database migrations...\n✅ Migrations completed'
+    } else if (terminalInput.startsWith('forsure generate') || terminalInput.startsWith('forsure gen')) {
+      output = 'Generating new component/hook/utility...\n✅ Generated successfully at components/ui/'
+    } else if (terminalInput.startsWith('forsure design tokens')) {
+      output = 'Generating CSS variables from design tokens...\n✅ Design tokens generated at styles/design-tokens.css'
+    } else if (terminalInput.startsWith('forsure audit')) {
+      output = 'Auditing design system usage and consistency...\n✅ Audit completed. No issues found.'
     } else if (terminalInput.startsWith('forsure start')) {
       output =
         'Starting production server...\n✅ Production server started on http://localhost:3000'
@@ -132,7 +141,7 @@ export default function CLIPage() {
                 </h1>
               </div>
               <Badge variant="outline" className="w-fit">
-                v0.1.1
+                v0.2.0
               </Badge>
             </div>
             <p className="text-lg md:text-xl text-muted-foreground">
@@ -275,7 +284,7 @@ export default function CLIPage() {
             </CardContent>
             <CardFooter className="border-t pt-4 text-xs text-muted-foreground">
               Try: forsure --version, forsure dev, forsure build, forsure test,
-              clear
+              forsure gen component, forsure design tokens, forsure audit, clear
             </CardFooter>
           </Card>
         </div>
@@ -469,6 +478,131 @@ export default function CLIPage() {
                       </div>
                     </AccordionContent>
                   </AccordionItem>
+
+                  <AccordionItem value="generate">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="mr-2 font-mono">
+                          generate|gen
+                        </Badge>
+                        <span>Generate components, hooks, utilities</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 pl-4">
+                        <p className="text-sm text-muted-foreground">
+                          Generate new React components, hooks, utilities, pages, and layouts with interactive prompts and templates.
+                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
+                          <CodeExample code={`forsure generate <type> [options]`} language="bash" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">
+                            Examples:
+                          </h4>
+                          <CodeExample
+                            code={`# Generate a new component
+forsure gen component --name button
+
+# Generate a hook with tests
+forsure gen hook --name use-data --test
+
+# Generate a utility with Storybook
+forsure gen utility --name format --storybook`}
+                            language="bash"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Options:</h4>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <div><code className="font-mono">-n, --name &lt;name&gt;</code> - Component/hook/utility name</div>
+                            <div><code className="font-mono">-d, --dir &lt;directory&gt;</code> - Target directory</div>
+                            <div><code className="font-mono">-t, --template &lt;template&gt;</code> - Template to use</div>
+                            <div><code className="font-mono">--storybook</code> - Generate Storybook stories</div>
+                            <div><code className="font-mono">--test</code> - Generate test files</div>
+                            <div><code className="font-mono">--typescript</code> - Generate TypeScript definitions</div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="design">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="mr-2 font-mono">
+                          design
+                        </Badge>
+                        <span>Design system management</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 pl-4">
+                        <p className="text-sm text-muted-foreground">
+                          Manage design system tokens, generate CSS variables, and maintain design consistency.
+                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Subcommands:</h4>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <div><code className="font-mono">forsure design tokens</code> - Generate CSS variables from design tokens</div>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Example:</h4>
+                          <CodeExample
+                            code={`forsure design tokens`}
+                            language="bash"
+                          />
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="audit">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <Badge variant="outline" className="mr-2 font-mono">
+                          audit
+                        </Badge>
+                        <span>Audit design system usage</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3 pl-4">
+                        <p className="text-sm text-muted-foreground">
+                          Audit design system usage and consistency across the project. Check for unused components, inconsistent styling, and accessibility issues.
+                        </p>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Usage:</h4>
+                          <CodeExample code={`forsure audit [options]`} language="bash" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">
+                            Examples:
+                          </h4>
+                          <CodeExample
+                            code={`# Run audit
+forsure audit
+
+# Run audit and auto-fix issues
+forsure audit --fix
+
+# Generate detailed report
+forsure audit --report`}
+                            language="bash"
+                          />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold mb-1">Options:</h4>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <div><code className="font-mono">--fix</code> - Auto-fix issues when possible</div>
+                            <div><code className="font-mono">--report</code> - Generate detailed report</div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
                 </Accordion>
               </CardContent>
             </Card>
@@ -586,6 +720,60 @@ forsure test
 
 # Run tests in watch mode during development
 npm run test:watch`}
+                          language="bash"
+                          className="mb-4"
+                        />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="component-generation">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <span>Component Generation Workflow</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        <p className="text-sm text-muted-foreground">
+                          Generate new components, hooks, and utilities with the ForSure design system.
+                        </p>
+                        <CodeExample
+                          code={`# Generate a new button component
+forsure gen component --name button
+
+# Generate a hook with tests and Storybook
+forsure gen hook --name use-data --test --storybook
+
+# Generate a utility function
+forsure gen utility --name format --typescript`}
+                          language="bash"
+                          className="mb-4"
+                        />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="design-system-workflow">
+                    <AccordionTrigger className="hover:no-underline">
+                      <div className="flex items-center">
+                        <span>Design System Management</span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-3">
+                        <p className="text-sm text-muted-foreground">
+                          Manage design tokens and audit design system consistency.
+                        </p>
+                        <CodeExample
+                          code={`# Generate CSS variables from design tokens
+forsure design tokens
+
+# Audit design system for consistency
+forsure audit
+
+# Audit and auto-fix issues
+forsure audit --fix --report`}
                           language="bash"
                           className="mb-4"
                         />
