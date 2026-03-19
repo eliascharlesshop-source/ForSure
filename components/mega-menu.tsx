@@ -133,27 +133,8 @@ export function MegaMenu({ mode, onModeChange, className }: MegaMenuProps) {
           {
             variant: "ghost",
             size: "sm",
-            className: "flex items-center gap-2 px-3 py-2 hover:bg-muted/50 relative",
+            className: "flex items-center gap-2 px-3 py-2 hover:bg-muted/50",
           },
-          React.createElement(
-            "div",
-            {
-              className: "absolute -top-1 -right-1",
-            },
-            React.createElement(
-              "div",
-              {
-                className: "w-2 h-2 bg-red-500 rounded-full flex items-center justify-center",
-              },
-              React.createElement(
-                "span",
-                {
-                  className: "text-xs text-white font-bold",
-                },
-                "3"
-              )
-            )
-          ),
           React.createElement(
             "div",
             {

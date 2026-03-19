@@ -479,10 +479,10 @@ export default function ComponentLibraryClientPage() {
               Neural Network Enhanced
             </Badge>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-teal-500 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#8dffe6' }}>
             Component Library
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-xl max-w-2xl mx-auto mb-8" style={{ color: '#8dffe6' }}>
             Discover and use pre-built components with ForSure prompting
             language. Our neural network adapts components to match your coding
             style.

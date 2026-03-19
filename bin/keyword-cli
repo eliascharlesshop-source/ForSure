@@ -1,0 +1,470 @@
+#!/usr/bin/env node
+
+// CLI tool for interacting with the dev and design keyword database
+// Provides search, analytics, and management capabilities
+
+import { Command } from 'commander';
+import inquirer from 'inquirer';
+import chalk from 'chalk';
+import Table from 'cli-table3';
+import fs from 'fs/promises';
+import path from 'path';
+
+import {
+  advancedSearch,
+  getKeywordSuggestions,
+  getKeywordAnalytics,
+  findKeywordsByContext,
+  getKeywordNetwork,
+  exportKeywords,
+  importKeywords,
+  searchKeywords,
+  getKeywordsByCategory,
+  getHighPriorityKeywords
+} from '../lib/keyword-search.js';
+
+const program = new Command();
+
+// CLI styling
+const styles = {
+  success: chalk.green,
+  error: chalk.red,
+  warning: chalk.yellow,
+  info: chalk.blue,
+  highlight: chalk.cyan,
+  keyword: chalk.magenta
+};
+
+// Initialize CLI
+program
+  .name('keyword-cli')
+  .description('Dev & Design Keyword Database CLI')
+  .version('1.0.0');
+
+// Search command
+program
+  .command('search')
+  .description('Search keywords in the database')
+  .argument('<query>', 'Search query')
+  .option('-c, --category <category>', 'Filter by category (dev, design, both)')
+  .option('-s, --subcategory <subcategory>', 'Filter by subcategory')
+  .option('-p, --priority <priority>', 'Filter by priority (high, medium, low)')
+  .option('-l, --limit <limit>', 'Limit number of results', '10')
+  .option('--no-synonyms', 'Don\'t include synonyms in search')
+  .option('--no-related', 'Don\'t include related keywords in search')
+  .option('--no-fuzzy', 'Disable fuzzy search')
+  .action(async (query, options) => {
+    try {
+      console.log(styles.info(`\n🔍 Searching for: "${query}"\n`));
+
+      const results = advancedSearch(query, {
+        category: options.category,
+        subcategory: options.subcategory,
+        priority: options.priority,
+        includeSynonyms: options.synonyms,
+        includeRelated: options.related,
+        fuzzySearch: options.fuzzy,
+        limit: parseInt(options.limit)
+      });
+
+      if (results.length === 0) {
+        console.log(styles.warning('No results found.'));
+        return;
+      }
+
+      // Display results in a table
+      const table = new Table({
+        head: [
+          styles.info('Keyword'),
+          styles.info('Category'),
+          styles.info('Priority'),
+          styles.info('Score'),
+          styles.info('Matched Fields')
+        ],
+        colWidths: [20, 10, 10, 10, 25]
+      });
+
+      results.forEach(result => {
+        table.push([
+          styles.keyword(result.keyword.keyword),
+          result.keyword.category,
+          result.keyword.priority,
+          result.relevanceScore.toString(),
+          result.matchedFields.join(', ')
+        ]);
+      });
+
+      console.log(table.toString());
+
+      // Show detailed info for top result
+      if (results.length > 0) {
+        const top = results[0].keyword;
+        console.log('\n' + styles.highlight('📋 Top Result Details:'));
+        console.log(styles.keyword(`Keyword: ${top.keyword}`));
+        console.log(`Category: ${top.category} > ${top.subcategory}`);
+        console.log(`Priority: ${top.priority}`);
+        console.log(`\nDefinition: ${top.definition}`);
+        
+        if (top.synonyms.length > 0) {
+          console.log(`\nSynonyms: ${top.synonyms.join(', ')}`);
+        }
+        
+        if (top.related.length > 0) {
+          console.log(`Related: ${top.related.join(', ')}`);
+        }
+        
+        if (top.context) {
+          console.log(`\nContext: ${top.context}`);
+        }
+        
+        if (top.examples && top.examples.length > 0) {
+          console.log(`\nExamples:`);
+          top.examples.forEach(example => {
+            console.log(`  • ${example}`);
+          });
+        }
+      }
+
+    } catch (error) {
+      console.error(styles.error(`❌ Error: ${error.message}`));
+    }
+  });
+
+// Suggestions command
+program
+  .command('suggest')
+  .description('Get keyword suggestions based on partial input')
+  .argument('<partial>', 'Partial keyword input')
+  .option('-l, --limit <limit>', 'Number of suggestions', '5')
+  .action(async (partial, options) => {
+    try {
+      console.log(styles.info(`\n💡 Suggestions for: "${partial}"\n`));
+
+      const suggestions = getKeywordSuggestions(partial, parseInt(options.limit));
+
+      if (suggestions.length === 0) {
+        console.log(styles.warning('No suggestions found.'));
+        return;
+      }
+
+      const table = new Table({
+        head: [
+          styles.info('Suggestion'),
+          styles.info('Confidence'),
+          styles.info('Category'),
+          styles.info('Reason')
+        ],
+        colWidths: [20, 12, 12, 30]
+      });
+
+      suggestions.forEach(suggestion => {
+        const confidenceColor = suggestion.confidence > 70 ? styles.success : 
+                               suggestion.confidence > 40 ? styles.warning : styles.error;
+        
+        table.push([
+          styles.keyword(suggestion.keyword),
+          confidenceColor(`${suggestion.confidence}%`),
+          suggestion.category,
+          suggestion.reason
+        ]);
+      });
+
+      console.log(table.toString());
+
+    } catch (error) {
+      console.error(styles.error(`❌ Error: ${error.message}`));
+    }
+  });
+
+// Analytics command
+program
+  .command('analytics')
+  .description('Show keyword database analytics')
+  .action(async () => {
+    try {
+      console.log(styles.info('\n📊 Keyword Database Analytics\n'));
+
+      const analytics = getKeywordAnalytics();
+
+      console.log(styles.highlight('📈 Overview:'));
+      console.log(`Total Keywords: ${analytics.totalKeywords}`);
+
+      console.log('\n' + styles.highlight('📂 Category Distribution:'));
+      Object.entries(analytics.categoryDistribution).forEach(([category, count]) => {
+        const percentage = ((count / analytics.totalKeywords) * 100).toFixed(1);
+        console.log(`  ${category}: ${count} (${percentage}%)`);
+      });
+
+      console.log('\n' + styles.highlight('⭐ Priority Distribution:'));
+      Object.entries(analytics.priorityDistribution).forEach(([priority, count]) => {
+        const percentage = ((count / analytics.totalKeywords) * 100).toFixed(1);
+        console.log(`  ${priority}: ${count} (${percentage}%)`);
+      });
+
+      console.log('\n' + styles.highlight('🔥 Trending Keywords:'));
+      analytics.trending.forEach((keyword, index) => {
+        console.log(`  ${index + 1}. ${styles.keyword(keyword)}`);
+      });
+
+      console.log('\n' + styles.highlight('🎯 High Priority Keywords:'));
+      analytics.mostRelevant.slice(0, 10).forEach((keyword, index) => {
+        console.log(`  ${index + 1}. ${styles.keyword(keyword.keyword)} (${keyword.category})`);
+      });
+
+    } catch (error) {
+      console.error(styles.error(`❌ Error: ${error.message}`));
+    }
+  });
+
+// Categories command
+program
+  .command('categories')
+  .description('List all categories and their keywords')
+  .option('-c, --category <category>', 'Filter by category (dev, design, both)')
+  .action(async (options) => {
+    try {
+      console.log(styles.info('\n📂 Categories and Keywords\n'));
+
+      const categories = options.category ? 
+        getKeywordsByCategory(options.category) : 
+        [...getKeywordsByCategory('dev'), ...getKeywordsByCategory('design'), ...getKeywordsByCategory('both')];
+
+      categories.forEach(category => {
+        console.log(styles.highlight(`\n📁 ${category.name} (${category.subcategory})`));
+        console.log(`Description: ${category.description}`);
+        console.log(`Keywords: ${category.keywords.length}`);
+
+        const table = new Table({
+          head: ['Keyword', 'Priority', 'Related Count'],
+          colWidths: [25, 10, 15]
+        });
+
+        category.keywords.forEach(keyword => {
+          table.push([
+            styles.keyword(keyword.keyword),
+            keyword.priority,
+            keyword.related.length.toString()
+          ]);
+        });
+
+        console.log(table.toString());
+      });
+
+    } catch (error) {
+      console.error(styles.error(`❌ Error: ${error.message}`));
+    }
+  });
+
+// Network command
+program
+  .command('network')
+  .description('Show keyword network and relationships')
+  .argument('<keyword>', 'Keyword to analyze')
+  .action(async (keyword) => {
+    try {
+      console.log(styles.info(`\n🕸️  Keyword Network: "${keyword}"\n`));
+
+      const network = getKeywordNetwork(keyword.toLowerCase());
+
+      console.log(styles.highlight('🎯 Target Keyword:'));
+      console.log(styles.keyword(network.keyword.keyword));
+      console.log(`Category: ${network.keyword.category} > ${network.keyword.subcategory}`);
+      console.log(`Definition: ${network.keyword.definition}`);
+
+      if (network.synonyms.length > 0) {
+        console.log('\n' + styles.highlight('🔄 Synonyms:'));
+        network.synonyms.forEach(syn => {
+          console.log(`  • ${styles.keyword(syn.keyword)} (${syn.category})`);
+        });
+      }
+
+      if (network.related.length > 0) {
+        console.log('\n' + styles.highlight('🔗 Related Keywords:'));
+        network.related.forEach(rel => {
+          console.log(`  • ${styles.keyword(rel.keyword)} (${rel.category})`);
+        });
+      }
+
+      if (network.category.length > 0) {
+        console.log('\n' + styles.highlight('📂 Same Category:'));
+        network.category.slice(0, 10).forEach(cat => {
+          console.log(`  • ${styles.keyword(cat.keyword)} (${cat.priority})`);
+        });
+        if (network.category.length > 10) {
+          console.log(`  ... and ${network.category.length - 10} more`);
+        }
+      }
+
+    } catch (error) {
+      console.error(styles.error(`❌ Error: ${error.message}`));
+    }
+  });
+
+// Export command
+program
+  .command('export')
+  .description('Export keyword database to file')
+  .option('-f, --format <format>', 'Export format (json, csv, xml)', 'json')
+  .option('-o, --output <file>', 'Output file path')
+  .action(async (options) => {
+    try {
+      console.log(styles.info('\n📤 Exporting Keyword Database\n'));
+
+      const data = exportKeywords(options.format);
+      const filename = options.output || `keywords.${options.format}`;
+      
+      await fs.writeFile(filename, data, 'utf8');
+      
+      console.log(styles.success(`✅ Successfully exported to ${filename}`));
+      console.log(`Format: ${options.format}`);
+      console.log(`Size: ${data.length} characters`);
+
+    } catch (error) {
+      console.error(styles.error(`❌ Error: ${error.message}`));
+    }
+  });
+
+// Interactive mode
+program
+  .command('interactive')
+  .description('Start interactive keyword exploration mode')
+  .action(async () => {
+    console.log(styles.info('\n🎮 Interactive Keyword Explorer\n'));
+
+    while (true) {
+      const { action } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'action',
+          message: 'What would you like to do?',
+          choices: [
+            { name: '🔍 Search keywords', value: 'search' },
+            { name: '💡 Get suggestions', value: 'suggest' },
+            { name: '📊 View analytics', value: 'analytics' },
+            { name: '📂 Browse categories', value: 'categories' },
+            { name: '🕸️  Explore keyword network', value: 'network' },
+            { name: '🎯 View high priority keywords', value: 'high-priority' },
+            { name: '🚪 Exit', value: 'exit' }
+          ]
+        }
+      ]);
+
+      if (action === 'exit') {
+        console.log(styles.success('\n👋 Goodbye!\n'));
+        break;
+      }
+
+      switch (action) {
+        case 'search':
+          const { query } = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'query',
+              message: 'Enter search query:'
+            }
+          ]);
+          
+          const results = advancedSearch(query, { limit: 5 });
+          if (results.length > 0) {
+            console.log(styles.success('\n🎯 Top Results:'));
+            results.forEach((result, index) => {
+              console.log(`${index + 1}. ${styles.keyword(result.keyword.keyword)} (${result.relevanceScore}% match)`);
+            });
+          } else {
+            console.log(styles.warning('No results found.'));
+          }
+          break;
+
+        case 'suggest':
+          const { partial } = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'partial',
+              message: 'Enter partial keyword:'
+            }
+          ]);
+          
+          const suggestions = getKeywordSuggestions(partial, 5);
+          if (suggestions.length > 0) {
+            console.log(styles.success('\n💡 Suggestions:'));
+            suggestions.forEach((suggestion, index) => {
+              console.log(`${index + 1}. ${styles.keyword(suggestion.keyword)} (${suggestion.confidence}% confidence)`);
+            });
+          } else {
+            console.log(styles.warning('No suggestions found.'));
+          }
+          break;
+
+        case 'analytics':
+          const analytics = getKeywordAnalytics();
+          console.log(styles.success(`\n📊 Database contains ${analytics.totalKeywords} keywords`));
+          console.log(`📂 Categories: ${Object.keys(analytics.categoryDistribution).join(', ')}`);
+          console.log(`🔥 Trending: ${analytics.trending.slice(0, 3).join(', ')}`);
+          break;
+
+        case 'categories':
+          const { category } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'category',
+              message: 'Select category:',
+              choices: ['dev', 'design', 'both', 'all']
+            }
+          ]);
+          
+          const categories = category === 'all' ? 
+            [...getKeywordsByCategory('dev'), ...getKeywordsByCategory('design'), ...getKeywordsByCategory('both')] :
+            getKeywordsByCategory(category);
+          
+          console.log(styles.success(`\n📂 Found ${categories.length} categories`));
+          categories.slice(0, 3).forEach(cat => {
+            console.log(`  • ${cat.name}: ${cat.keywords.length} keywords`);
+          });
+          break;
+
+        case 'network':
+          const { networkKeyword } = await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'networkKeyword',
+              message: 'Enter keyword to explore:'
+            }
+          ]);
+          
+          try {
+            const network = getKeywordNetwork(networkKeyword.toLowerCase());
+            console.log(styles.success(`\n🕸️  ${network.keyword.keyword} network:`));
+            console.log(`  🔄 ${network.synonyms.length} synonyms`);
+            console.log(`  🔗 ${network.related.length} related keywords`);
+            console.log(`  📂 ${network.category.length} same category keywords`);
+          } catch (error) {
+            console.log(styles.warning(`Keyword "${networkKeyword}" not found`));
+          }
+          break;
+
+        case 'high-priority':
+          const highPriority = getHighPriorityKeywords();
+          console.log(styles.success(`\n🎯 ${highPriority.length} high priority keywords:`));
+          highPriority.slice(0, 10).forEach((keyword, index) => {
+            console.log(`${index + 1}. ${styles.keyword(keyword.keyword)} (${keyword.category})`);
+          });
+          break;
+      }
+
+      console.log('\n' + '─'.repeat(50));
+    }
+  });
+
+// Parse command line arguments
+program.parse();
+
+// Handle uncaught errors
+process.on('uncaughtException', (error) => {
+  console.error(styles.error(`❌ Uncaught error: ${error.message}`));
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(styles.error(`❌ Unhandled rejection: ${reason}`));
+  process.exit(1);
+});

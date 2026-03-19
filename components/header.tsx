@@ -107,18 +107,16 @@ export default function Header({ mode = 'design', onModeChange }: HeaderProps = 
               Components
             </span>
           </Link>
-          <div className="h-6 w-px bg-border mr-4 hidden md:block"></div>
+          {/* MegaMenu and New Project Button - moved to top nav */}
+          <MegaMenu 
+            mode={mode} 
+            onModeChange={onModeChange || ((mode) => console.log('Mode changed to:', mode))} 
+          />
+          <div className="h-6 w-px bg-border mx-2 hidden md:block"></div>
 
-          {/* MegaMenu - only show on /app route */}
-          {pathname?.startsWith('/app') && (
-            <MegaMenu 
-              mode={mode} 
-              onModeChange={onModeChange || ((mode) => console.log('Mode changed to:', mode))} 
-            />
-          )}
-
+          <ModeToggle className="mx-2" />
           {isAuthenticated ? (
-            <UserNav />
+            <UserNav className="ml-2" />
           ) : (
             <>
               <Link href="/login">
@@ -126,14 +124,13 @@ export default function Header({ mode = 'design', onModeChange }: HeaderProps = 
                   Log in
                 </Button>
               </Link>
-              <Link href="/register" className="ml-[-8px]">
+              <Link href="/register" className="ml-2">
                 <Button variant="default" size="sm">
                   Sign up
                 </Button>
               </Link>
             </>
           )}
-          <ModeToggle />
         </nav>
 
         {/* Mobile navigation */}
