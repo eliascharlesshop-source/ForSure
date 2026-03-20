@@ -1,17 +1,16 @@
 // Prisma schema for ForSure project
-// Uses PostgreSQL with connection pooling for production
-// Supports both Prisma Client and Supabase integration
+// Uses SQLite for local development
+// Supports both Prisma Client integration
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider  = "sqlite"
   url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
   
-  // Production connection pool settings
+  // SQLite configuration
   relationMode = "prisma"
 }
 
@@ -78,7 +77,7 @@ enum BlogPostStatus {
 
 // Models
 model Profile {
-  id              String        @id @default(uuid()) @db.Uuid
+  id              String        @id @default(uuid())
   email           String        @unique
   name            String
   password_hash   String?
@@ -91,8 +90,8 @@ model Profile {
   github_username String?
   twitter_username String?
   linkedin_url    String?
-  skills          String[]
-  preferences     Json          @default("{}")
+  skills          Json
+  preferences     Json          @default("[]")
   is_verified     Boolean       @default(false)
   is_active       Boolean       @default(true)
   created_at      DateTime      @default(now())
@@ -114,25 +113,25 @@ model Profile {
 }
 
 model Project {
-  id                 String            @id @default(uuid()) @db.Uuid
+  id                 String            @id @default(uuid())
   name               String
   description        String?
   slug               String            @unique
   status             ProjectStatus     @default(active)
   visibility         ProjectVisibility @default(private)
-  owner_id           String            @db.Uuid
+  owner_id           String
   repository_url     String?
   demo_url           String?
   documentation_url  String?
-  tech_stack         String[]
-  tags               String[]
+  tech_stack         Json
+  tags               Json
   priority           ProjectPriority   @default(medium)
   progress           Int               @default(0)
   start_date         DateTime?
   end_date           DateTime?
-  budget_allocated   Decimal?          @db.Decimal(10, 2)
-  budget_spent       Decimal?          @default(0) @db.Decimal(10, 2)
-  metadata           Json              @default("{}")
+  budget_allocated   Float?
+  budget_spent       Float?      @default(0)
+  metadata           Json              @default("[]")
   created_at         DateTime          @default(now())
   updated_at         DateTime          @updatedAt
 
@@ -147,11 +146,11 @@ model Project {
 }
 
 model ProjectMember {
-  id           String            @id @default(uuid()) @db.Uuid
-  project_id   String            @db.Uuid
-  user_id      String            @db.Uuid
+  id           String            @id @default(uuid())
+  project_id   String
+  user_id      String
   role         ProjectMemberRole @default(member)
-  permissions  String[]
+  permissions  Json
   joined_at    DateTime          @default(now())
 
   // Relations
@@ -164,19 +163,19 @@ model ProjectMember {
 }
 
 model Task {
-  id             String       @id @default(uuid()) @db.Uuid
-  project_id     String       @db.Uuid
+  id             String       @id @default(uuid())
+  project_id     String
   title          String
   description    String?
   status         TaskStatus   @default(todo)
   priority       TaskPriority @default(medium)
-  assignee_id    String?      @db.Uuid
-  reporter_id    String?      @db.Uuid
+  assignee_id    String?
+  reporter_id    String?
   due_date       DateTime?
-  estimated_hours Decimal?    @db.Decimal(5, 2)
-  actual_hours    Decimal?    @db.Decimal(5, 2)
-  tags           String[]
-  metadata       Json         @default("{}")
+  estimated_hours Float?
+  actual_hours    Float?
+  tags           Json
+  metadata       Json         @default("[]")
   created_at     DateTime     @default(now())
   updated_at     DateTime     @updatedAt
 
@@ -191,14 +190,14 @@ model Task {
 }
 
 model Team {
-  id          String    @id @default(uuid()) @db.Uuid
+  id          String    @id @default(uuid())
   name        String
   description String?
   slug        String    @unique
-  owner_id    String    @db.Uuid
+  owner_id    String
   avatar_url  String?
   is_public   Boolean   @default(false)
-  settings    Json      @default("{}")
+  settings    Json      @default("[]")
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
 
@@ -208,9 +207,9 @@ model Team {
 }
 
 model TeamMember {
-  id        String         @id @default(uuid()) @db.Uuid
-  team_id   String         @db.Uuid
-  user_id   String         @db.Uuid
+  id        String         @id @default(uuid())
+  team_id   String
+  user_id   String
   role      TeamMemberRole @default(member)
   joined_at DateTime       @default(now())
 
@@ -224,15 +223,15 @@ model TeamMember {
 }
 
 model BlogPost {
-  id               String          @id @default(uuid()) @db.Uuid
+  id               String          @id @default(uuid())
   title            String
   slug             String          @unique
   content          String
   excerpt          String?
-  author_id        String          @db.Uuid
+  author_id        String
   status           BlogPostStatus  @default(draft)
   featured_image_url String?
-  tags             String[]
+  tags             Json
   seo_title        String?
   seo_description  String?
   view_count       Int             @default(0)
@@ -248,16 +247,16 @@ model BlogPost {
 }
 
 model Template {
-  id               String   @id @default(uuid()) @db.Uuid
+  id               String   @id @default(uuid())
   name             String
   description      String?
   category         String
   content          Json
   preview_image_url String?
-  creator_id       String   @db.Uuid
+  creator_id       String
   is_public        Boolean  @default(false)
   download_count   Int      @default(0)
-  tags             String[]
+  tags             Json
   version          String   @default("1.0.0")
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
@@ -270,16 +269,16 @@ model Template {
 }
 
 model FileUpload {
-  id                String   @id @default(uuid()) @db.Uuid
+  id                String   @id @default(uuid())
   filename          String
   original_filename String
   file_size         Int
   mime_type         String
   file_url          String
-  uploader_id       String   @db.Uuid
+  uploader_id       String
   entity_type       String?
-  entity_id         String?  @db.Uuid
-  metadata          Json     @default("{}")
+  entity_id         String?
+  metadata          Json     @default("[]")
   created_at        DateTime @default(now())
 
   // Relations
@@ -287,12 +286,12 @@ model FileUpload {
 }
 
 model Notification {
-  id         String   @id @default(uuid()) @db.Uuid
-  user_id    String   @db.Uuid
+  id         String   @id @default(uuid())
+  user_id    String
   type       String
   title      String
   message    String
-  data       Json     @default("{}")
+  data       Json     @default("[]")
   is_read    Boolean  @default(false)
   action_url String?
   created_at DateTime @default(now())
@@ -305,18 +304,18 @@ model Notification {
 }
 
 model Component {
-  id                String   @id @default(uuid()) @db.Uuid
+  id                String   @id @default(uuid())
   name              String
   slug              String   @unique
   description       String?
   category          String
-  tags              String[]
+  tags              Json
   prompt            String
   preview_image_url String?
   download_count    Int      @default(0)
   stars             Int      @default(0)
   is_public         Boolean  @default(true)
-  creator_id        String   @db.Uuid
+  creator_id        String
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
 
@@ -329,14 +328,14 @@ model Component {
 }
 
 model AuditLog {
-  id          String   @id @default(uuid()) @db.Uuid
-  user_id     String?  @db.Uuid
+  id          String   @id @default(uuid())
+  user_id     String?
   action      String
   entity_type String
-  entity_id   String?  @db.Uuid
+  entity_id   String?
   old_values  Json?
   new_values  Json?
-  ip_address  String?  @db.Inet
+  ip_address  String?
   user_agent  String?
   created_at  DateTime @default(now())
 

@@ -976,7 +976,7 @@ export default function ComponentLibraryClientPage() {
         <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg p-8 text-center">
           <Brain className="h-12 w-12 mx-auto mb-4" />
           <h2 className="text-2xl font-semibold mb-4">Ready to get started?</h2>
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6" style={{ color: '#8dffe6' }}>
             Explore our component library and start building your next project
             with ease.
           </p>
