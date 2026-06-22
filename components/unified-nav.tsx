@@ -122,7 +122,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
         {context === 'public' && (
           <>
             {/* Desktop Navigation */}
-            <nav className="flex-1 hidden md:flex items-center gap-6 mx-8">
+            <nav className="hidden md:flex items-center gap-6 mx-8">
               <Link href="/cli" className="flex items-center gap-1 group mr-4">
                 <Terminal className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
@@ -139,7 +139,11 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                 <Package className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
               </Link>
-              <div className="h-6 w-px bg-border mx-2"></div>
+            </nav>
+            
+            {/* Right Section - Theme & Auth (pushed to far right) */}
+            <div className="hidden md:flex items-center gap-4 ml-auto">
+              <div className="h-6 w-px bg-border"></div>
               <ModeToggle className="mx-2" />
               {isAuthenticated ? (
                 <UserNav className="ml-2" />
@@ -153,7 +157,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                   </Link>
                 </>
               )}
-            </nav>
+            </div>
           </>
         )}
 
