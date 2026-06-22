@@ -64,7 +64,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       {context === 'public' && <ScrollProgress />}
 
-      <div className="flex h-16 items-center justify-between px-[5px]">
+      <div className="container flex h-16 items-center px-4">
         {/* Left Section - Logo */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <Link href="/" className="flex items-center space-x-2">
@@ -97,7 +97,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
             <span
               className={`font-bold text-2xl ${
                 mounted && isDark ? 'text-primary' : 'text-secondary'
-              } hidden sm:inline`}
+              }`}
             >
               ForSure
             </span>
@@ -106,7 +106,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
 
         {/* Center Section - Breadcrumbs (app context only) */}
         {context === 'app' && (
-          <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center flex-1">
             <nav className="flex items-center text-sm">
               {breadcrumbs.map((crumb, i) => (
                 <div key={i} className="flex items-center">
@@ -119,37 +119,24 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
           </div>
         )}
 
-        {/* Right Section - Navigation Items */}
-        <div className="flex items-center gap-2">
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </button>
-
-          {/* Desktop Navigation */}
-          {context === 'public' && (
-            <nav className="hidden md:flex items-center gap-4">
-              <Link href="/cli" className="flex items-center gap-1 group">
+        {/* Navigation / Right Section */}
+        {context === 'public' && (
+          <>
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex flex-1 items-center gap-6 mx-8">
+              <Link href="/cli" className="flex items-center gap-1 group mr-4">
                 <Terminal className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
               </Link>
-              <Link href="/language" className="flex items-center gap-1 group">
+              <Link href="/language" className="flex items-center gap-1 group mr-4">
                 <Code className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Language</span>
               </Link>
-              <Link href="/docs" className="flex items-center gap-1 group">
+              <Link href="/docs" className="flex items-center gap-1 group mr-4">
                 <FileText className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Documentation</span>
               </Link>
-              <Link href="/components" className="flex items-center gap-1 group">
+              <Link href="/components" className="flex items-center gap-1 group mr-4">
                 <Package className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
               </Link>
@@ -172,64 +159,95 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                 </>
               )}
             </nav>
-          )}
-
-          {context === 'app' && (
-            <div className="hidden md:flex items-center gap-1">
-              <Button variant="ghost" size="icon" title="Share">
-                <Share2 className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" title="GitHub">
-                <Github className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" title="Deploy to Vercel">
-                <Cloud className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" title="Fork Chat">
-                <GitFork className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" title="Version">
-                <Tag className="h-4 w-4" />
-              </Button>
-              <div className="pl-1 border-l ml-1">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user?.avatar || '/placeholder.svg'} alt={user?.name || 'User'} />
-                        <AvatarFallback>
-                          {user?.name
-                            ? user.name.split(' ').map(n => n[0]).join('').toUpperCase()
-                            : 'U'}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">{user?.name || 'User'}</p>
-                        <p className="text-xs leading-none text-muted-foreground">{user?.email || 'user@example.com'}</p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/app/account" className="cursor-pointer">
-                        <span>My Account</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/app/settings" className="cursor-pointer">
-                        <span>Settings</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+            
+            {/* Right Section - Auth & Controls */}
+            <div className="flex items-center gap-2 ml-auto">
+              <div className="h-6 w-px bg-border mx-2"></div>
+              <ModeToggle className="mx-2" />
+              {isAuthenticated ? (
+                <UserNav className="ml-2" />
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button variant="ghost" size="sm">Log in</Button>
+                  </Link>
+                  <Link href="/register">
+                    <Button variant="default" size="sm">Sign up</Button>
+                  </Link>
+                </>
+              )}
             </div>
+          </>
+        )}
+
+        {context === 'app' && (
+          <div className="flex items-center gap-1 ml-auto md:gap-2">
+            <Button variant="ghost" size="icon" title="Share">
+              <Share2 className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" title="GitHub">
+              <Github className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" title="Deploy to Vercel">
+              <Cloud className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" title="Fork Chat">
+              <GitFork className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" title="Version">
+              <Tag className="h-4 w-4" />
+            </Button>
+            <div className="pl-1 border-l ml-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.avatar || '/placeholder.svg'} alt={user?.name || 'User'} />
+                      <AvatarFallback>
+                        {user?.name
+                          ? user.name.split(' ').map(n => n[0]).join('').toUpperCase()
+                          : 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user?.name || 'User'}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user?.email || 'user@example.com'}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/app/account" className="cursor-pointer">
+                      <span>My Account</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/app/settings" className="cursor-pointer">
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile menu button */}
+        <button
+          className="md:hidden p-2 ml-auto"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {isMenuOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
           )}
-        </div>
+        </button>
       </div>
 
       {/* Mobile Navigation */}
