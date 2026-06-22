@@ -26,7 +26,6 @@ import {
 import CodeExample from '@/components/code-example'
 import AnimateOnScroll from '@/components/animate-on-scroll'
 import FloatingLogo from '@/components/floating-logo'
-import SplashScreen from '@/components/splash-screen'
 import { useTheme } from 'next-themes'
 
 export default function Home() {
@@ -35,7 +34,6 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [copied, setCopied] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [showSplash, setShowSplash] = useState(true)
 
   // Ensure theme is synchronized to prevent hydration mismatch
   useEffect(() => {
@@ -169,7 +167,6 @@ root:
 
   return (
     <div className="flex flex-col min-h-screen">
-      <SplashScreen onComplete={() => setShowSplash(false)} />
       <main className="flex-1">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 bg-secondary dark:bg-secondary-dark relative overflow-hidden">

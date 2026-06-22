@@ -17,12 +17,12 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
           setTimeout(() => {
             setIsVisible(false)
             onComplete()
-          }, 500)
+          }, 300)
           return 100
         }
-        return prev + 2
+        return prev + 5
       })
-    }, 50)
+    }, 30)
 
     return () => clearInterval(interval)
   }, [onComplete])
