@@ -7,24 +7,14 @@ interface SplashScreenProps {
 
 export default function SplashScreen({ onComplete }: SplashScreenProps) {
   const [isVisible, setIsVisible] = useState(true)
-  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setTimeout(() => {
-            setIsVisible(false)
-            onComplete()
-          }, 300)
-          return 100
-        }
-        return prev + 5
-      })
-    }, 30)
+    const timer = setTimeout(() => {
+      setIsVisible(false)
+      onComplete()
+    }, 1000)
 
-    return () => clearInterval(interval)
+    return () => clearTimeout(timer)
   }, [onComplete])
 
   if (!isVisible) return null
@@ -63,16 +53,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
           </p>
         </div>
 
-        {/* Progress Bar */}
-        <div className="w-64 mx-auto">
-          <div className="bg-secondary-dark/50 rounded-full h-2 overflow-hidden">
-            <div
-              className="bg-primary h-full rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-          <p className="text-white/60 text-xs mt-2">{progress}% Complete</p>
-        </div>
+
       </div>
     </div>
   )
