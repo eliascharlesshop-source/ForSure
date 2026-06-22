@@ -21,7 +21,6 @@ import { useToast } from '@/components/ui/use-toast'
 import { Badge } from '@/components/ui/forsure-badge'
 import { MegaMenu } from '@/components/mega-menu'
 import { useDesignDevMode } from '@/hooks/use-design-dev-mode'
-import Header from '@/components/header'
 
 export default function ChatApp() {
   const { mode, setMode, isDesignMode, isDevMode } = useDesignDevMode({
@@ -421,9 +420,6 @@ export default function ChatApp() {
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
-      {/* Header */}
-      <Header mode={mode} onModeChange={setMode} />
-      
       {showDashboard && (
         <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
           <div className="flex items-center gap-4">

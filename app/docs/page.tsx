@@ -29,12 +29,12 @@ import DocsInteractiveDemo from '@/components/docs-interactive-demo'
 
 export default function DocsPage() {
   return (
-    <div className="flex flex-col lg:flex-row gap-12">
-      <div className="flex-1 max-w-3xl">
-        <div className="space-y-8">
+    <div className="flex flex-col lg:flex-row gap-6 lg:gap-12 w-full">
+      <div className="flex-1 min-w-0">
+        <div className="space-y-6 lg:space-y-8">
           {/* Hero Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="outline" className="text-sm font-medium">
                 Documentation
               </Badge>
@@ -42,7 +42,7 @@ export default function DocsPage() {
                 v1.2.0
               </Badge>
             </div>
-            <h1 className="text-4xl font-bold tracking-tight">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
               ForSure Documentation
             </h1>
             <p className="text-xl text-muted-foreground">

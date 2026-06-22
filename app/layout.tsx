@@ -2,7 +2,7 @@ import type React from 'react'
 import '@/app/globals.css'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
-import Header from '@/components/header'
+import UnifiedNav from '@/components/unified-nav'
 import { ConditionalFooter } from '@/components/conditional-footer'
 import { ScrollToAnchor } from '@/components/scroll-to-anchor'
 import { AuthProvider } from '@/contexts/auth-context'
@@ -38,8 +38,10 @@ export default function RootLayout({
           >
             <ScrollToAnchor />
             <div className="flex min-h-screen flex-col">
-              <Header />
-              {children}
+              <UnifiedNav context="public" />
+              <div className="p-[5px] flex-1 flex flex-col">
+                {children}
+              </div>
               <ConditionalFooter />
             </div>
           </ThemeProvider>
