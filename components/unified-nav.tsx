@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/forsure-button'
 import { ModeToggle } from '@/components/mode-toggle'
 import { MegaMenu } from '@/components/mega-menu'
-import { Menu, X, Terminal, Code, FileText, Package, Share2, Github, BellIcon as Vercel, GitFork, Tag, ChevronRight } from 'lucide-react'
+import { Menu, X, Terminal, Code, FileText, Package, Share2, Github, Cloud, GitFork, Tag, ChevronRight } from 'lucide-react'
 import ScrollProgress from '@/components/scroll-progress'
 import { useTheme } from 'next-themes'
 import { UserNav } from '@/components/user-nav'
@@ -183,7 +183,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                 <Github className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" title="Deploy to Vercel">
-                <Vercel className="h-4 w-4" />
+                <Cloud className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" title="Fork Chat">
                 <GitFork className="h-4 w-4" />
@@ -292,7 +292,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                     <span>GitHub</span>
                   </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-1">
-                    <Vercel className="h-3.5 w-3.5" />
+                    <Cloud className="h-3.5 w-3.5" />
                     <span>Deploy</span>
                   </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-1">
