@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { Sparkles } from 'lucide-react'
 import FloatingLogo from '@/components/floating-logo'
 
 interface SplashScreenProps {
@@ -54,7 +53,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         {/* Loading Text */}
         <div className="space-y-4">
           <div className="flex items-center justify-center space-x-2">
-            <Sparkles className="h-6 w-6 text-primary" />
             <h1 className="text-2xl font-bold text-white">
               Initializing ForSure
             </h1>
