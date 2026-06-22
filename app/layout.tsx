@@ -6,7 +6,6 @@ import UnifiedNav from '@/components/unified-nav'
 import { ConditionalFooter } from '@/components/conditional-footer'
 import { ScrollToAnchor } from '@/components/scroll-to-anchor'
 import { AuthProvider } from '@/contexts/auth-context'
-import { PageLoaderWrapper } from '@/components/page-loader-wrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -37,7 +36,6 @@ export default function RootLayout({
             disableTransitionOnChange={false}
             storageKey="forsure-theme"
           >
-            <PageLoaderWrapper />
             <ScrollToAnchor />
             <div className="flex min-h-screen flex-col">
               <UnifiedNav context="public" />
