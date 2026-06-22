@@ -27,6 +27,19 @@ body {
   .scrollbar-hide::-webkit-scrollbar-thumb {
     display: none;
   }
+
+  /* Responsive padding utilities */
+  .app-padding {
+    @apply p-[5px];
+  }
+
+  .responsive-container {
+    @apply w-full px-[5px] sm:px-4 md:px-6 lg:px-8;
+  }
+
+  .responsive-text {
+    @apply text-sm sm:text-base md:text-lg lg:text-xl;
+  }
 }
 
 @layer base {

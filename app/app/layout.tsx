@@ -1,6 +1,6 @@
 import type React from 'react'
 import { ProtectedRoute } from '@/components/protected-route'
-import { SecondaryNavbar } from './components/secondary-navbar'
+import UnifiedNav from '@/components/unified-nav'
 import StatusBar from '@/components/status-bar'
 import { StatusBarProvider } from '@/contexts/status-bar-context'
 
@@ -9,8 +9,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <ProtectedRoute>
       <StatusBarProvider>
         <div className="h-screen flex flex-col overflow-hidden">
-          <SecondaryNavbar />
-          <div className="flex-1 flex flex-col overflow-hidden">{children}</div>
+          <UnifiedNav context="app" />
+          <div className="flex-1 flex flex-col overflow-hidden p-[5px]">{children}</div>
           <StatusBar />
         </div>
       </StatusBarProvider>
