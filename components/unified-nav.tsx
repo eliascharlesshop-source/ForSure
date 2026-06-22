@@ -122,7 +122,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
         {context === 'public' && (
           <>
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex flex-1 items-center gap-6 mx-8">
+            <nav className="flex-1 hidden md:flex items-center gap-6 mx-8">
               <Link href="/cli" className="flex items-center gap-1 group mr-4">
                 <Terminal className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">CLI</span>
@@ -154,24 +154,6 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                 </>
               )}
             </nav>
-            
-            {/* Right Section - Auth & Controls */}
-            <div className="flex items-center gap-2 ml-auto">
-              <div className="h-6 w-px bg-border mx-2"></div>
-              <ModeToggle className="mx-2" />
-              {isAuthenticated ? (
-                <UserNav className="ml-2" />
-              ) : (
-                <>
-                  <Link href="/login">
-                    <Button variant="ghost" size="sm">Log in</Button>
-                  </Link>
-                  <Link href="/register">
-                    <Button variant="default" size="sm">Sign up</Button>
-                  </Link>
-                </>
-              )}
-            </div>
           </>
         )}
 
