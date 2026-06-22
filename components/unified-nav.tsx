@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/forsure-button'
 import { ModeToggle } from '@/components/mode-toggle'
-import { MegaMenu } from '@/components/mega-menu'
 import { Menu, X, Terminal, Code, FileText, Package, Share2, Github, Cloud, GitFork, Tag, ChevronRight } from 'lucide-react'
 import ScrollProgress from '@/components/scroll-progress'
 import { useTheme } from 'next-themes'
@@ -140,10 +139,6 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                 <Package className="h-4 w-4 group-hover:text-primary transition-colors" />
                 <span className="text-sm font-medium group-hover:text-primary transition-colors">Components</span>
               </Link>
-              <MegaMenu
-                mode={mode}
-                onModeChange={onModeChange || (() => {})}
-              />
               <div className="h-6 w-px bg-border mx-2"></div>
               <ModeToggle className="mx-2" />
               {isAuthenticated ? (
