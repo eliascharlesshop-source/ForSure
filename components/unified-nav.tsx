@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-type NavContext = 'public' | 'app' | 'docs'
+type NavContext = 'public' | 'app'
 
 interface UnifiedNavProps {
   context: NavContext
