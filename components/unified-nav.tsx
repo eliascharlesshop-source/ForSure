@@ -143,7 +143,7 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
             </nav>
             
             {/* Right Section - Theme & Auth (pushed to far right) */}
-            <div className="hidden">
+            <div className="hidden md:flex items-center gap-4 ml-auto">
               <div className="h-6 w-px bg-border"></div>
               <ModeToggle className="mx-2" />
               {isAuthenticated ? (
