@@ -40,7 +40,7 @@ export default function ChatApp() {
   const [editingProject, setEditingProject] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [showMobileChat, setShowMobileChat] = useState(true)
-  const [showDashboard, setShowDashboard] = useState(true)
+  const [showDashboard, setShowDashboard] = useState(false)
   const [leftPanelWidth, setLeftPanelWidth] = useState(40)
   const { toast } = useToast()
   const { isDemoMode, user } = useAuth()
