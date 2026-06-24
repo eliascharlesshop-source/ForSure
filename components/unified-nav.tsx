@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/forsure-button'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Menu, X, Terminal, Code, FileText, Package, Share2, Github, Cloud, GitFork, Tag, ChevronRight } from 'lucide-react'
 import ScrollProgress from '@/components/scroll-progress'
+import { MegaMenu } from '@/components/mega-menu'
 import { useTheme } from 'next-themes'
 import { UserNav } from '@/components/user-nav'
 import { useAuth } from '@/contexts/auth-context'
@@ -25,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-type NavContext = 'public' | 'app' | 'docs'
+type NavContext = 'public' | 'app'
 
 interface UnifiedNavProps {
   context: NavContext
