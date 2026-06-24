@@ -613,23 +613,15 @@ export default function ChatApp() {
                               • {projectDetails.languages.join(', ')}
                             </p>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={editProject}
-                            >
-                              Edit Project
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setLeftPanelCollapsed(true)}
-                              className="h-8 w-8"
-                            >
-                              <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setLeftPanelCollapsed(true)}
+                            className="h-7 w-7 p-0 hover:bg-secondary transition-colors flex-shrink-0"
+                            title="Collapse sidebar"
+                          >
+                            <ChevronLeft className="h-3.5 w-3.5" />
+                          </Button>
                         </div>
                       </div>
                     )}
