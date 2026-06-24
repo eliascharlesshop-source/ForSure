@@ -14,6 +14,10 @@ import {
   ChevronRight,
   Menu,
   X,
+  Plus,
+  Palette,
+  Code,
+  ChevronDown,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/auth-context'
 import {
@@ -29,11 +33,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useTopbar } from './topbar-provider'
 
 export function AppTopbar() {
   const { user } = useAuth()
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { mode, onModeChange, onNewProject } = useTopbar()
 
   // Generate breadcrumbs from pathname
   const generateBreadcrumbs = () => {
@@ -106,7 +112,47 @@ export function AppTopbar() {
         </button>
 
         {/* Right side - Action buttons (desktop) */}
-        <div className="hidden lg:flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-2">
+          {/* Mode Selector */}
+          {onModeChange && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-9 gap-2">
+                  {mode === 'design' ? (
+                    <>
+                      <Palette className="h-4 w-4" />
+                      <span className="hidden md:inline">Design</span>
+                    </>
+                  ) : (
+                    <>
+                      <Code className="h-4 w-4" />
+                      <span className="hidden md:inline">Dev</span>
+                    </>
+                  )}
+                  <ChevronDown className="h-3 w-3 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onModeChange('design')}>
+                  <Palette className="h-4 w-4 mr-2" />
+                  <span>Design Mode</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onModeChange('dev')}>
+                  <Code className="h-4 w-4 mr-2" />
+                  <span>Dev Mode</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
+          {/* New Project Button */}
+          {onNewProject && (
+            <Button variant="default" size="sm" className="h-9 gap-2" onClick={onNewProject}>
+              <Plus className="h-4 w-4" />
+              <span className="hidden md:inline">New Project</span>
+            </Button>
+          )}
+
           <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Share">
             <Share2 className="h-4 w-4" />
           </Button>
@@ -232,6 +278,55 @@ export function AppTopbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-border/40 bg-card">
           <div className="px-3 sm:px-4 py-3 space-y-3">
+            {/* Mode selector and New Project for mobile */}
+            <div className="flex gap-2 flex-wrap">
+              {onModeChange && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="h-9 flex-1 sm:flex-initial">
+                      {mode === 'design' ? (
+                        <>
+                          <Palette className="h-4 w-4 mr-1.5" />
+                          <span className="text-xs">Design</span>
+                        </>
+                      ) : (
+                        <>
+                          <Code className="h-4 w-4 mr-1.5" />
+                          <span className="text-xs">Dev</span>
+                        </>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => onModeChange('design')}>
+                      <Palette className="h-4 w-4 mr-2" />
+                      <span>Design Mode</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onModeChange('dev')}>
+                      <Code className="h-4 w-4 mr-2" />
+                      <span>Dev Mode</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
+              {onNewProject && (
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  className="h-9 gap-1.5 flex-1 sm:flex-initial" 
+                  onClick={() => {
+                    onNewProject()
+                    setMobileMenuOpen(false)
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="text-xs">New Project</span>
+                </Button>
+              )}
+            </div>
+
+            {/* Other action buttons */}
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
