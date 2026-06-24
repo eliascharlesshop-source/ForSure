@@ -19,8 +19,8 @@ import EnhancedDashboard from './components/enhanced-dashboard'
 import WhiteboardDashboard from '@/components/whiteboard-dashboard'
 import { useToast } from '@/components/ui/use-toast'
 import { Badge } from '@/components/ui/forsure-badge'
-import { MegaMenu } from '@/components/mega-menu'
 import { useDesignDevMode } from '@/hooks/use-design-dev-mode'
+import { useTopbar } from './components/topbar-provider'
 
 export default function ChatApp() {
   const { mode, setMode, isDesignMode, isDevMode } = useDesignDevMode({
@@ -29,6 +29,7 @@ export default function ChatApp() {
       console.log(`Switched to ${newMode} mode`)
     }
   })
+  const { newProjectTrigger } = useTopbar()
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
     null
   )
@@ -90,6 +91,12 @@ export default function ChatApp() {
       window.removeEventListener('resize', checkIfMobile)
     }
   }, [])
+
+  useEffect(() => {
+    if (newProjectTrigger > 0) {
+      handleStartNewProject()
+    }
+  }, [newProjectTrigger])
 
   const handleQuickCreateProject = (projectData: any) => {
     const projectDetails: ProjectDetails = {
@@ -420,21 +427,6 @@ export default function ChatApp() {
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
-      {showDashboard && (
-        <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
-          <div className="flex items-center gap-4">
-            <MegaMenu
-              mode={mode}
-              onModeChange={setMode}
-              className="bg-white/10 backdrop-blur-sm border-white/20"
-            />
-          </div>
-          <Button variant="outline" size="sm" onClick={handleStartNewProject}>
-            New Project
-          </Button>
-        </div>
-      )}
-
       {/* Main content */}
       <div className="flex-1 flex flex-col h-full">
         {showDashboard ? (

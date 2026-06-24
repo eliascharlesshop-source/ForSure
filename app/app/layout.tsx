@@ -1,18 +1,42 @@
+'use client'
+
 import type React from 'react'
+import { useState } from 'react'
 import { ProtectedRoute } from '@/components/protected-route'
-import UnifiedNav from '@/components/unified-nav'
+import { AppTopbar } from './components/app-topbar'
 import StatusBar from '@/components/status-bar'
 import { StatusBarProvider } from '@/contexts/status-bar-context'
+import { TopbarProvider } from './components/topbar-provider'
+import { useDesignDevMode } from '@/hooks/use-design-dev-mode'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const { mode, setMode } = useDesignDevMode({
+    storageKey: 'forsure-studio-mode',
+  })
+  
+  const [newProjectTrigger, setNewProjectTrigger] = useState(false)
+
+  const handleNewProject = () => {
+    setNewProjectTrigger(!newProjectTrigger)
+  }
+
   return (
     <ProtectedRoute>
       <StatusBarProvider>
-        <div className="h-screen flex flex-col overflow-hidden">
-          <UnifiedNav context="app" />
-          <div className="flex-1 flex flex-col overflow-hidden p-[5px]">{children}</div>
-          <StatusBar />
-        </div>
+        <TopbarProvider
+          mode={mode}
+          onModeChange={setMode}
+          onNewProject={handleNewProject}
+          newProjectTrigger={newProjectTrigger ? 1 : 0}
+        >
+          <div className="h-screen flex flex-col overflow-hidden">
+            <AppTopbar />
+            <div className="flex-1 flex flex-col overflow-hidden p-[5px]">
+              {children}
+            </div>
+            <StatusBar />
+          </div>
+        </TopbarProvider>
       </StatusBarProvider>
     </ProtectedRoute>
   )
