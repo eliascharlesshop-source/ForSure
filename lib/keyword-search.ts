@@ -429,6 +429,30 @@ export const importKeywords = (data: string, format: 'json' | 'csv' = 'json'): K
   }
 };
 
+// Get keywords by category
+export const getKeywordsByCategory = (category?: 'dev' | 'design' | 'both'): KeywordEntry[] => {
+  const allKeywords: KeywordEntry[] = Object.values(KEYWORD_DATABASE).flatMap(cats => 
+    cats.flatMap(cat => cat.keywords)
+  );
+
+  if (!category || category === 'both') {
+    return allKeywords;
+  }
+
+  return allKeywords.filter(k => k.category === category);
+};
+
+// Get high priority keywords
+export const getHighPriorityKeywords = (limit: number = 20): KeywordEntry[] => {
+  const allKeywords: KeywordEntry[] = Object.values(KEYWORD_DATABASE).flatMap(cats => 
+    cats.flatMap(cat => cat.keywords)
+  );
+
+  return allKeywords
+    .filter(k => k.priority === 'high')
+    .slice(0, limit);
+};
+
 // Export all utilities
 export type {
   KeywordEntry,
