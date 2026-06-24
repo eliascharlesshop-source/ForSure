@@ -41,6 +41,44 @@ export function AppTopbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { mode, onModeChange, onNewProject } = useTopbar()
 
+  // Button handlers
+  const handleShare = () => {
+    const shareUrl = window.location.href
+    if (navigator.share) {
+      navigator.share({
+        title: 'ForSure Project',
+        url: shareUrl,
+      })
+    } else {
+      navigator.clipboard.writeText(shareUrl)
+      alert('Link copied to clipboard!')
+    }
+  }
+
+  const handleGitHub = () => {
+    window.open('https://github.com', '_blank')
+  }
+
+  const handleDeploy = () => {
+    window.open('https://vercel.com', '_blank')
+  }
+
+  const handleFork = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Fork ForSure Project',
+        text: 'Check out this ForSure project',
+        url: window.location.href,
+      })
+    } else {
+      alert('Fork project functionality')
+    }
+  }
+
+  const handleVersion = () => {
+    alert('Current version: v1.0.0')
+  }
+
   // Generate breadcrumbs from pathname
   const generateBreadcrumbs = () => {
     if (!pathname || pathname === '/app')
@@ -153,19 +191,19 @@ export function AppTopbar() {
             </Button>
           )}
 
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Share">
+          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Share" onClick={handleShare}>
             <Share2 className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="GitHub">
+          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="GitHub" onClick={handleGitHub}>
             <Github className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Deploy to Vercel">
+          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Deploy to Vercel" onClick={handleDeploy}>
             <Cloud className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Fork Chat">
+          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Fork Chat" onClick={handleFork}>
             <GitFork className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Version">
+          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-secondary" title="Version" onClick={handleVersion}>
             <Tag className="h-4 w-4" />
           </Button>
 
@@ -332,6 +370,7 @@ export function AppTopbar() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 h-9 text-xs font-medium"
+                onClick={handleShare}
               >
                 <Share2 className="h-4 w-4" />
                 <span>Share</span>
@@ -340,6 +379,7 @@ export function AppTopbar() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 h-9 text-xs font-medium"
+                onClick={handleGitHub}
               >
                 <Github className="h-4 w-4" />
                 <span>GitHub</span>
@@ -348,6 +388,7 @@ export function AppTopbar() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 h-9 text-xs font-medium"
+                onClick={handleDeploy}
               >
                 <Cloud className="h-4 w-4" />
                 <span>Deploy</span>
@@ -356,6 +397,7 @@ export function AppTopbar() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 h-9 text-xs font-medium"
+                onClick={handleFork}
               >
                 <GitFork className="h-4 w-4" />
                 <span>Fork</span>
@@ -364,6 +406,7 @@ export function AppTopbar() {
                 variant="outline"
                 size="sm"
                 className="flex items-center gap-1.5 h-9 text-xs font-medium"
+                onClick={handleVersion}
               >
                 <Tag className="h-4 w-4" />
                 <span>Version</span>
