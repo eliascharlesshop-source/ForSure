@@ -147,86 +147,120 @@ export default function StatusBar() {
   const getIndentation = () => 'Spaces: 2'
 
   return (
-    <div className="flex items-center justify-between px-2 py-1 bg-muted/80 border-t border-border text-xs text-muted-foreground select-none">
-      {/* Left section */}
-      <div className="flex items-center gap-4">
-        {/* Branch info */}
-        <div className="flex items-center gap-1">
-          <GitBranch className="h-3 w-3" />
-          <span>{getBranchInfo()}</span>
-          <span className="text-muted-foreground/60">•</span>
-          <span>v1.0.0</span>
-        </div>
+    <div className="relative w-full border-t border-border text-xs bg-muted/80">
+      {/* Fade overlay - left */}
+      <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-muted/80 to-transparent pointer-events-none z-10 hidden sm:block" />
+      
+      {/* Fade overlay - right */}
+      <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-muted/80 to-transparent pointer-events-none z-10 hidden sm:block" />
 
-        {/* File info */}
-        <div className="flex items-center gap-1">
-          <FileText className="h-3 w-3" />
-          <span>{activeFile}</span>
-        </div>
+      {/* Scrollable container */}
+      <div className="overflow-x-auto overflow-y-hidden scrollbar-hide">
+        <div className="flex items-center gap-2 sm:gap-4 px-2 sm:px-3 py-1.5 text-muted-foreground select-none whitespace-nowrap min-w-min">
+          {/* Left section */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Branch info - hidden on extra small screens */}
+            <div className="hidden sm:flex items-center gap-1">
+              <GitBranch className="h-3 w-3 flex-shrink-0" />
+              <span className="hidden md:inline">{getBranchInfo()}</span>
+              <span className="hidden md:inline text-muted-foreground/60">•</span>
+              <span className="hidden md:inline">v1.0.0</span>
+            </div>
 
-        {/* Position info */}
-        <div className="flex items-center gap-1">
-          <span>
-            Ln {lineCount}, Col {columnCount}
-          </span>
-        </div>
+            {/* File info - hidden on small screens */}
+            <div className="hidden sm:flex items-center gap-1">
+              <FileText className="h-3 w-3 flex-shrink-0" />
+              <span className="hidden md:inline">{activeFile}</span>
+            </div>
 
-        {/* Language/encoding info */}
-        <div className="flex items-center gap-3 text-muted-foreground/70">
-          <span>{getIndentation()}</span>
-          <span>{getEncoding()}</span>
-          <span>{getLineEnding()}</span>
-          <span>{getLanguageMode()}</span>
-        </div>
-      </div>
+            {/* Position info - always visible */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <span className="text-xs">
+                Ln {lineCount}
+              </span>
+              <span className="hidden sm:inline">
+                Col {columnCount}
+              </span>
+            </div>
 
-      {/* Center section - Status indicators */}
-      <div className="flex items-center gap-3">
-        {/* Autocomplete status */}
-        <div className="flex items-center gap-1">
-          <CheckCircle className="h-3 w-3 text-green-500" />
-          <span>Autocomplete</span>
-        </div>
-
-        {/* Connection status */}
-        <div className="flex items-center gap-1">
-          {isOnline ? (
-            <Wifi className="h-3 w-3 text-green-500" />
-          ) : (
-            <WifiOff className="h-3 w-3 text-red-500" />
-          )}
-          <span>{isOnline ? 'Connected' : 'Offline'}</span>
-        </div>
-      </div>
-
-      {/* Right section */}
-      <div className="flex items-center gap-4">
-        {/* User info */}
-        {user && (
-          <div className="flex items-center gap-1">
-            <User className="h-3 w-3" />
-            <span>{user.email?.split('@')[0] || 'Demo User'}</span>
+            {/* Language/encoding info - hidden on small screens */}
+            <div className="hidden lg:flex items-center gap-2 sm:gap-3 text-muted-foreground/70">
+              <span>{getIndentation()}</span>
+              <span>{getEncoding()}</span>
+              <span>{getLineEnding()}</span>
+              <span>{getLanguageMode()}</span>
+            </div>
           </div>
-        )}
 
-        {/* Plan status */}
-        <div className="flex items-center gap-1">
-          <Circle className="h-3 w-3 text-blue-500" />
-          <span>{user ? 'Pro Plan' : 'Free - Upgrade Now'}</span>
-        </div>
+          {/* Separator */}
+          <div className="hidden sm:block w-px h-3 bg-border/40" />
 
-        {/* Settings */}
-        <div className="flex items-center gap-1">
-          <Settings className="h-3 w-3" />
-          <span>Windsurf - Settings</span>
-        </div>
+          {/* Center section - Status indicators */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Autocomplete status - hidden on small screens */}
+            <div className="hidden md:flex items-center gap-1 flex-shrink-0">
+              <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
+              <span>Autocomplete</span>
+            </div>
 
-        {/* Time */}
-        <div className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          <span>{formatTime(currentTime)}</span>
+            {/* Connection status - always visible */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {isOnline ? (
+                <Wifi className="h-3 w-3 text-green-500 flex-shrink-0" />
+              ) : (
+                <WifiOff className="h-3 w-3 text-red-500 flex-shrink-0" />
+              )}
+              <span className="hidden sm:inline">
+                {isOnline ? 'Connected' : 'Offline'}
+              </span>
+            </div>
+          </div>
+
+          {/* Separator */}
+          <div className="hidden sm:block w-px h-3 bg-border/40" />
+
+          {/* Right section */}
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            {/* User info - hidden on small screens */}
+            {user && (
+              <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
+                <User className="h-3 w-3 flex-shrink-0" />
+                <span className="hidden md:inline">
+                  {user.email?.split('@')[0] || 'Demo User'}
+                </span>
+              </div>
+            )}
+
+            {/* Plan status - hidden on small screens */}
+            <div className="hidden md:flex items-center gap-1 flex-shrink-0">
+              <Circle className="h-3 w-3 text-blue-500 flex-shrink-0" />
+              <span>{user ? 'Pro Plan' : 'Free'}</span>
+            </div>
+
+            {/* Settings - hidden on small screens */}
+            <div className="hidden lg:flex items-center gap-1 flex-shrink-0">
+              <Settings className="h-3 w-3 flex-shrink-0" />
+              <span>Windsurf</span>
+            </div>
+
+            {/* Time - always visible */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Clock className="h-3 w-3 flex-shrink-0" />
+              <span>{formatTime(currentTime)}</span>
+            </div>
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   )
 }
