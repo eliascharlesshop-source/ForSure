@@ -4,7 +4,7 @@ import type React from 'react'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/forsure-button'
-import { Sparkles, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Sparkles, ChevronLeft, ChevronRight, Palette } from 'lucide-react'
 import {
   ProjectDetailsForm,
   type ProjectDetails,
@@ -19,17 +19,12 @@ import EnhancedDashboard from './components/enhanced-dashboard'
 import WhiteboardDashboard from '@/components/whiteboard-dashboard'
 import { useToast } from '@/components/ui/use-toast'
 import { Badge } from '@/components/ui/forsure-badge'
-import { useDesignDevMode } from '@/hooks/use-design-dev-mode'
 import { useTopbar } from './components/topbar-provider'
 
 export default function ChatApp() {
-  const { mode, setMode, isDesignMode, isDevMode } = useDesignDevMode({
-    storageKey: 'forsure-studio-mode',
-    onChange: (newMode) => {
-      console.log(`Switched to ${newMode} mode`)
-    }
-  })
-  const { newProjectTrigger } = useTopbar()
+  const { mode, onModeChange, newProjectTrigger } = useTopbar()
+  const isDesignMode = mode === 'design'
+  const isDevMode = mode === 'dev'
   const [projectDetails, setProjectDetails] = useState<ProjectDetails | null>(
     null
   )
@@ -427,6 +422,26 @@ export default function ChatApp() {
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
+      {/* Mode Indicator */}
+      <div className="px-4 py-2 bg-gradient-to-r from-background to-background/95 border-b border-border/40 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {isDesignMode ? (
+            <>
+              <Palette className="h-4 w-4 text-blue-500" />
+              <span className="text-sm font-medium text-foreground">Design Mode</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4 text-purple-500" />
+              <span className="text-sm font-medium text-foreground">Dev Mode</span>
+            </>
+          )}
+        </div>
+        <Badge variant={isDesignMode ? "secondary" : "default"}>
+          {isDesignMode ? "Visual Design" : "Development"}
+        </Badge>
+      </div>
+
       {/* Main content */}
       <div className="flex-1 flex flex-col h-full">
         {showDashboard ? (
