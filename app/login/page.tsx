@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const { login, isLoading, enterDemoMode } = useAuth()
+  const { login, isLoading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/account'
@@ -96,26 +96,6 @@ export default function LoginPage() {
               ) : (
                 'Log in'
               )}
-            </Button>
-
-            <div className="relative my-4">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or
-                </span>
-              </div>
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={enterDemoMode}
-            >
-              Try Demo
             </Button>
           </form>
         </CardContent>

@@ -1,5 +1,5 @@
 // Prisma schema for ForSure project
-// Uses SQLite for local development
+// Uses PostgreSQL via Supabase
 // Supports both Prisma Client integration
 
 generator client {
@@ -7,11 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "sqlite"
-  url       = env("DATABASE_URL")
-  
-  // SQLite configuration
-  relationMode = "prisma"
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // Enums

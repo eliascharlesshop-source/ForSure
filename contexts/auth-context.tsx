@@ -18,7 +18,6 @@ type AuthContextType = {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
-  isDemoMode: boolean
   login: (
     email: string,
     password: string
@@ -29,8 +28,6 @@ type AuthContextType = {
     password: string
   ) => Promise<{ success: boolean; message?: string }>
   logout: () => void
-  enterDemoMode: () => void
-  exitDemoMode: () => void
   updateProfile: (
     data: Partial<User>
   ) => Promise<{ success: boolean; message?: string }>
@@ -41,7 +38,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [isDemoMode, setIsDemoMode] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -163,16 +159,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const enterDemoMode = () => {
-    setIsDemoMode(true)
-    router.push('/app')
-  }
-
-  const exitDemoMode = () => {
-    setIsDemoMode(false)
-    router.push('/')
-  }
-
   const updateProfile = async (data: Partial<User>) => {
     if (!user) return { success: false, message: 'Not authenticated' }
 
@@ -221,12 +207,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isLoading,
         isAuthenticated: !!user,
-        isDemoMode,
         login,
         register,
         logout,
-        enterDemoMode,
-        exitDemoMode,
         updateProfile,
       }}
     >

@@ -1,10 +1,12 @@
-import { supabaseAdmin } from '../lib/supabase'
+import { prisma } from '../lib/prisma'
+import { hashPassword } from '../lib/password'
 
 interface SeedUser {
   email: string
   name: string
   role: 'user' | 'admin' | 'moderator'
   bio?: string
+  password?: string
 }
 
 const seedUsers: SeedUser[] = [
@@ -25,6 +27,13 @@ const seedUsers: SeedUser[] = [
     name: 'Test User',
     role: 'user',
     bio: 'Regular platform user',
+  },
+  {
+    email: 'test@example.com',
+    name: 'Test Account',
+    role: 'user',
+    bio: 'Test account for demonstration',
+    password: 'TestPassword123!',
   },
 ]
 
@@ -169,224 +178,40 @@ async function seedDatabase() {
     // Seed users (profiles)
     console.log('📝 Seeding users...')
     for (const user of seedUsers) {
-      const { data: existingUser } = await supabaseAdmin
-        .from('profiles')
-        .select('email')
-        .eq('email', user.email)
-        .single()
-
-      if (!existingUser) {
-        const { error } = await supabaseAdmin.from('profiles').insert({
-          id: `seed-${user.email.split('@')[0]}`,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          bio: user.bio,
-          is_verified: true,
+      try {
+        const existingUser = await prisma.profile.findUnique({
+          where: { email: user.email },
         })
 
-        if (error) {
-          console.error(`Error seeding user ${user.email}:`, error)
-        } else {
+        if (!existingUser) {
+          let passwordHash: string | null = null
+          if (user.password) {
+            passwordHash = await hashPassword(user.password)
+          }
+
+          await prisma.profile.create({
+            data: {
+              email: user.email,
+              name: user.name,
+              role: user.role,
+              bio: user.bio,
+              password_hash: passwordHash,
+              is_verified: true,
+              skills: {},
+              preferences: [],
+            },
+          })
+
           console.log(`✅ Created user: ${user.email}`)
+        } else {
+          console.log(`⏭️  User already exists: ${user.email}`)
         }
-      } else {
-        console.log(`⏭️  User already exists: ${user.email}`)
+      } catch (error) {
+        console.error(`Error seeding user ${user.email}:`, error)
       }
     }
 
-    // Get admin user for creating projects and blogs
-    const { data: adminUser } = await supabaseAdmin
-      .from('profiles')
-      .select('id')
-      .eq('email', 'admin@forsure.app')
-      .single()
-
-    if (adminUser) {
-      // Seed projects
-      console.log('📁 Seeding projects...')
-      const createdProjects = []
-      for (const project of seedProjects) {
-        const { data: existingProject } = await supabaseAdmin
-          .from('projects')
-          .select('slug')
-          .eq('slug', project.slug)
-          .single()
-
-        if (!existingProject) {
-          const { data: newProject, error } = await supabaseAdmin
-            .from('projects')
-            .insert({
-              ...project,
-              owner_id: adminUser.id,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })
-            .select()
-            .single()
-
-          if (error) {
-            console.error(`Error seeding project ${project.name}:`, error)
-          } else {
-            console.log(`✅ Created project: ${project.name}`)
-            createdProjects.push(newProject)
-          }
-        } else {
-          console.log(`⏭️  Project already exists: ${project.name}`)
-        }
-      }
-
-      // Seed teams
-      console.log('👥 Seeding teams...')
-      const createdTeams = []
-      for (const team of seedTeams) {
-        const { data: existingTeam } = await supabaseAdmin
-          .from('teams')
-          .select('slug')
-          .eq('slug', team.slug)
-          .single()
-
-        if (!existingTeam) {
-          const { data: newTeam, error } = await supabaseAdmin
-            .from('teams')
-            .insert({
-              ...team,
-              owner_id: adminUser.id,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })
-            .select()
-            .single()
-
-          if (error) {
-            console.error(`Error seeding team ${team.name}:`, error)
-          } else {
-            console.log(`✅ Created team: ${team.name}`)
-            createdTeams.push(newTeam)
-          }
-        } else {
-          console.log(`⏭️  Team already exists: ${team.name}`)
-        }
-      }
-
-      // Seed tasks for first project
-      if (createdProjects.length > 0) {
-        console.log('📋 Seeding tasks...')
-        const firstProject = createdProjects[0]
-
-        for (const task of seedTasks) {
-          const { error } = await supabaseAdmin.from('tasks').insert({
-            ...task,
-            project_id: firstProject.id,
-            reporter_id: adminUser.id,
-            assignee_id: adminUser.id,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-
-          if (error) {
-            console.error(`Error seeding task ${task.title}:`, error)
-          } else {
-            console.log(`✅ Created task: ${task.title}`)
-          }
-        }
-      }
-
-      // Seed templates
-      console.log('� Seeding templates...')
-      for (const template of seedTemplates) {
-        const { data: existingTemplate } = await supabaseAdmin
-          .from('templates')
-          .select('name')
-          .eq('name', template.name)
-          .single()
-
-        if (!existingTemplate) {
-          const { error } = await supabaseAdmin.from('templates').insert({
-            ...template,
-            creator_id: adminUser.id,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-
-          if (error) {
-            console.error(`Error seeding template ${template.name}:`, error)
-          } else {
-            console.log(`✅ Created template: ${template.name}`)
-          }
-        } else {
-          console.log(`⏭️  Template already exists: ${template.name}`)
-        }
-      }
-
-      // Seed blog posts
-      console.log('�📰 Seeding blog posts...')
-      for (const post of seedBlogPosts) {
-        const { data: existingPost } = await supabaseAdmin
-          .from('blog_posts')
-          .select('slug')
-          .eq('slug', post.slug)
-          .single()
-
-        if (!existingPost) {
-          const { error } = await supabaseAdmin.from('blog_posts').insert({
-            ...post,
-            author_id: adminUser.id,
-            published_at: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          })
-
-          if (error) {
-            console.error(`Error seeding blog post ${post.title}:`, error)
-          } else {
-            console.log(`✅ Created blog post: ${post.title}`)
-          }
-        } else {
-          console.log(`⏭️  Blog post already exists: ${post.title}`)
-        }
-      }
-
-      // Seed notifications for users
-      console.log('🔔 Seeding notifications...')
-      const users = await supabaseAdmin.from('profiles').select('id').limit(3)
-
-      if (users.data) {
-        for (const user of users.data) {
-          const notifications = [
-            {
-              user_id: user.id,
-              type: 'welcome',
-              title: 'Welcome to ForSure!',
-              message:
-                'Welcome to the ForSure platform. Start by exploring the dashboard.',
-              data: { action: 'dashboard' },
-              action_url: '/app',
-            },
-            {
-              user_id: user.id,
-              type: 'project',
-              title: 'New Project Available',
-              message: 'Check out the sample project to see ForSure in action.',
-              data: { project_id: 'sample-project' },
-              action_url: '/app/projects/sample-project',
-            },
-          ]
-
-          for (const notification of notifications) {
-            const { error } = await supabaseAdmin.from('notifications').insert({
-              ...notification,
-              created_at: new Date().toISOString(),
-            })
-
-            if (error) {
-              console.error(`Error seeding notification:`, error)
-            }
-          }
-        }
-        console.log(`✅ Created notifications for ${users.data.length} users`)
-      }
-    }
+    await prisma.$disconnect()
 
     console.log('🎉 Database seeding completed successfully!')
   } catch (error) {

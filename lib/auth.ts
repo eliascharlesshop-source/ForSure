@@ -7,7 +7,7 @@ export type JwtUserPayload = {
   role?: string
 }
 
-const JWT_SECRET = process.env.JWT_SECRET as Secret | undefined
+const JWT_SECRET = (process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET) as Secret | undefined
 if (!JWT_SECRET) {
   // Do not throw at import time in tests; runtime will handle missing secret with clear errors
   // console.warn('JWT_SECRET is not set. Set it in your environment to enable authentication.')

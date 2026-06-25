@@ -23,7 +23,7 @@ export default function Header({ mode = 'design', onModeChange }: HeaderProps = 
   const [mounted, setMounted] = useState(false)
   const { theme } = useTheme()
   const isDark = theme === 'dark'
-  const { isAuthenticated, enterDemoMode } = useAuth()
+  const { isAuthenticated } = useAuth()
   const pathname = usePathname()
 
   useEffect(() => {
