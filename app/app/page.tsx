@@ -4,7 +4,7 @@ import type React from 'react'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/forsure-button'
-import { Sparkles, ChevronLeft, ChevronRight, Palette } from 'lucide-react'
+import { Sparkles, ChevronLeft, ChevronRight, Palette, Plus } from 'lucide-react'
 import {
   ProjectDetailsForm,
   type ProjectDetails,
@@ -420,25 +420,42 @@ export default function ChatApp() {
     document.body.style.userSelect = 'none'
   }
 
+  // Determine current view mode
+  const isNewProjectMode = !showDashboard && (!projectDetails || editingProject)
+  const isDashboardMode = showDashboard
+  const isEditorMode = !showDashboard && projectDetails && !editingProject
+
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
       {/* Mode Indicator */}
       <div className="px-4 py-2 bg-gradient-to-r from-background to-background/95 border-b border-border/40 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {isDesignMode ? (
+          {isNewProjectMode ? (
             <>
-              <Palette className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium text-foreground">Design Mode</span>
+              <Plus className="h-4 w-4 text-emerald-500" />
+              <span className="text-sm font-medium text-foreground">New Project</span>
             </>
+          ) : isDashboardMode ? (
+            isDesignMode ? (
+              <>
+                <Palette className="h-4 w-4 text-blue-500" />
+                <span className="text-sm font-medium text-foreground">Design Mode</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 text-purple-500" />
+                <span className="text-sm font-medium text-foreground">Dev Mode</span>
+              </>
+            )
           ) : (
             <>
-              <Sparkles className="h-4 w-4 text-purple-500" />
-              <span className="text-sm font-medium text-foreground">Dev Mode</span>
+              <Sparkles className="h-4 w-4 text-cyan-500" />
+              <span className="text-sm font-medium text-foreground">Project Editor</span>
             </>
           )}
         </div>
-        <Badge variant={isDesignMode ? "secondary" : "default"}>
-          {isDesignMode ? "Visual Design" : "Development"}
+        <Badge variant={isNewProjectMode ? "default" : isDesignMode ? "secondary" : "default"}>
+          {isNewProjectMode ? "Setup" : isDashboardMode ? (isDesignMode ? "Visual Design" : "Development") : "Editing"}
         </Badge>
       </div>
 
