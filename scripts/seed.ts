@@ -1,10 +1,12 @@
 import { supabaseAdmin } from '../lib/supabase'
+import { hashPassword } from '../lib/password'
 
 interface SeedUser {
   email: string
   name: string
   role: 'user' | 'admin' | 'moderator'
   bio?: string
+  password?: string
 }
 
 const seedUsers: SeedUser[] = [
@@ -25,6 +27,13 @@ const seedUsers: SeedUser[] = [
     name: 'Test User',
     role: 'user',
     bio: 'Regular platform user',
+  },
+  {
+    email: 'test@example.com',
+    name: 'Test Account',
+    role: 'user',
+    bio: 'Test account for demonstration',
+    password: 'TestPassword123!',
   },
 ]
 
@@ -176,12 +185,18 @@ async function seedDatabase() {
         .single()
 
       if (!existingUser) {
+        let passwordHash: string | null = null
+        if (user.password) {
+          passwordHash = await hashPassword(user.password)
+        }
+
         const { error } = await supabaseAdmin.from('profiles').insert({
           id: `seed-${user.email.split('@')[0]}`,
           email: user.email,
           name: user.name,
           role: user.role,
           bio: user.bio,
+          password_hash: passwordHash,
           is_verified: true,
         })
 
