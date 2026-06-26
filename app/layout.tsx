@@ -6,6 +6,7 @@ import { NavWrapper } from '@/components/nav-wrapper'
 import { ConditionalFooter } from '@/components/conditional-footer'
 import { ScrollToAnchor } from '@/components/scroll-to-anchor'
 import { AuthProvider } from '@/contexts/auth-context'
+import { SubscriptionProvider } from '@/contexts/subscription-context'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning={true}>
         <AuthProvider>
+          <SubscriptionProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -45,6 +47,7 @@ export default function RootLayout({
               <ConditionalFooter />
             </div>
           </ThemeProvider>
+          </SubscriptionProvider>
         </AuthProvider>
       </body>
     </html>

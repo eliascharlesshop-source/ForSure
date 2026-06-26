@@ -132,6 +132,12 @@ export default function Footer() {
           <div className="flex flex-col gap-3">
             <h3 className="font-semibold text-lg">Company</h3>
             <Link
+              href="/pricing"
+              className="text-sm text-secondary/80 dark:text-white hover:text-primary"
+            >
+              Pricing
+            </Link>
+            <Link
               href="/about"
               className="text-sm text-secondary/80 dark:text-white hover:text-primary"
             >
