@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/forsure-button'
 import { Input } from '@/components/ui/forsure-input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/forsure-card'
 import { Badge } from '@/components/ui/forsure-badge'
+import { CreateProjectDialog } from '@/components/create-project-dialog'
 import {
   FolderGit2,
   Plus,
@@ -113,6 +114,10 @@ export default function ProjectsPage() {
     }
   }
 
+  const handleProjectCreated = (newProject: Project) => {
+    setProjects(prev => [newProject, ...prev])
+  }
+
   const filteredProjects = projects.filter(p => {
     const matchesSearch =
       p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -167,10 +172,7 @@ export default function ProjectsPage() {
                 Manage and organize all your projects in one place
               </p>
             </div>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              New Project
-            </Button>
+            <CreateProjectDialog onSuccess={handleProjectCreated} />
           </div>
         </div>
 
@@ -251,10 +253,7 @@ export default function ProjectsPage() {
                 ? 'Try adjusting your search criteria'
                 : 'Get started by creating your first project'}
             </p>
-            <Button className="gap-2">
-              <Plus className="h-4 w-4" />
-              Create Project
-            </Button>
+            <CreateProjectDialog onSuccess={handleProjectCreated} />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
