@@ -135,45 +135,45 @@ export default function Header({ mode = 'design', onModeChange }: HeaderProps = 
 
         {/* Mobile navigation */}
         {isMenuOpen && (
-          <div className="absolute top-16 left-0 right-0 bg-background border-b md:hidden">
-            <nav className="container flex flex-col py-4 gap-4">
+          <div className="fixed inset-x-0 top-16 bottom-0 bg-background border-b md:hidden overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+            <nav className="flex flex-col py-4 gap-2 px-4">
               <Link
                 href="/cli"
-                className="px-4 py-2 flex items-center group"
+                className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Terminal className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                <span className="text-sm font-medium">
                   CLI
                 </span>
               </Link>
               <Link
                 href="/language"
-                className="px-4 py-2 flex items-center group"
+                className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Code className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                <span className="text-sm font-medium">
                   Language
                 </span>
               </Link>
               <Link
                 href="/docs"
-                className="px-4 py-2 flex items-center group"
+                className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <FileText className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                <span className="text-sm font-medium">
                   Documentation
                 </span>
               </Link>
               <Link
                 href="/components"
-                className="px-4 py-2 flex items-center group"
+                className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <Package className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
-                <span className="text-sm font-medium group-hover:text-primary transition-colors">
+                <span className="text-sm font-medium">
                   Components
                 </span>
               </Link>
@@ -188,11 +188,11 @@ export default function Header({ mode = 'design', onModeChange }: HeaderProps = 
                 </div>
               )}
 
-              <div className="flex items-center gap-4 px-4">
+              <div className="flex flex-col gap-3 px-4 py-3 border-t">
                 {isAuthenticated ? (
                   <Link
                     href="/account"
-                    className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
+                    className="px-4 py-2 text-sm font-medium hover:text-primary hover:bg-secondary/50 rounded-lg transition-colors flex items-center"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     My Account
@@ -201,21 +201,23 @@ export default function Header({ mode = 'design', onModeChange }: HeaderProps = 
                   <>
                     <Link
                       href="/login"
-                      className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
+                      className="px-4 py-2 text-sm font-medium hover:text-primary hover:bg-secondary/50 rounded-lg transition-colors flex items-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Log in
                     </Link>
                     <Link
                       href="/register"
-                      className="px-4 py-2 text-sm font-medium hover:text-primary flex items-center"
+                      className="px-4 py-2 text-sm font-medium hover:text-primary hover:bg-secondary/50 rounded-lg transition-colors flex items-center"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Sign up
                     </Link>
                   </>
                 )}
-                <ModeToggle />
+                <div className="pt-2">
+                  <ModeToggle />
+                </div>
               </div>
             </nav>
           </div>

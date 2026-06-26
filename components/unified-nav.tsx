@@ -234,78 +234,80 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 bg-background border-b md:hidden">
-          <nav className="container flex flex-col py-4 gap-4 px-[5px]">
+        <div className="fixed inset-x-0 top-16 bottom-0 bg-background border-b md:hidden overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col py-4 gap-2 px-4">
             {context === 'public' && (
               <>
-                <Link href="/cli" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/cli" className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   <Terminal className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
                   <span className="text-sm font-medium">CLI</span>
                 </Link>
-                <Link href="/language" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/language" className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   <Code className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
                   <span className="text-sm font-medium">Language</span>
                 </Link>
-                <Link href="/docs" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/docs" className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   <FileText className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
                   <span className="text-sm font-medium">Documentation</span>
                 </Link>
-                <Link href="/components" className="px-4 py-2 flex items-center group" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/components" className="px-4 py-3 flex items-center group hover:bg-secondary/50 rounded-lg transition-colors" onClick={() => setIsMenuOpen(false)}>
                   <Package className="h-4 w-4 mr-2 group-hover:text-primary transition-colors" />
                   <span className="text-sm font-medium">Components</span>
                 </Link>
-                <div className="px-4 py-2">
+                <div className="px-4 py-3 border-t border-b">
                   <MegaMenu
                     mode={mode}
                     onModeChange={onModeChange || (() => {})}
                   />
                 </div>
-                <div className="flex items-center gap-4 px-4">
+                <div className="flex flex-col gap-3 px-4 py-3 border-t">
                   {isAuthenticated ? (
-                    <Link href="/account" className="px-4 py-2 text-sm font-medium flex items-center" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/account" className="px-4 py-2 text-sm font-medium flex items-center hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                       My Account
                     </Link>
                   ) : (
                     <>
-                      <Link href="/login" className="px-4 py-2 text-sm font-medium flex items-center" onClick={() => setIsMenuOpen(false)}>
+                      <Link href="/login" className="px-4 py-2 text-sm font-medium flex items-center hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                         Log in
                       </Link>
-                      <Link href="/register" className="px-4 py-2 text-sm font-medium flex items-center" onClick={() => setIsMenuOpen(false)}>
+                      <Link href="/register" className="px-4 py-2 text-sm font-medium flex items-center hover:text-primary transition-colors" onClick={() => setIsMenuOpen(false)}>
                         Sign up
                       </Link>
                     </>
                   )}
-                  <ModeToggle />
+                  <div className="pt-2">
+                    <ModeToggle />
+                  </div>
                 </div>
               </>
             )}
 
             {context === 'app' && (
               <>
-                <div className="flex flex-wrap gap-2 px-4">
+                <div className="grid grid-cols-2 gap-2 px-4 py-3">
                   <Button variant="outline" size="sm" className="flex items-center gap-1">
                     <Share2 className="h-3.5 w-3.5" />
-                    <span>Share</span>
+                    <span className="text-xs">Share</span>
                   </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-1">
                     <Github className="h-3.5 w-3.5" />
-                    <span>GitHub</span>
+                    <span className="text-xs">GitHub</span>
                   </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-1">
                     <Cloud className="h-3.5 w-3.5" />
-                    <span>Deploy</span>
+                    <span className="text-xs">Deploy</span>
                   </Button>
                   <Button variant="outline" size="sm" className="flex items-center gap-1">
                     <GitFork className="h-3.5 w-3.5" />
-                    <span>Fork</span>
+                    <span className="text-xs">Fork</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <Button variant="outline" size="sm" className="flex items-center gap-1 col-span-2">
                     <Tag className="h-3.5 w-3.5" />
-                    <span>Version</span>
+                    <span className="text-xs">Version</span>
                   </Button>
                 </div>
-                <div className="pt-2 border-t px-4">
-                  <div className="flex items-center gap-3">
+                <div className="py-3 border-t px-4">
+                  <div className="flex items-center gap-3 mb-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user?.avatar || '/placeholder.svg'} alt={user?.name || 'User'} />
                       <AvatarFallback>
@@ -316,6 +318,14 @@ export default function UnifiedNav({ context, mode = 'design', onModeChange }: U
                       <p className="text-sm font-medium">{user?.name || 'User'}</p>
                       <p className="text-xs text-muted-foreground">{user?.email || 'user@example.com'}</p>
                     </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Link href="/app/account" className="px-3 py-2 text-sm font-medium hover:bg-secondary/50 rounded-lg transition-colors flex items-center" onClick={() => setIsMenuOpen(false)}>
+                      <span>My Account</span>
+                    </Link>
+                    <Link href="/app/settings" className="px-3 py-2 text-sm font-medium hover:bg-secondary/50 rounded-lg transition-colors flex items-center" onClick={() => setIsMenuOpen(false)}>
+                      <span>Settings</span>
+                    </Link>
                   </div>
                 </div>
               </>
