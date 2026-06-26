@@ -28,7 +28,7 @@ const PLAN_META: PlanMeta[] = [
     id: 'starter',
     productId: 'starter',
     icon: <Zap className="h-5 w-5" />,
-    color: 'text-sky-400',
+    color: 'text-primary',
   },
   {
     id: 'professional',
@@ -41,7 +41,7 @@ const PLAN_META: PlanMeta[] = [
     id: 'enterprise',
     productId: 'enterprise',
     icon: <Building2 className="h-5 w-5" />,
-    color: 'text-violet-400',
+    color: 'text-primary',
   },
 ]
 
@@ -114,7 +114,7 @@ export default function PricingPage() {
             aria-label="Toggle annual billing"
           >
             <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${annual ? 'translate-x-5' : 'translate-x-0'}`}
+              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-background shadow transition-transform duration-200 ${annual ? 'translate-x-5' : 'translate-x-0'}`}
             />
           </button>
           <span className={`text-sm font-medium ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>
@@ -149,7 +149,7 @@ export default function PricingPage() {
                   {/* Popular badge */}
                   {meta.badgeText && (
                     <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-secondary text-xs font-semibold">
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-semibold">
                         <Rocket className="h-3 w-3" />
                         {meta.badgeText}
                       </span>
