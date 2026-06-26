@@ -15,6 +15,8 @@ import { ChatInterface } from './components/chat-interface'
 import { VisualizationPanel } from './components/visualization-panel'
 import { useFileStructureHistory } from './hooks/use-file-structure-history'
 import { useAuth } from '@/contexts/auth-context'
+import { useSubscription } from '@/contexts/subscription-context'
+import { FeatureGate } from '@/components/feature-gate'
 import EnhancedDashboard from './components/enhanced-dashboard'
 import WhiteboardDashboard from '@/components/whiteboard-dashboard'
 import { useToast } from '@/components/ui/use-toast'
@@ -39,6 +41,7 @@ export default function ChatApp() {
   const [leftPanelWidth, setLeftPanelWidth] = useState(40)
   const { toast } = useToast()
   const { isDemoMode, user } = useAuth()
+  const { can, permissions } = useSubscription()
   const [isDraftProject, setIsDraftProject] = useState(false)
   const [forSureFiles, setForSureFiles] = useState<any[]>([])
   const [rightChatMessages, setRightChatMessages] = useState<any[]>([])
@@ -355,6 +358,15 @@ export default function ChatApp() {
   }
 
   const handleStartNewProject = () => {
+    const max = permissions.maxProjects
+    if (max !== -1 && savedProjects.length >= max) {
+      toast({
+        title: 'Project limit reached',
+        description: `Your plan allows up to ${max} project${max === 1 ? '' : 's'}. Upgrade to create more.`,
+        variant: 'destructive',
+      })
+      return
+    }
     setShowDashboard(false)
     setProjectDetails(null)
     setEditingProject(false)
@@ -463,6 +475,7 @@ export default function ChatApp() {
       <div className="flex-1 flex flex-col h-full">
         {showDashboard ? (
           isDesignMode ? (
+            <FeatureGate feature="designMode" featureLabel="Design Mode">
             <WhiteboardDashboard
               projects={savedProjects}
               onNewProject={handleStartNewProject}
@@ -472,6 +485,7 @@ export default function ChatApp() {
               onStartChat={handleStartChatFromDashboard}
               isLoaded={isLoaded}
             />
+            </FeatureGate>
           ) : (
             <div className="flex-1 overflow-y-auto">
               <EnhancedDashboard
@@ -722,7 +736,7 @@ export default function ChatApp() {
                   onUpdateTag={() => {}}
                   onMoveTag={() => {}}
                 >
-                  {!isMobile && !showRightChat && (
+                  {!isMobile && !showRightChat && can('secondaryChat') && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -818,6 +832,7 @@ export default function ChatApp() {
 
                       {/* Right chat interface */}
                       <div className="relative z-10 flex-1 flex flex-col min-h-0">
+                        <FeatureGate feature="secondaryChat" featureLabel="Secondary AI Chat">
                         <ChatInterface
                           messages={rightChatMessages}
                           input={rightChatInput}
@@ -834,6 +849,7 @@ export default function ChatApp() {
                           }}
                           copiedId={copied}
                         />
+                        </FeatureGate>
                       </div>
                     </>
                   )}
