@@ -467,33 +467,37 @@ export default function ChatApp() {
             </div>
           )
         ) : !projectDetails || editingProject ? (
-          <div className="container py-8">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-8">
-                <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
-                  <Sparkles className="h-8 w-8 text-primary" />
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
+              <div className="container py-8">
+                <div className="max-w-3xl mx-auto">
+                  <div className="text-center mb-8">
+                    <div className="inline-block p-4 rounded-full bg-primary/10 mb-4">
+                      <Sparkles className="h-8 w-8 text-primary" />
+                    </div>
+                    <h2 className="text-2xl font-bold mb-2">
+                      {editingProject
+                        ? 'Edit Project Details'
+                        : 'Create a New Project'}
+                    </h2>
+                    <p className="text-muted-foreground max-w-md mx-auto">
+                      {editingProject
+                        ? 'Update your project information below.'
+                        : "Let's start by gathering some information about your project to help you better."}
+                    </p>
+                  </div>
+
+                  <FormProgress
+                    steps={['Basics', 'Technical', 'Team & Goals', 'Review']}
+                    currentStep={0}
+                  />
+
+                  <ProjectDetailsForm
+                    onComplete={handleFormComplete}
+                    initialDetails={editingProject ? projectDetails : undefined}
+                  />
                 </div>
-                <h2 className="text-2xl font-bold mb-2">
-                  {editingProject
-                    ? 'Edit Project Details'
-                    : 'Create a New Project'}
-                </h2>
-                <p className="text-muted-foreground max-w-md mx-auto">
-                  {editingProject
-                    ? 'Update your project information below.'
-                    : "Let's start by gathering some information about your project to help you better."}
-                </p>
               </div>
-
-              <FormProgress
-                steps={['Basics', 'Technical', 'Team & Goals', 'Review']}
-                currentStep={0}
-              />
-
-              <ProjectDetailsForm
-                onComplete={handleFormComplete}
-                initialDetails={editingProject ? projectDetails : undefined}
-              />
             </div>
           </div>
         ) : (
