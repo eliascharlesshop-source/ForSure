@@ -1,5 +1,4 @@
 import { ReactNode, HTMLAttributes, ComponentProps, DetailedHTMLProps } from 'react'
-import { cn } from './utils'
 import { ColorToken, SpacingToken, BorderRadiusToken, ShadowToken } from './design-tokens'
 
 export interface BaseComponentProps extends Omit<HTMLAttributes<HTMLElement>, 'color' | 'aria-disabled' | 'aria-expanded' | 'aria-pressed' | 'aria-selected' | 'aria-labelledby' | 'aria-describedby' | 'aria-required' | 'aria-invalid' | 'role' | 'tabIndex'> {
