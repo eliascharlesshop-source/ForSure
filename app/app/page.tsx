@@ -4,15 +4,13 @@ import type React from 'react'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/forsure-button'
-import { Sparkles, ChevronLeft, ChevronRight, Palette, Plus } from 'lucide-react'
+import { Sparkles, Palette, Plus } from 'lucide-react'
 import {
   ProjectDetailsForm,
   type ProjectDetails,
 } from './components/project-details-form'
 import { FormProgress } from './components/form-progress'
 import { useSavedProjects } from './hooks/use-saved-projects'
-import { ChatInterface } from './components/chat-interface'
-import { VisualizationPanel } from './components/visualization-panel'
 import { useFileStructureHistory } from './hooks/use-file-structure-history'
 import { useAuth } from '@/contexts/auth-context'
 import { useSubscription } from '@/contexts/subscription-context'
@@ -22,6 +20,7 @@ import WhiteboardDashboard from '@/components/whiteboard-dashboard'
 import { useToast } from '@/components/ui/use-toast'
 import { Badge } from '@/components/ui/forsure-badge'
 import { useTopbar } from './components/topbar-provider'
+import { StudioLayout } from './components/studio-layout'
 
 export default function ChatApp() {
   const { mode, onModeChange, newProjectTrigger } = useTopbar()
@@ -439,16 +438,16 @@ export default function ChatApp() {
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
-      {/* Mode Indicator */}
-      <div className="px-4 py-2 bg-gradient-to-r from-background to-background/95 border-b border-border/40 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {isNewProjectMode ? (
-            <>
-              <Plus className="h-4 w-4 text-emerald-500" />
-              <span className="text-sm font-medium text-foreground">New Project</span>
-            </>
-          ) : isDashboardMode ? (
-            isDesignMode ? (
+      {/* Mode indicator — only shown in dashboard & new-project modes */}
+      {!isEditorMode && (
+        <div className="px-4 py-2 bg-gradient-to-r from-background to-background/95 border-b border-border/40 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {isNewProjectMode ? (
+              <>
+                <Plus className="h-4 w-4 text-emerald-500" />
+                <span className="text-sm font-medium text-foreground">New Project</span>
+              </>
+            ) : isDesignMode ? (
               <>
                 <Palette className="h-4 w-4 text-blue-500" />
                 <span className="text-sm font-medium text-foreground">Design Mode</span>
@@ -458,21 +457,52 @@ export default function ChatApp() {
                 <Sparkles className="h-4 w-4 text-purple-500" />
                 <span className="text-sm font-medium text-foreground">Dev Mode</span>
               </>
-            )
-          ) : (
-            <>
-              <Sparkles className="h-4 w-4 text-cyan-500" />
-              <span className="text-sm font-medium text-foreground">Project Editor</span>
-            </>
-          )}
+            )}
+          </div>
+          <Badge variant={isNewProjectMode ? 'default' : isDesignMode ? 'secondary' : 'default'}>
+            {isNewProjectMode ? 'Setup' : isDesignMode ? 'Visual Design' : 'Development'}
+          </Badge>
         </div>
-        <Badge variant={isNewProjectMode ? "default" : isDesignMode ? "secondary" : "default"}>
-          {isNewProjectMode ? "Setup" : isDashboardMode ? (isDesignMode ? "Visual Design" : "Development") : "Editing"}
-        </Badge>
-      </div>
+      )}
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col h-full">
+      {/* Editor mode — Figma-style studio (full-height, no mode bar) */}
+      {isEditorMode && projectDetails && (
+        <StudioLayout
+          projectDetails={projectDetails}
+          messages={messages}
+          input={input}
+          isLoading={isLoading}
+          forSureFiles={forSureFiles}
+          copiedId={copied}
+          activeFileStructure={activeFileStructure}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          isDraftProject={isDraftProject}
+          rightChatMessages={rightChatMessages}
+          rightChatInput={rightChatInput}
+          rightChatLoading={rightChatLoading}
+          showRightChat={showRightChat}
+          mode={isDesignMode ? 'design' : 'dev'}
+          onModeChange={(m) => onModeChange(m)}
+          onInputChange={setInput}
+          onSubmit={handleSubmit}
+          onCopy={(text, id) => {
+            navigator.clipboard.writeText(text)
+            setCopied(id)
+            setTimeout(() => setCopied(null), 2000)
+          }}
+          onForSureFilesChange={setForSureFiles}
+          onFileStructureChange={updateStructure}
+          onUndo={undo}
+          onRedo={redo}
+          onRightChatInputChange={setRightChatInput}
+          onRightChatSubmit={handleRightChatSubmit}
+          onEditProject={editProject}
+        />
+      )}
+
+      {/* Main content — dashboard & new-project modes */}
+      <div className={`flex-1 flex flex-col h-full ${isEditorMode ? 'hidden' : ''}`}>
         {showDashboard ? (
           isDesignMode ? (
             <FeatureGate feature="designMode" featureLabel="Design Mode">

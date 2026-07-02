@@ -31,7 +31,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="h-screen flex flex-col overflow-hidden">
             <AppTopbar />
-            <div className="flex-1 flex flex-col overflow-hidden p-[5px]">
+            <div className="flex-1 flex flex-col overflow-hidden">
               {children}
             </div>
             <StatusBar />
